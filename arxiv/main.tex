@@ -49,11 +49,11 @@ Recent trust-aware orchestration proposals provide implementation motifs for con
 
 \textbf{E2: Epistemic Friction Test.} Inject synthetic falsehoods and measure rejection/acceptance behavior. Report both false accepts and false rejects.
 
-\textbf{Execution metadata.} We executed 30 seeded runs per condition and exported machine-readable artifacts in `results/`:
+\textbf{Execution metadata.} We executed 30 seeded runs per condition and exported machine-readable artifacts in \texttt{results/}:
 \begin{itemize}
-  \item `recursive_stability_runs.csv`
-  \item `epistemic_friction_runs.csv`
-  \item `summary_metrics.json`
+  \item \texttt{recursive\_stability\_runs.csv}
+  \item \texttt{epistemic\_friction\_runs.csv}
+  \item \texttt{summary\_metrics.json}
 \end{itemize}
 
 \section{Pilot Results}
@@ -82,7 +82,7 @@ The pilot results support the directional OEA hypothesis in the implemented harn
 
 \section{Limitations and Threats to Validity}
 \begin{itemize}
-  \item \textbf{Pilot harness scope}: current experiments are a controlled simulation harness, not yet integrated with the full `specsmith` execution stack.
+  \item \textbf{Pilot harness scope}: current experiments are a controlled simulation harness, not yet integrated with the full \texttt{specsmith} execution stack.
   \item \textbf{External validity}: outcomes may not transfer to all architectures, corpora, or training regimes.
   \item \textbf{Retrieval dependence}: evidence quality is bounded by corpus coverage and retrieval precision.
   \item \textbf{Metric insufficiency}: single metrics (including ECE proxies) are non-exhaustive; multiple diagnostics are required.
