@@ -32,3 +32,9 @@ jobs:
         with:
           root_file: main.tex
           working_directory: arxiv
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: oea-framework-paper
+          path: arxiv/main.pdf
