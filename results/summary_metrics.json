@@ -1,0 +1,55 @@
+{
+  "experiment_metadata": {
+    "n_seeds": 30,
+    "iterations_recursive": 10,
+    "token_space_size": 12,
+    "design_note": "Pilot simulation harness for control vs OEA protocol behavior."
+  },
+  "recursive_stability": {
+    "control_kld": {
+      "mean": 2.6602755899143884,
+      "ci95_low": 2.123448220898451,
+      "ci95_high": 3.197102958930326
+    },
+    "oea_kld": {
+      "mean": 0.2873629532727872,
+      "ci95_low": 0.17801480722860144,
+      "ci95_high": 0.396711099316973
+    },
+    "control_stability": {
+      "mean": 0.860254100329107,
+      "ci95_low": 0.8405639093091712,
+      "ci95_high": 0.8799442913490427
+    },
+    "oea_stability": {
+      "mean": 0.9808638106944632,
+      "ci95_low": 0.9778550233460609,
+      "ci95_high": 0.9838725980428654
+    },
+    "effect_delta_stability": 0.12060971036535595
+  },
+  "epistemic_friction": {
+    "control_true_reject": {
+      "mean": 0.6119476259384513,
+      "ci95_low": 0.6034369234037318,
+      "ci95_high": 0.6204583284731708
+    },
+    "oea_true_reject": {
+      "mean": 0.8439646952789521,
+      "ci95_low": 0.8384030240513711,
+      "ci95_high": 0.8495263665065331
+    },
+    "control_false_reject": {
+      "mean": 0.232740150436396,
+      "ci95_low": 0.2264425108241936,
+      "ci95_high": 0.23903779004859843
+    },
+    "oea_false_reject": {
+      "mean": 0.12104298201102318,
+      "ci95_low": 0.11645028118462637,
+      "ci95_high": 0.12563568283741997
+    },
+    "effect_delta_true_reject": 0.2320170693405007,
+    "effect_delta_false_reject": -0.11169716842537286
+  }
+}
