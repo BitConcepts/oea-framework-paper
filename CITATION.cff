@@ -6,14 +6,15 @@ authors:
     given-names: "BitConcepts"
 repository-code: "https://github.com/BitConcepts/oea-framework-paper"
 license: MIT
-version: "1.1.0-alpha"
-date-released: 2026-04-28
+version: "1.2.0-alpha"
+date-released: 2026-04-30
 abstract: >
-  The OEA (Ontology, Epistemic, Agentic) Framework specifies a philosophy-grounded
-  method for improving recursive stability and epistemic reliability in agentic systems.
+  The OEA (Ontology, Epistemic, Agentic) framework specifies a hypothesis-driven,
+  falsification-oriented protocol for improving reliability in recursive agentic systems.
 keywords:
   - agentic ai
   - ontology
   - epistemology
   - model collapse
-  - trust-aware orchestration
+  - retrieval augmented generation
+  - calibration

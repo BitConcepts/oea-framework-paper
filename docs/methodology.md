@@ -1,27 +1,40 @@
 # Methodology
+## Scope and epistemic posture
+This project distinguishes between:
+- **Established findings** from cited literature.
+- **Working hypotheses** specific to OEA.
+- **Evidence claims** that are allowed only after experiment artifacts exist.
+
 ## OEA Tri-Layer Protocol
 ### Phase 1: Ontological Anchoring
-- Define ontological jurisdiction before any reasoning.
-- Enumerate axioms and fixed assumptions.
-- Reject tasks that force ungrounded synthetic completion.
+- Define ontological jurisdiction and non-negotiable constraints before inference.
+- Enumerate domain axioms and invalid output classes.
+- Record boundary conditions that trigger abstention or escalation.
 
-### Phase 2: Epistatic Filtering
-- Apply trust-aware orchestration and retrieval-grounded falsification.
-- Estimate reasoning-path calibration with Expected Calibration Error (ECE).
-- Remove unsupported filler; preserve only evidence-grounded claims.
+### Phase 2: Epistemic Filtering
+- Apply retrieval-grounded falsification attempts to generated claims.
+- Track provenance for each claim (source, retrieval context, confidence).
+- Quantify confidence-quality alignment using calibration diagnostics (e.g., ECE).
+- Preserve only evidence-grounded statements in final outputs.
 
 ### Phase 3: Agentic Closure
-- Formulate digitally testable hypotheses.
-- Execute experiments in a reproducible harness.
-- Feed empirical outputs into world-model refinement.
+- Convert claims into testable hypotheses in a digital experiment harness.
+- Execute interventions with fixed seeds/config snapshots.
+- Feed empirical outcomes back into subsequent hypothesis design.
 
 ## Experimental Design
-- **Control:** Standard LLM baseline.
-- **Treatment:** OEA-constrained agent.
-- **Primary Metric:** Recursive stability under iterative self-conditioning (KL divergence at depth `n=10`).
-- **Secondary Metric:** False synthetic data rejection accuracy under epistemic friction.
+- **Control:** baseline LLM pipeline.
+- **Treatment:** OEA-constrained pipeline.
+- **Experiment 1:** recursive stability (`n=10`) with divergence/retention scoring.
+- **Experiment 2:** epistemic friction under synthetic noise injection.
 
-## Statistical Framing
-- Compare control vs. treatment effect sizes across identical seeds.
-- Report confidence intervals for stability and rejection metrics.
-- Record calibration deltas between unconstrained and OEA-conditioned reasoning.
+## Statistical and reporting requirements
+- Report uncertainty (confidence intervals or equivalent) for all key metrics.
+- Include effect deltas between control and treatment.
+- Archive machine-readable outputs (`CSV`/`JSON`) and run metadata.
+- Include failure-case analysis (false accept vs false reject) for epistemic filtering.
+
+## Threats to validity
+- Results may be sensitive to model family and retrieval corpus quality.
+- Calibration metrics are necessary but not sufficient proxies for epistemic truth.
+- Preprint-stage references can change; citation lock must be revisited before submission.

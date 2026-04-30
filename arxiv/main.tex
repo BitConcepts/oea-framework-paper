@@ -4,6 +4,7 @@
 \usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{hyperref}
+\usepackage{enumitem}
 \geometry{margin=1in}
 
 \title{Beyond Stochasticism: An Ontological Framework for Agentic Stability}
@@ -14,20 +15,70 @@
 \maketitle
 
 \begin{abstract}
-This paper introduces the OEA (Ontology, Epistemic, Agentic) Framework as a stability-oriented architecture for agentic systems. We evaluate whether ontological grounding and epistemic filtering improve recursive robustness against model collapse under iterative self-conditioning.
+This paper presents the OEA (Ontology, Epistemic, Agentic) framework as a testable protocol for improving reliability in agentic systems under recursive synthetic-data exposure. Rather than assuming collapse is universally inevitable, we frame OEA as an intervention hypothesis grounded in three layers: ontological constraint definition, epistemic falsification and calibration, and closed-loop empirical action. The manuscript positions OEA relative to model-collapse literature, retrieval-grounded generation work, and calibration methods, then specifies experiments designed to measure whether OEA reduces degradation and improves rejection of synthetic noise.
 \end{abstract}
 
 \section{Introduction}
-The architecture of meaning manifesto and motivation for ontologically constrained agentic reasoning.
+Model collapse has become a central concern in recursive synthetic training pipelines, with evidence of degradation under specific feedback-loop assumptions \cite{shumailov2024modelcollapse,fu2025theoretical}. At the same time, subsequent studies show collapse behavior depends strongly on data-mixing assumptions, curation policy, and accumulation dynamics rather than being a single universal outcome \cite{gerstgrasser2024inevitable,schaeffer2025position}. This motivates a controlled framework that separates what is known, what is hypothesized, and what is empirically testable.
+
+The OEA framework is proposed as such a structure. \textbf{Ontology} defines the boundary conditions of valid outputs. \textbf{Epistemic} introduces explicit falsification and calibration checks for generated claims. \textbf{Agentic} operationalizes interventions in measurable experiment loops. Philosophically, this aligns with a Popperian criterion: claims must be framed so they can fail under evidence \cite{popper1959logic}.
+
+\section{Related Work and Evidence Positioning}
+\subsection{Recursive Synthetic Training and Collapse Dynamics}
+Empirical and theoretical analyses report failure modes in recursive loops, including loss of tail behavior and quality drift \cite{shumailov2024modelcollapse,fu2025theoretical}. Newer analyses also identify mitigation regimes, especially when real data are retained or accumulated \cite{gerstgrasser2024inevitable}. Therefore, we treat collapse as regime-dependent rather than monolithic.
+
+\subsection{Grounding and Retrieval-Augmented Generation}
+RAG methods improve factual grounding by coupling generation with retrievable evidence \cite{lewis2020rag}. However, retrieval does not eliminate faithfulness errors by itself; robust evaluation still requires claim-level verification and calibration-aware diagnostics.
+
+\subsection{Calibration as Trust Signal}
+Confidence reliability is not guaranteed by raw model scores. Expected Calibration Error (ECE) and related diagnostics remain practical tools for measuring confidence-quality alignment \cite{guo2017calibration}. OEA uses calibration as a monitored variable, not a proxy for truth.
+
+\subsection{Trust-Aware Orchestration in Agentic Pipelines}
+Recent trust-aware orchestration proposals provide implementation motifs for confidence-mediated arbitration and retrieval-triggered re-evaluation loops \cite{roumeliotis2025trust}. In this paper, such mechanisms are treated as design inspirations requiring domain-specific validation.
 
 \section{Methodology}
-OEA tri-layer protocol and trust-aware orchestration design.
+\subsection{OEA Tri-Layer Protocol}
+\begin{enumerate}[leftmargin=1.5em]
+  \item \textbf{Ontological Anchoring}: define non-negotiable domain constraints, variable definitions, and invalid-output criteria before inference.
+  \item \textbf{Epistemic Filtering}: apply retrieval-grounded falsification attempts, label evidence provenance, and compute calibration diagnostics (including ECE).
+  \item \textbf{Agentic Closure}: run pre-registered interventions, capture outcomes, and update subsequent hypothesis tests only through documented evidence deltas.
+\end{enumerate}
 
-\section{Experimental Results}
-Recursive stability and epistemic friction analyses with control-vs-treatment comparisons.
+\subsection{Primary Experiments}
+\textbf{E1: Recursive Stability Test.} Initialize a fixed knowledge seed; run 10 recursive generations where output at step $t-1$ becomes input at step $t$. Compare control vs OEA-conditioned pipelines on divergence and semantic retention metrics.
+
+\textbf{E2: Epistemic Friction Test.} Inject plausible synthetic falsehoods into context and measure rejection/acceptance rates. Report both false accepts and false rejects to avoid one-sided scoring.
+
+\subsection{Pre-Registered Reporting Contract}
+For each run we require:
+\begin{itemize}
+  \item configuration fingerprint (model version, prompts, retrieval settings, seed),
+  \item machine-readable artifacts (CSV/JSON),
+  \item interval estimates for key metrics,
+  \item failure-case exemplars with evidence traces.
+\end{itemize}
+
+\section{Results Status and Analysis Plan}
+This repository version defines the analysis contract and citation-locked framing; it does not claim completed experimental outcomes yet. Final publication claims are gated on:
+\begin{itemize}
+  \item executed E1/E2 runs with reproducible artifacts,
+  \item confidence intervals and effect-size reporting,
+  \item consistency checks between manuscript claims and recorded outputs.
+\end{itemize}
 
 \section{Discussion}
-Popperian falsification, epistemic reliability, and implications for commercial agent deployments.
+The central claim under test is \emph{conditional}: ontological and epistemic constraints may improve stability in specific recursive regimes. We explicitly avoid stronger claims (e.g., universal prevention of collapse) unless supported by cross-regime evidence. This safeguards against over-generalization while preserving actionable engineering hypotheses.
+
+\section{Limitations and Threats to Validity}
+\begin{itemize}
+  \item \textbf{External validity}: outcomes may not transfer across model families or domains.
+  \item \textbf{Retrieval dependence}: evidence quality is bounded by corpus coverage and retrieval precision.
+  \item \textbf{Metric insufficiency}: single metrics (including ECE) are non-exhaustive; multiple diagnostics are required.
+  \item \textbf{Preprint risk}: some cited work is preprint-stage and may change after peer review.
+\end{itemize}
+
+\section{Reproducibility and Ethics Notes}
+All major claims should map to reproducible artifacts and cited sources. For deployment-facing use, trust scores and confidence estimates must not be treated as guarantees of truth, especially in safety-critical pathways.
 
 \bibliographystyle{plain}
 \bibliography{references}
