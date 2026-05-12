@@ -1,0 +1,23 @@
+{
+  "study_name": "oea_credibility_suite_fast",
+  "description": "Fast validation plan for CI (2 seeds, 1 depth, 1 ratio, 1 noise level). Not for publication.",
+  "corpora": [
+    "public_domain_snippets"
+  ],
+  "variants": [
+    "control_replace",
+    "control_accumulate",
+    "ablation_E",
+    "oea_full",
+    "ablation_miscalibrated"
+  ],
+  "seeds": [1, 2],
+  "recursion_depths": [5],
+  "synthetic_ratios": [0.5],
+  "noise_levels": [0.1],
+  "primary_endpoints": [
+    "stability_score",
+    "true_reject_rate",
+    "false_reject_rate"
+  ]
+}

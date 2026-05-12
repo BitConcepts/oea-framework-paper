@@ -1,0 +1,11 @@
+# OEA real-LLM experiment dependencies
+# Install with:
+#   pip install -r requirements-experiments.txt --extra-index-url https://download.pytorch.org/whl/cpu
+#
+# These are NOT required for the bigram-proxy credibility suite (requirements.txt only).
+# Needed only for experiments/real_lm_experiment.py.
+
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch>=2.2.0
+transformers>=4.44.0
