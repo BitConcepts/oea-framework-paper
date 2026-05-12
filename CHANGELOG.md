@@ -3,6 +3,15 @@
 All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.1] - 2026-05-12
+
+### Fixed
+- `arxiv/references.bib`: all 8/8 citations now VERIFIED (citation lock closed)
+  - `fu2025selfverification`: confirmed NeurIPS 2025 poster (Accept); added poster note
+  - `roumeliotis2025trust`: confirmed arXiv:2507.10571 v3; removed AUDIT flag, fixed trailing comma
+- Trace vault: SEAL-0007 (citation lock audit-gate)
+- REQ-OEA-006 submission guardrail: citation lock satisfied
+
 ## [0.2.0] - 2026-05-12
 
 ### Added

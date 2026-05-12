@@ -1,5 +1,15 @@
 # LEDGER
 
+## 2026-05-12 - Citation lock closed
+- Human review confirmed both flagged references:
+  - fu2025selfverification: NeurIPS 2025 poster, accepted (Decision: Accept). Submission 12388.
+    Authors, title, year confirmed against OpenReview. BibTeX updated with poster note.
+  - roumeliotis2025trust: arXiv:2507.10571 v3 (9 Jul 2025, revised 21 Sep 2025).
+    Title, authors, DOI confirmed against arXiv. Trailing comma in BibTeX fixed.
+- Citation audit block updated: all 8/8 VERIFIED.
+- SEAL-0007: audit-gate "Citation lock closed" sealed.
+- REQ-OEA-006 submission guardrail: citation lock now satisfied.
+
 ## 2026-05-12 - Cycle 2: manuscript completion + citation audit
 - Added REQ-OEA-007/008/009 (conclusion, ablation table, citation audit) and matching TEST entries.
 - Added \section{Conclusion} to arxiv/main.tex: restatement of OEA hypothesis, scope-bounded
