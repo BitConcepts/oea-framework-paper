@@ -1,0 +1,105 @@
+# Epistemic Axioms — oea-framework-paper
+
+This document defines the five Applied Epistemic Engineering (AEE) axioms as they apply
+to oea-framework-paper. These axioms govern how beliefs (requirements, decisions, hypotheses)
+are framed, challenged, and reconstructed in this project.
+
+See the AEE primer: https://specsmith.readthedocs.io/en/stable/aee-primer/
+
+---
+
+## Axiom 1: Observability
+
+Every belief artifact in oea-framework-paper must be fully inspectable. Hidden assumptions
+are a stop condition (Hard Rule H13).
+
+**In practice:**
+- Every REQ-XXX entry must have an explicit `**Platform:**` or `**Boundary:**` field
+- Technology decisions must declare what alternatives were considered and rejected
+- All epistemic boundaries must be stated before a belief is ACCEPTED
+
+**Enforcement:** `specsmith stress-test` flags missing boundaries.
+
+---
+
+## Axiom 2: Falsifiability
+
+Every accepted belief in oea-framework-paper must have at least one test or experimental
+result that could potentially disprove it. Unchallenged claims are not engineering artifacts.
+
+**In practice:**
+- Every REQ-XXX with status ACCEPTED must have a corresponding TEST-XXX in TESTS.md
+- Tests must be designed to falsify, not merely confirm
+- Passing tests elevate confidence; gaps reduce it
+
+**Enforcement:** `specsmith epistemic-audit` detects untested accepted requirements.
+
+---
+
+## Axiom 3: Irreducibility
+
+Beliefs must be decomposed to their atomic primitives. Compound claims that bundle
+multiple independently falsifiable sub-claims into a single artifact often hide Logic Knots.
+
+**In practice:**
+- Requirements with more than 3 propositions should be split
+- Claims joined by "and" that cover different subjects should be separate requirements
+- Each requirement should be independently verifiable
+
+**Enforcement:** `specsmith stress-test` detects compound claim patterns.
+
+---
+
+## Axiom 4: Reconstructability
+
+Every failed belief artifact can be reconstructed into a new belief that satisfies
+Axioms 1 and 2. Recovery is always possible — scope may need to narrow.
+
+**In practice:**
+- Failure modes from stress-testing are recovery opportunities, not failures
+- Recovery proposals from `RecoveryOperator` must be reviewed and approved before applying
+- Deprecated beliefs are preserved in the ledger — never deleted
+- A reconstructed belief is marked RECONSTRUCTED after human review
+
+**Enforcement:** `specsmith epistemic-audit` emits recovery proposals for all failure modes.
+
+---
+
+## Axiom 5: Convergence
+
+Systematic application of the Stress-Test (S) and Recovery (R) operators on oea-framework-paper's
+belief system will converge to an Equilibrium Point E where S(G) yields no new failure modes.
+
+**In practice:**
+- Run `specsmith stress-test` after every batch of new requirements
+- Resolve critical failure modes before adding more requirements
+- A passing `specsmith epistemic-audit` with equilibrium=YES is the milestone gate
+
+**Current status:**
+Run `specsmith epistemic-audit` to check current equilibrium status.
+
+---
+
+## Certainty Threshold
+
+The project's certainty threshold is configured in `scaffold.yml` (`epistemic_threshold`).
+Default: **0.70**
+
+Artifacts below this threshold in ACCEPTED or higher status are tracked in
+`docs/governance/uncertainty-map.md` and flagged in epistemic audit reports.
+
+---
+
+## Belief Artifact Lifecycle
+
+```
+DRAFT → ACCEPTED → STRESS_TESTED → RECONSTRUCTED
+                                         ↓
+                                     DEPRECATED
+```
+
+Hard rules:
+- No belief advances to ACCEPTED without human review
+- No belief is deleted — only DEPRECATED
+- No recovery is applied without human approval (H2)
+- Beliefs with P1 priority and confidence below MEDIUM are a stop condition (H13)

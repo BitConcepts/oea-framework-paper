@@ -1,0 +1,75 @@
+# Uncertainty Map — oea-framework-paper
+
+The uncertainty map is the explicit catalog of what oea-framework-paper does **not** know.
+Every project has unknown unknowns; this map converts them to **known unknowns** — which
+are far less dangerous.
+
+An entry here means: "We know we don't know this. Here is what we're doing about it."
+
+Artifacts below the certainty threshold are automatically surfaced by:
+`specsmith epistemic-audit`
+
+---
+
+## Epistemic Status Summary
+
+| Status | Count |
+|--------|-------|
+| UNKNOWN confidence artifacts | [run epistemic-audit] |
+| LOW confidence artifacts | [run epistemic-audit] |
+| P1 requirements below MEDIUM | [run epistemic-audit] |
+| Logic Knots unresolved | [run stress-test] |
+
+---
+
+## Known Unknowns
+
+These are things the project explicitly does not know and has a plan to address.
+
+<!-- Template:
+### UNK-001 — [What we don't know]
+
+- **Artifact affected**: [REQ-XXX or "no direct artifact"]
+- **Why unknown**: [What evidence or test is missing]
+- **Confidence impact**: [Which artifacts' certainty is reduced by this]
+- **Mitigation**: [What we're doing to resolve this unknown]
+- **Target date**: YYYY-MM-DD
+- **Status**: open | investigating | resolved
+-->
+
+---
+
+## Accepted Uncertainties
+
+These are things the project has decided to leave uncertain for now, with explicit
+acceptance of the risk.
+
+<!-- Template:
+### ACC-001 — [Accepted uncertainty]
+
+- **Artifact affected**: [REQ-XXX]
+- **Risk level**: low | medium | high
+- **Rationale for acceptance**: [Why this uncertainty is acceptable at this stage]
+- **Triggers for revisit**: [When this acceptance should be reconsidered]
+- **Accepted by**: [human operator]
+- **Date**: YYYY-MM-DD
+-->
+
+---
+
+## Certainty Threshold
+
+Project threshold: **0.70**
+
+Artifacts are tracked here when their certainty score falls below this threshold.
+Run `specsmith epistemic-audit --threshold 0.70` to get the current list.
+
+---
+
+## Update Protocol
+
+1. After every `specsmith epistemic-audit`, review the below-threshold list
+2. For each below-threshold artifact: decide whether to track it as a Known Unknown
+   or accept it explicitly
+3. Add entries to the appropriate section above
+4. Record the review in LEDGER.md

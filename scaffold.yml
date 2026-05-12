@@ -1,0 +1,47 @@
+extends: ''
+name: oea-framework-paper
+type: aee-research
+platforms:
+- windows
+- linux
+- macos
+language: python
+spec_version: 0.10.1
+aee_phase: release
+description: 'This repository contains the research design, experimental protocol,
+  and publication package for: "Beyond Stochasticism:'
+services: false
+shell_wrappers: false
+exec_shims: true
+git_init: false
+vcs_platform: github
+branching_strategy: gitflow
+default_branch: main
+develop_branch: develop
+require_pr_reviews: true
+required_approvals: 1
+require_ci_pass: true
+allow_force_push: false
+use_remote_rules: false
+verification_tools: {}
+detected_build_system: ''
+detected_test_framework: pytest
+license: MIT
+community_files:
+- contributing
+- license
+- security
+- coc
+- pr-template
+- issue-templates
+auxiliary_disciplines: []
+fpga_vendor: ''
+integrations:
+- agents-md
+execution_profile: standard
+custom_allowed_commands: []
+custom_blocked_commands: []
+custom_blocked_tools: []
+enable_epistemic: true
+epistemic_threshold: 0.7
+enable_trace_vault: false

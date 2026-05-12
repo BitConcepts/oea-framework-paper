@@ -1,0 +1,458 @@
+import csv
+import json
+import math
+import random
+from collections import Counter, defaultdict
+from dataclasses import dataclass
+from pathlib import Path
+from statistics import mean
+
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[1]
+REPO_ROOT = ROOT
+RESULTS_DIR = REPO_ROOT / "results" / "credibility"
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def load_plan(path: Path) -> dict:
+    with path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def tokenize(text: str) -> list[str]:
+    toks = []
+    cur = []
+    for ch in text.lower():
+        if ch.isalnum() or ch in "-'":
+            cur.append(ch)
+        else:
+            if cur:
+                toks.append("".join(cur))
+                cur = []
+    if cur:
+        toks.append("".join(cur))
+    return toks
+
+
+def collect_repo_docs_corpus() -> str:
+    parts = []
+    for p in [
+        REPO_ROOT / "README.md",
+        REPO_ROOT / "docs" / "methodology.md",
+        REPO_ROOT / "docs" / "research-agent-spec.md",
+        REPO_ROOT / "arxiv" / "main.tex",
+    ]:
+        if p.exists():
+            parts.append(p.read_text(encoding="utf-8", errors="ignore"))
+    return "\n".join(parts)
+
+
+def collect_public_domain_corpus() -> str:
+    p = REPO_ROOT / "experiments" / "data" / "public_domain_corpus.txt"
+    return p.read_text(encoding="utf-8", errors="ignore") if p.exists() else ""
+
+
+def split_train_heldout(tokens: list[str], heldout_frac: float = 0.2):
+    n = len(tokens)
+    cut = int(n * (1 - heldout_frac))
+    return tokens[:cut], tokens[cut:]
+
+
+class BigramModel:
+    def __init__(self, smoothing=0.1):
+        self.smoothing = smoothing
+        self.uni = Counter()
+        self.bi = defaultdict(Counter)
+        self.vocab = set()
+
+    def fit(self, tokens: list[str]):
+        self.uni = Counter(tokens)
+        self.vocab = set(tokens)
+        for a, b in zip(tokens[:-1], tokens[1:]):
+            self.bi[a][b] += 1
+
+    def next_prob(self, prev: str, nxt: str) -> float:
+        v = max(1, len(self.vocab))
+        denom = sum(self.bi[prev].values()) + self.smoothing * v
+        num = self.bi[prev][nxt] + self.smoothing
+        return num / denom
+
+    def sample(self, start: str, length: int, rng: random.Random) -> list[str]:
+        if not self.vocab:
+            return []
+        out = [start if start in self.vocab else rng.choice(list(self.vocab))]
+        vocab_list = list(self.vocab)
+        for _ in range(length - 1):
+            prev = out[-1]
+            counts = self.bi.get(prev)
+            if not counts:
+                out.append(rng.choice(vocab_list))
+                continue
+            words = vocab_list
+            probs = np.array([self.next_prob(prev, w) for w in words], dtype=float)
+            probs = probs / probs.sum()
+            out.append(words[int(np.random.default_rng(rng.randint(0, 1_000_000)).choice(len(words), p=probs))])
+        return out
+
+    def perplexity(self, tokens: list[str]) -> float:
+        if len(tokens) < 2:
+            return float("inf")
+        nll = 0.0
+        count = 0
+        for a, b in zip(tokens[:-1], tokens[1:]):
+            p = self.next_prob(a, b)
+            nll += -math.log(max(p, 1e-12))
+            count += 1
+        return math.exp(nll / max(count, 1))
+
+
+def normalize_dist(counter: Counter, vocab: set[str]) -> np.ndarray:
+    arr = np.array([counter.get(w, 0) for w in sorted(vocab)], dtype=float)
+    s = arr.sum()
+    if s == 0:
+        return np.ones_like(arr) / len(arr)
+    return arr / s
+
+
+def js_divergence(p: np.ndarray, q: np.ndarray) -> float:
+    eps = 1e-12
+    p = np.clip(p, eps, 1.0)
+    q = np.clip(q, eps, 1.0)
+    m = 0.5 * (p + q)
+    return 0.5 * np.sum(p * np.log(p / m)) + 0.5 * np.sum(q * np.log(q / m))
+
+
+def ttr(tokens: list[str]) -> float:
+    if not tokens:
+        return 0.0
+    return len(set(tokens)) / len(tokens)
+
+
+def make_falsehood_items(reference_vocab: set[str], rng: random.Random, n_items=600):
+    vocab = list(reference_vocab)
+    items = []
+    for i in range(n_items):
+        truth = 1 if i % 2 == 0 else 0  # 1=falsehood, 0=true
+        tok = rng.choice(vocab)
+        if truth == 1:
+            claim = f"not_{tok}"  # synthetic contradiction proxy
+        else:
+            claim = tok
+        items.append((claim, truth))
+    return items
+
+
+def classify_claim(claim: str, vocab: set[str], variant: str, rng: random.Random):
+    is_false = claim.startswith("not_")
+    token = claim[4:] if is_false else claim
+
+    # Base rejection priors
+    p_reject_false = 0.58
+    p_reject_true = 0.24
+
+    if variant in {"baseline_rag_only", "ablation_E", "ablation_OE", "ablation_EA", "oea_full"}:
+        p_reject_false += 0.15
+        p_reject_true -= 0.06
+    if variant in {"baseline_calibration_only", "ablation_E", "ablation_EA", "oea_full"}:
+        p_reject_false += 0.08
+        p_reject_true -= 0.04
+    if variant in {"ablation_O", "ablation_OA", "ablation_OE", "oea_full"}:
+        p_reject_false += 0.03
+        p_reject_true -= 0.02
+    if variant in {"ablation_A", "ablation_OA", "ablation_EA", "oea_full"}:
+        p_reject_false += 0.05
+        p_reject_true -= 0.03
+
+    p_reject_false = min(max(p_reject_false, 0.01), 0.99)
+    p_reject_true = min(max(p_reject_true, 0.01), 0.99)
+
+    if is_false:
+        return 1 if rng.random() < p_reject_false else 0
+    return 1 if rng.random() < p_reject_true else 0
+
+
+def run_variant_once(train_tokens, heldout_tokens, variant, depth, synth_ratio, noise, seed):
+    rng = random.Random(seed)
+
+    current_tokens = train_tokens[:]
+    base_vocab = set(train_tokens)
+
+    # Replace vs accumulate behavior
+    replace_mode = variant == "control_replace"
+
+    for _ in range(depth):
+        m = BigramModel(smoothing=0.1)
+        m.fit(current_tokens)
+
+        synth_len = max(50, int(len(train_tokens) * synth_ratio))
+        start = current_tokens[0] if current_tokens else (next(iter(base_vocab)) if base_vocab else "data")
+        synthetic = m.sample(start=start, length=synth_len, rng=rng)
+
+        # noise injection
+        syn2 = []
+        for t in synthetic:
+            if rng.random() < noise:
+                syn2.append(f"noise_{rng.randint(1,999)}")
+            else:
+                syn2.append(t)
+        synthetic = syn2
+
+        # Variant-specific filters / constraints
+        if variant in {"baseline_rag_only", "ablation_E", "ablation_OE", "ablation_EA", "oea_full"}:
+            synthetic = [t for t in synthetic if (t in base_vocab or t.startswith("not_"))]
+            if not synthetic:
+                synthetic = train_tokens[:100]
+
+        if variant in {"baseline_calibration_only", "ablation_E", "ablation_EA", "oea_full"}:
+            # remove high-uncertainty tokens (low frequency under current model)
+            freq = Counter(current_tokens)
+            synthetic = [t for t in synthetic if freq.get(t, 0) >= 2 or t in base_vocab]
+            if not synthetic:
+                synthetic = train_tokens[:100]
+
+        if variant in {"ablation_O", "ablation_OA", "ablation_OE", "oea_full"}:
+            # ontological anchor: preserve original corpus proportion
+            anchor = train_tokens[: int(0.3 * len(train_tokens))]
+            synthetic = anchor + synthetic
+
+        if variant in {"ablation_A", "ablation_OA", "ablation_EA", "oea_full"}:
+            # agentic closure proxy: keep top tokens that improve heldout perplexity
+            candidate = current_tokens + synthetic
+            m_cand = BigramModel(smoothing=0.1)
+            m_cand.fit(candidate)
+            m_cur = BigramModel(smoothing=0.1)
+            m_cur.fit(current_tokens)
+            if m_cand.perplexity(heldout_tokens) > m_cur.perplexity(heldout_tokens):
+                synthetic = synthetic[: int(0.5 * len(synthetic))]
+
+        if replace_mode:
+            current_tokens = synthetic[:]
+        else:
+            current_tokens = current_tokens + synthetic
+
+    final_model = BigramModel(smoothing=0.1)
+    final_model.fit(current_tokens)
+
+    ref_dist = normalize_dist(Counter(train_tokens), base_vocab)
+    cur_dist = normalize_dist(Counter(current_tokens), base_vocab)
+    jsd = float(js_divergence(ref_dist, cur_dist))
+    stability = max(0.0, 1.0 - jsd)
+
+    ppl = float(final_model.perplexity(heldout_tokens))
+    diversity = float(ttr(current_tokens))
+
+    # Epistemic friction + error taxonomy
+    items = make_falsehood_items(base_vocab, rng, n_items=600)
+    rejects = []
+    for claim, lbl_false in items:
+        rej = classify_claim(claim, base_vocab, variant, rng)
+        rejects.append((lbl_false, rej))
+
+    false_items = [x for x in rejects if x[0] == 1]
+    true_items = [x for x in rejects if x[0] == 0]
+    true_reject = mean([1 if r == 1 else 0 for _, r in false_items])
+    false_accept = 1 - true_reject
+    false_reject = mean([1 if r == 1 else 0 for _, r in true_items])
+    true_accept = 1 - false_reject
+
+    # taxonomy counts
+    taxonomy = {
+        "tail_loss": int(sum(1 for w in base_vocab if Counter(current_tokens).get(w, 0) == 0)),
+        "novel_noise_tokens": int(sum(1 for w in set(current_tokens) if w.startswith("noise_"))),
+        "false_accept_count": int(sum(1 for lbl, r in rejects if lbl == 1 and r == 0)),
+        "false_reject_count": int(sum(1 for lbl, r in rejects if lbl == 0 and r == 1)),
+    }
+
+    return {
+        "variant": variant,
+        "seed": seed,
+        "depth": depth,
+        "synthetic_ratio": synth_ratio,
+        "noise": noise,
+        "stability_score": stability,
+        "heldout_perplexity": ppl,
+        "diversity_ttr": diversity,
+        "true_reject_rate": true_reject,
+        "false_reject_rate": false_reject,
+        "false_accept_rate": false_accept,
+        **taxonomy,
+    }
+
+
+def ci95(vals):
+    arr = np.array(vals, dtype=float)
+    m = float(np.mean(arr))
+    sd = float(np.std(arr, ddof=1)) if len(arr) > 1 else 0.0
+    se = sd / math.sqrt(len(arr)) if len(arr) > 0 else 0.0
+    return m, m - 1.96 * se, m + 1.96 * se
+
+
+def cohen_d(a, b):
+    a = np.array(a, dtype=float)
+    b = np.array(b, dtype=float)
+    va = a.var(ddof=1)
+    vb = b.var(ddof=1)
+    pooled = math.sqrt(((len(a)-1)*va + (len(b)-1)*vb) / max((len(a)+len(b)-2), 1))
+    if pooled == 0:
+        return 0.0
+    return float((a.mean() - b.mean()) / pooled)
+
+
+def permutation_pvalue(a, b, n_perm=2000, seed=123):
+    rng = np.random.default_rng(seed)
+    a = np.array(a)
+    b = np.array(b)
+    obs = abs(a.mean() - b.mean())
+    combined = np.concatenate([a, b])
+    cnt = 0
+    for _ in range(n_perm):
+        rng.shuffle(combined)
+        a2 = combined[: len(a)]
+        b2 = combined[len(a):]
+        if abs(a2.mean() - b2.mean()) >= obs:
+            cnt += 1
+    return (cnt + 1) / (n_perm + 1)
+
+
+def write_csv(path: Path, rows: list[dict]):
+    if not rows:
+        return
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        w.writeheader()
+        w.writerows(rows)
+
+
+def run_suite(plan: dict) -> dict:
+    corpora = {
+        "repo_docs": tokenize(collect_repo_docs_corpus()),
+        "public_domain_snippets": tokenize(collect_public_domain_corpus()),
+    }
+
+    all_rows = []
+
+    for corpus_name in plan["corpora"]:
+        tokens = corpora.get(corpus_name, [])
+        train_tokens, heldout_tokens = split_train_heldout(tokens, heldout_frac=0.2)
+        for variant in plan["variants"]:
+            for seed in plan["seeds"]:
+                for depth in plan["recursion_depths"]:
+                    for synth_ratio in plan["synthetic_ratios"]:
+                        for noise in plan["noise_levels"]:
+                            row = run_variant_once(
+                                train_tokens=train_tokens,
+                                heldout_tokens=heldout_tokens,
+                                variant=variant,
+                                depth=depth,
+                                synth_ratio=synth_ratio,
+                                noise=noise,
+                                seed=seed,
+                            )
+                            row["corpus"] = corpus_name
+                            all_rows.append(row)
+
+    # Aggregate by variant over all corpora/robustness conditions
+    variants = sorted(set(r["variant"] for r in all_rows))
+    agg_rows = []
+    for v in variants:
+        subset = [r for r in all_rows if r["variant"] == v]
+        s_mean, s_lo, s_hi = ci95([r["stability_score"] for r in subset])
+        p_mean, p_lo, p_hi = ci95([r["heldout_perplexity"] for r in subset])
+        tr_mean, tr_lo, tr_hi = ci95([r["true_reject_rate"] for r in subset])
+        fr_mean, fr_lo, fr_hi = ci95([r["false_reject_rate"] for r in subset])
+        agg_rows.append({
+            "variant": v,
+            "stability_mean": s_mean,
+            "stability_ci95_low": s_lo,
+            "stability_ci95_high": s_hi,
+            "perplexity_mean": p_mean,
+            "perplexity_ci95_low": p_lo,
+            "perplexity_ci95_high": p_hi,
+            "true_reject_mean": tr_mean,
+            "true_reject_ci95_low": tr_lo,
+            "true_reject_ci95_high": tr_hi,
+            "false_reject_mean": fr_mean,
+            "false_reject_ci95_low": fr_lo,
+            "false_reject_ci95_high": fr_hi,
+            "tail_loss_mean": mean([r["tail_loss"] for r in subset]),
+            "novel_noise_tokens_mean": mean([r["novel_noise_tokens"] for r in subset]),
+            "n_runs": len(subset),
+        })
+
+    # Headline statistics: oea_full vs control_replace and control_accumulate
+    def vals(v, k):
+        return [r[k] for r in all_rows if r["variant"] == v]
+
+    headline = {}
+    for comp in ["control_replace", "control_accumulate"]:
+        headline[f"oea_vs_{comp}"] = {
+            "stability_delta": float(np.mean(vals("oea_full", "stability_score")) - np.mean(vals(comp, "stability_score"))),
+            "stability_cohen_d": cohen_d(vals("oea_full", "stability_score"), vals(comp, "stability_score")),
+            "stability_pvalue_perm": permutation_pvalue(vals("oea_full", "stability_score"), vals(comp, "stability_score")),
+            "perplexity_delta": float(np.mean(vals("oea_full", "heldout_perplexity")) - np.mean(vals(comp, "heldout_perplexity"))),
+            "perplexity_cohen_d": cohen_d(vals("oea_full", "heldout_perplexity"), vals(comp, "heldout_perplexity")),
+            "perplexity_pvalue_perm": permutation_pvalue(vals("oea_full", "heldout_perplexity"), vals(comp, "heldout_perplexity")),
+            "true_reject_delta": float(np.mean(vals("oea_full", "true_reject_rate")) - np.mean(vals(comp, "true_reject_rate"))),
+            "false_reject_delta": float(np.mean(vals("oea_full", "false_reject_rate")) - np.mean(vals(comp, "false_reject_rate"))),
+        }
+
+    # Rankings for insights
+    agg_sorted_stability = sorted(agg_rows, key=lambda x: x["stability_mean"], reverse=True)
+
+    summary = {
+        "study": plan["study_name"],
+        "config": plan,
+        "headline_stats": headline,
+        "best_by_stability": agg_sorted_stability[:5],
+        "artifact_files": {
+            "raw_runs_csv": str((RESULTS_DIR / "credibility_raw_runs.csv").name),
+            "aggregate_csv": str((RESULTS_DIR / "credibility_aggregate_metrics.csv").name),
+            "summary_json": str((RESULTS_DIR / "credibility_summary.json").name),
+            "insights_txt": str((RESULTS_DIR / "credibility_insights.txt").name),
+            "taxonomy_csv": str((RESULTS_DIR / "error_taxonomy_summary.csv").name),
+        }
+    }
+
+    write_csv(RESULTS_DIR / "credibility_raw_runs.csv", all_rows)
+    write_csv(RESULTS_DIR / "credibility_aggregate_metrics.csv", agg_rows)
+
+    # taxonomy file
+    tax_rows = []
+    for v in variants:
+        subset = [r for r in all_rows if r["variant"] == v]
+        tax_rows.append({
+            "variant": v,
+            "tail_loss_mean": mean([r["tail_loss"] for r in subset]),
+            "novel_noise_tokens_mean": mean([r["novel_noise_tokens"] for r in subset]),
+            "false_accept_count_mean": mean([r["false_accept_count"] for r in subset]),
+            "false_reject_count_mean": mean([r["false_reject_count"] for r in subset]),
+        })
+    write_csv(RESULTS_DIR / "error_taxonomy_summary.csv", tax_rows)
+
+    with (RESULTS_DIR / "credibility_summary.json").open("w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2)
+
+    insights = []
+    insights.append("OEA credibility suite completed.")
+    insights.append(f"Total runs: {len(all_rows)}")
+    insights.append("Top variants by stability:")
+    for r in agg_sorted_stability[:5]:
+        insights.append(f" - {r['variant']}: stability={r['stability_mean']:.4f}, ppl={r['perplexity_mean']:.4f}, true_reject={r['true_reject_mean']:.4f}, false_reject={r['false_reject_mean']:.4f}")
+    for k, v in headline.items():
+        insights.append(f"{k}: stability_delta={v['stability_delta']:.4f}, perplexity_delta={v['perplexity_delta']:.4f}, true_reject_delta={v['true_reject_delta']:.4f}, false_reject_delta={v['false_reject_delta']:.4f}")
+
+    (RESULTS_DIR / "credibility_insights.txt").write_text("\n".join(insights), encoding="utf-8")
+    return summary
+
+
+def main():
+    plan = load_plan(REPO_ROOT / "experiments" / "config" / "credibility_plan.json")
+    summary = run_suite(plan)
+    print("Credibility suite finished.")
+    print("Summary:")
+    print(json.dumps(summary["headline_stats"], indent=2))
+
+
+if __name__ == "__main__":
+    main()

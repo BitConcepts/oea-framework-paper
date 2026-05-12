@@ -1,0 +1,2 @@
+# Reproducibility package
+numpy==2.4.4

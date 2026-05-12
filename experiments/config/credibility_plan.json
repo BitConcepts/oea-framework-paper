@@ -1,0 +1,31 @@
+{
+  "study_name": "oea_credibility_suite_v1",
+  "description": "Real-text recursive training credibility suite with baselines, ablations, robustness checks, and statistical reporting.",
+  "corpora": [
+    "repo_docs",
+    "public_domain_snippets"
+  ],
+  "variants": [
+    "control_replace",
+    "control_accumulate",
+    "baseline_rag_only",
+    "baseline_calibration_only",
+    "ablation_O",
+    "ablation_E",
+    "ablation_A",
+    "ablation_OE",
+    "ablation_EA",
+    "ablation_OA",
+    "oea_full"
+  ],
+  "seeds": [1,2,3,4,5,6,7,8,9,10,11,12],
+  "recursion_depths": [5,10,15],
+  "synthetic_ratios": [0.25,0.5,0.75],
+  "noise_levels": [0.1,0.2,0.3],
+  "primary_endpoints": [
+    "stability_score",
+    "heldout_perplexity",
+    "true_reject_rate",
+    "false_reject_rate"
+  ]
+}
