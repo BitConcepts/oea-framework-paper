@@ -63,7 +63,7 @@ jobs:
             -bibtex
 
       - name: Upload PDF artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: oea-framework-paper
           path: arxiv/main.pdf
