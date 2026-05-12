@@ -11,9 +11,9 @@ labels: bug
 
 ## Steps to Reproduce
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Expected Behavior
 
@@ -25,9 +25,9 @@ labels: bug
 
 ## Environment
 
-- OS: 
-- Python version: 
-- oea-framework-paper version: 
+- OS:
+- Python version:
+- oea-framework-paper version:
 
 ## Additional Context
 

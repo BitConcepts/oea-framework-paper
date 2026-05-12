@@ -1,7 +1,7 @@
 # Test Specification
 
-Test specifications for the OEA Framework paper. Each TEST-OEA-* entry maps to a
-corresponding REQ-OEA-* requirement. Coverage must remain ≥80% to advance phases.
+Test specifications for the OEA Framework paper. Each TEST-OEA-\* entry maps to a
+corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance phases.
 
 ## TEST-OEA-001
 - **REQ**: REQ-OEA-001 (recursive stability)
@@ -84,4 +84,3 @@ corresponding REQ-OEA-* requirement. Coverage must remain ≥80% to advance phas
   `roumeliotis2025trust` and `fu2025selfverification` explicitly checked and corrected or
   confirmed. No hallucinated entries remain.
 - **Evidence**: `arxiv/references.bib` — audit completed in cycle 2
-

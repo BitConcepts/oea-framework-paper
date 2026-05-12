@@ -30,8 +30,8 @@
 - Corrected scaffold.yml: type → aee-research, enable_epistemic → true.
 - Added four epistemic governance files: EPISTEMIC-AXIOMS, BELIEF-REGISTRY, FAILURE-MODES, UNCERTAINTY-MAP.
 - Ran `specsmith upgrade --full`: added CODE_OF_CONDUCT, issue templates, .editorconfig, .gitattributes.
-- Advanced through all 7 AEE lifecycle phases: inception → architecture → requirements →
-  test_spec → implementation → verification → release.
+- Advanced through all 7 AEE lifecycle phases: inception -> architecture -> requirements ->
+  test_spec -> implementation -> verification -> release.
 - Authored 6 REQ-OEA-* belief artifacts and 6 TEST-OEA-* test specifications grounded
   in existing experiment results (summary_metrics.json, credibility_suite.py).
 - Trace vault sealed at architecture (SEAL-0001) and verification (SEAL-0002) phases.

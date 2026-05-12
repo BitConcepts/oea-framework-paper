@@ -1,7 +1,9 @@
 # Requirements
 
 Belief artifact registry for the OEA Framework paper. All REQs correspond to falsifiable
-claims or engineering constraints. Each must have a matching TEST-OEA-* entry in TESTS.md.
+claims or engineering constraints. Each must have a matching TEST-OEA-\* entry in TESTS.md.
+
+## Belief Artifacts
 
 ### REQ-OEA-001
 - **Component**: recursive-stability

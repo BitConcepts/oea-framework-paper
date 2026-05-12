@@ -12,7 +12,7 @@ Last generated: Run `specsmith stress-test` to update.
 
 ## Equilibrium Status
 
-```
+```text
 Equilibrium: [Run specsmith epistemic-audit to check]
 Logic Knots: [Run specsmith stress-test to detect]
 ```

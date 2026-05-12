@@ -20,6 +20,30 @@ jobs:
           globs: |
             **/*.md
 
+  python-tests:
+    name: Python tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+      - name: Security audit (pip-audit)
+        run: |
+          pip install pip-audit
+          pip-audit -r requirements.txt --ignore-vuln PYSEC-2024-164
+
   latex-smoke:
     name: LaTeX compile smoke test
     runs-on: ubuntu-latest
@@ -32,9 +56,12 @@ jobs:
         with:
           root_file: main.tex
           working_directory: arxiv
+          extra_system_packages: cm-super
+          latexmk_use_xelatex: false
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: oea-framework-paper
           path: arxiv/main.pdf
+          retention-days: 30

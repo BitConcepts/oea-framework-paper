@@ -36,7 +36,8 @@ and feeds empirical outcomes back into subsequent hypothesis design.
 | LaTeX manuscript | `arxiv/main.tex` | Publication scaffold |
 
 ## Data Flow
-```
+
+```text
 experiments/config/*.json
         ↓
 credibility_suite.run_suite()

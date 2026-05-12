@@ -85,7 +85,7 @@
 - `c34917a Add MIT licensing and repository governance metadata`
 
 **Contributors:**
-- 11	Tristen Pierson
+- 11 Tristen Pierson
 
 ## Governance File Inventory
 

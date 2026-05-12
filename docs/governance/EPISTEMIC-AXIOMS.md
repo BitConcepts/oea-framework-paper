@@ -92,7 +92,7 @@ Artifacts below this threshold in ACCEPTED or higher status are tracked in
 
 ## Belief Artifact Lifecycle
 
-```
+```text
 DRAFT → ACCEPTED → STRESS_TESTED → RECONSTRUCTED
                                          ↓
                                      DEPRECATED
