@@ -103,4 +103,3 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
   Any unresolvable reference must be flagged and either corrected or removed before citation lock.
 - **Evidence**: `arxiv/references.bib` — `roumeliotis2025trust` (arXiv:2507.10571) and
   `fu2025selfverification` (NeurIPS 2025 OpenReview) require verification
-

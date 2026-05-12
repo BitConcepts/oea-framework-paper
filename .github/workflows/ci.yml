@@ -56,7 +56,6 @@ jobs:
         with:
           root_file: main.tex
           working_directory: arxiv
-          extra_system_packages: cm-super
           latexmk_use_xelatex: false
 
       - name: Upload PDF artifact
