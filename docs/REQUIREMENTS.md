@@ -68,3 +68,37 @@ claims or engineering constraints. Each must have a matching TEST-OEA-* entry in
   as defined in `docs/research-agent-spec.md` Section VI.
 - **Evidence**: `docs/research-agent-spec.md` Section VI; `distribution/distribution-strategy.md`
 
+### REQ-OEA-007
+- **Component**: manuscript
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Applies to `arxiv/main.tex`; does not constrain supplementary materials
+- **Description**: The manuscript must contain a Conclusion section that (a) restates the OEA
+  hypothesis, (b) summarises the pilot evidence with explicit scope bounds, (c) honestly
+  states limitations, and (d) identifies next steps for production-harness validation.
+- **Evidence**: `arxiv/main.tex` — currently has no \\section{Conclusion}; must be added
+
+### REQ-OEA-008
+- **Component**: manuscript
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Ablation table covers the 7 variants run by `credibility_suite.py`; no external benchmarks
+- **Description**: The manuscript must include a full ablation results table showing all 7 OEA
+  variant combinations with stability mean ± CI95, true-reject mean ± CI95, Cohen’s d vs
+  `oea_full`, and permutation p-value. Table must be sourced from `results/credibility/`.
+- **Evidence**: `experiments/credibility_suite.py` — run_suite() emits aggregate CSV with all stats
+
+### REQ-OEA-009
+- **Component**: citation-audit
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: medium
+- **Boundary**: Audit covers `arxiv/references.bib` only; gray literature outside scope
+- **Description**: All 8 citations in `references.bib` must be verified: correct DOI/URL resolves,
+  author list and year match the actual publication, no placeholder or hallucinated entries.
+  Any unresolvable reference must be flagged and either corrected or removed before citation lock.
+- **Evidence**: `arxiv/references.bib` — `roumeliotis2025trust` (arXiv:2507.10571) and
+  `fu2025selfverification` (NeurIPS 2025 OpenReview) require verification
+

@@ -3,6 +3,23 @@
 All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.0] - 2026-05-12
+
+### Added
+- `arxiv/main.tex`: `\section{Conclusion}` — OEA hypothesis restatement, stability/epistemic
+  orthogonality finding, explicit scope bounds, 4-item future-work agenda (REQ-OEA-007)
+- `arxiv/main.tex`: Table 2 — full ablation study (11 variants, 648 runs each) with stability,
+  true-reject, and false-reject means + 95% CI, Cohen's d vs baselines (REQ-OEA-008)
+- `arxiv/references.bib`: citation audit header with VERIFIED/NEEDS-HUMAN-CHECK/FLAGGED
+  status for all 8 references; `roumeliotis2025trust` flagged for human verification (REQ-OEA-009)
+- REQ-OEA-007/008/009 and TEST-OEA-007/008/009 added to belief artifact registry
+- Trace vault: SEAL-0004 (cycle 2 architecture), SEAL-0005 (verification), SEAL-0006 (v0.2.0)
+
+### Notes
+- Citation lock not yet closed: `roumeliotis2025trust` (arXiv:2507.10571) and
+  `fu2025selfverification` (NeurIPS 2025 OpenReview) require human verification
+- Credibility suite plan (7,128 runs) deferred; existing `results/credibility/` artifacts used
+
 ## [0.1.0] - 2026-05-12
 
 ### Added

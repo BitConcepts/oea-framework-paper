@@ -22,7 +22,7 @@
 
 ## Requirements Coverage Matrix
 
-**Coverage**: 0/6 (0%)
+**Coverage**: 0/9 (0%)
 
 - ✗ REQ-OEA-001
 - ✗ REQ-OEA-002
@@ -30,6 +30,9 @@
 - ✗ REQ-OEA-004
 - ✗ REQ-OEA-005
 - ✗ REQ-OEA-006
+- ✗ REQ-OEA-007
+- ✗ REQ-OEA-008
+- ✗ REQ-OEA-009
 
 ## Audit Summary
 
@@ -52,8 +55,8 @@
 - ✓ Recommended file docs/ARCHITECTURE.md exists
 - ✓ Recommended file CONTRIBUTING.md exists
 - ✓ Recommended file LICENSE exists
-- ✗ 6 REQ(s) without test coverage: REQ-OEA-001, REQ-OEA-002, REQ-OEA-003, REQ-OEA-004, REQ-OEA-005, REQ-OEA-006
-- ✓ LEDGER.md has 22 lines (within threshold)
+- ✗ 9 REQ(s) without test coverage: REQ-OEA-001, REQ-OEA-002, REQ-OEA-003, REQ-OEA-004, REQ-OEA-005, REQ-OEA-006, REQ-OEA-007, REQ-OEA-008, REQ-OEA-009
+- ✓ LEDGER.md has 34 lines (within threshold)
 - ✓ 0 open, 0 closed TODOs
 - ✓ AGENTS.md: 49 lines
 - ✓ docs/governance/RULES.md: 76 lines
@@ -65,11 +68,12 @@
 - ✓ docs/governance/DRIFT-METRICS.md: 54 lines
 - ✗ CI config missing expected tools: test:pytest, lint:vale
 - ✗ scaffold.yml type is aee-research but detected cli-python from project files
-- ✓ Trace vault intact (2 seals)
+- ✓ Trace vault intact (5 seals)
 - ✓ Phase 🚀 Release: 100% ready
 
 ## Recent Activity
 
+- `6d942a6 chore: specsmith governance bootstrap â€” all 7 AEE phases complete`
 - `14c0716 Fix LaTeX-safe artifact references in pilot results section`
 - `a69a1df Add executed pilot experiment artifacts`
 - `c4715ba Execute OEA pilot experiments and integrate measured results`
@@ -79,10 +83,9 @@
 - `f2f704f Add GitHub Actions CI for markdown and LaTeX smoke tests`
 - `90bd7a1 Add issue and PR templates for research workflow`
 - `c34917a Add MIT licensing and repository governance metadata`
-- `e17723b Initialize OEA framework research paper scaffold`
 
 **Contributors:**
-- 10	Tristen Pierson
+- 11	Tristen Pierson
 
 ## Governance File Inventory
 

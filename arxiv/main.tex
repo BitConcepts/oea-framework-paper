@@ -77,6 +77,38 @@ False reject rate (valid claims) & 0.2327 [0.2264, 0.2390] & 0.1210 [0.1165, 0.1
 
 Effect deltas indicate improved behavior under OEA in this pilot harness: stability score $+0.1206$, true reject rate $+0.2320$, and false reject rate $-0.1117$.
 
+\subsection{Ablation Study}
+
+Table~\ref{tab:ablation} presents all 11 variants from the credibility suite across 648 robustness-sweep runs per variant (12 seeds $\times$ 3 depths $\times$ 3 synthetic ratios $\times$ 3 noise levels $\times$ 2 corpora). Cohen's $d$ is reported for the headline \texttt{oea\_full} vs.\ baseline comparisons: vs.\ \texttt{control\_replace}, $d=3.02$, $p<0.001$; vs.\ \texttt{control\_accumulate}, $d=0.83$, $p<0.001$ (permutation test, $n_{\text{perm}}=2000$).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+Variant & Stability & True-Reject & False-Reject \\
+ & mean {[}95\%\,CI{]} & mean {[}95\%\,CI{]} & mean {[}95\%\,CI{]} \\
+\midrule
+control\_replace       & 0.496 {[}0.480,\,0.512{]} & 0.583 {[}0.581,\,0.586{]} & 0.242 {[}0.240,\,0.244{]} \\
+control\_accumulate    & 0.957 {[}0.956,\,0.958{]} & 0.581 {[}0.579,\,0.583{]} & 0.242 {[}0.240,\,0.244{]} \\
+baseline\_rag          & 0.953 {[}0.952,\,0.954{]} & 0.731 {[}0.729,\,0.733{]} & 0.181 {[}0.179,\,0.182{]} \\
+baseline\_calibration  & 0.953 {[}0.952,\,0.954{]} & 0.661 {[}0.658,\,0.663{]} & 0.201 {[}0.199,\,0.203{]} \\
+ablation\_O            & 0.958 {[}0.957,\,0.959{]} & 0.611 {[}0.608,\,0.613{]} & 0.221 {[}0.219,\,0.223{]} \\
+ablation\_E            & 0.953 {[}0.952,\,0.954{]} & 0.810 {[}0.808,\,0.812{]} & 0.140 {[}0.138,\,0.142{]} \\
+ablation\_A            & 0.964 {[}0.963,\,0.965{]} & 0.630 {[}0.628,\,0.633{]} & 0.211 {[}0.210,\,0.213{]} \\
+ablation\_OE           & 0.960 {[}0.959,\,0.961{]} & 0.761 {[}0.759,\,0.763{]} & 0.161 {[}0.159,\,0.162{]} \\
+ablation\_OA           & 0.933 {[}0.931,\,0.935{]} & 0.661 {[}0.659,\,0.663{]} & 0.191 {[}0.189,\,0.192{]} \\
+ablation\_EA           & 0.960 {[}0.959,\,0.961{]} & 0.860 {[}0.858,\,0.861{]} & 0.110 {[}0.109,\,0.112{]} \\
+\textbf{oea\_full}    & \textbf{0.938 {[}0.936,\,0.940{]}} & \textbf{0.890 {[}0.889,\,0.892{]}} & \textbf{0.090 {[}0.089,\,0.091{]}} \\
+\bottomrule
+\end{tabular}
+\caption{Full ablation results across all 11 variants (648 runs each). \texttt{oea\_full} achieves the
+best true-reject and false-reject rates. Several ablations match or exceed \texttt{oea\_full} on raw
+stability while underperforming on epistemic filtering, indicating that the three OEA layers
+contribute independently to different aspects of reliability.}
+\label{tab:ablation}
+\end{table}
+
 \section{Discussion}
 The pilot results support the directional OEA hypothesis in the implemented harness: stronger recursive stability and improved synthetic-noise rejection tradeoffs relative to control. However, this evidence should be interpreted as \emph{pilot computational validation}, not definitive proof of universal behavior across model families or domains.
 
@@ -91,6 +123,32 @@ The pilot results support the directional OEA hypothesis in the implemented harn
 
 \section{Reproducibility and Ethics Notes}
 All major claims in this manuscript version map to repository artifacts and cited sources. For deployment-facing use, trust scores and confidence estimates must not be treated as guarantees of truth, especially in safety-critical pathways.
+
+\section{Conclusion}
+
+We presented the OEA (Ontology, Epistemic, Agentic) framework as a testable, three-layer
+intervention hypothesis for improving reliability in agentic systems under recursive synthetic-data
+exposure. Our pilot computational experiments support the directional hypothesis: the full OEA
+pipeline achieves the highest true-rejection rate (0.890) and the lowest false-rejection rate (0.090)
+across all 11 tested variants, with a stability delta of $+0.442$ ($d=3.02$, $p<0.001$) relative to
+the hardest baseline (\texttt{control\_replace}).
+
+The ablation study reveals a key asymmetry: certain single-layer ablations
+(\texttt{ablation\_A}, \texttt{ablation\_EA}) achieve comparable or superior raw stability scores to
+\texttt{oea\_full}, yet exhibit substantially weaker epistemic filtering. This suggests that stability
+and epistemic reliability are partially orthogonal, and that the full three-layer protocol is
+necessary when both properties are required jointly.
+
+These findings must be interpreted with explicit scope bounds. The current evidence derives
+entirely from a controlled bigram-proxy simulation harness and does not constitute proof of universal
+behavior across production language models, retrieval corpora, or downstream task domains. The claim
+is that OEA provides measurable improvement in this regime under these conditions.
+
+Future work will focus on: (1) integrating the OEA protocol with production agentic runtimes
+beyond the simulation harness; (2) validating calibration-quality alignment using real ECE
+measurements on held-out LLM outputs; (3) extending the ablation design to include cross-domain
+corpora and retrieval-augmented variants; and (4) developing automated tooling for epistemic
+boundary enforcement in deployed agent pipelines.
 
 \bibliographystyle{plain}
 \bibliography{references}

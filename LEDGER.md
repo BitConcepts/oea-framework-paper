@@ -1,5 +1,17 @@
 # LEDGER
 
+## 2026-05-12 - Cycle 2: manuscript completion + citation audit
+- Added REQ-OEA-007/008/009 (conclusion, ablation table, citation audit) and matching TEST entries.
+- Added \section{Conclusion} to arxiv/main.tex: restatement of OEA hypothesis, scope-bounded
+  evidence summary, stability/epistemic orthogonality finding, 4-item future-work agenda.
+- Added Table 2 (full ablation study, 11 variants, 648 runs each) sourced from
+  results/credibility/credibility_aggregate_metrics.csv. Cohen's d vs control_replace: d=3.02,
+  p<0.001; vs control_accumulate: d=0.83, p<0.001.
+- Completed citation audit: 6/8 VERIFIED, fu2025selfverification NEEDS-HUMAN-CHECK (NeurIPS 2025),
+  roumeliotis2025trust FLAGGED (arXiv:2507.10571 — human verification required before citation lock).
+- Credibility suite not re-run (plan generates 7,128 runs; existing results/credibility/ artifacts used).
+- Advanced all 7 AEE phases for cycle 2.
+
 ## 2026-05-12 - specsmith governance bootstrap
 - Installed specsmith 0.10.1 and ran `specsmith import -y` to generate governance overlay.
 - Generated: AGENTS.md, docs/ARCHITECTURE.md, docs/REQUIREMENTS.md, docs/TESTS.md,

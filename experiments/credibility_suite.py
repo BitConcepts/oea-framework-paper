@@ -2,12 +2,73 @@ import csv
 import json
 import math
 import random
+import sys
+import time
 from collections import Counter, defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from statistics import mean
 
 import numpy as np
+
+
+# ---------------------------------------------------------------------------
+# Progress bar
+# ---------------------------------------------------------------------------
+
+class Progress:
+    """Lightweight terminal progress bar with ETA. Writes to stderr."""
+
+    def __init__(self, total: int, width: int = 40):
+        self.total = total
+        self.width = width
+        self.done = 0
+        self._start = time.monotonic()
+        self._last_print = 0.0
+
+    def update(self, n: int = 1, label: str = "") -> None:
+        self.done += n
+        now = time.monotonic()
+        # Throttle to ~10 Hz so we don't slow things down
+        if now - self._last_print < 0.1 and self.done < self.total:
+            return
+        self._last_print = now
+        self._render(label)
+
+    def _render(self, label: str) -> None:
+        elapsed = time.monotonic() - self._start
+        pct = self.done / self.total if self.total else 1.0
+        filled = int(self.width * pct)
+        bar = "=" * filled + (">" if filled < self.width else "") + " " * (self.width - filled)
+        elapsed_str = _fmt_duration(elapsed)
+        if self.done > 0:
+            eta = elapsed / self.done * (self.total - self.done)
+            eta_str = _fmt_duration(eta)
+        else:
+            eta_str = "?"
+        line = (
+            f"\r[{bar}] {self.done}/{self.total} ({pct:.0%})"
+            f" | {label}"
+            f" | elapsed {elapsed_str} | ETA {eta_str}   "
+        )
+        sys.stderr.write(line)
+        sys.stderr.flush()
+
+    def finish(self) -> None:
+        self._render("done")
+        sys.stderr.write("\n")
+        sys.stderr.flush()
+
+
+def _fmt_duration(seconds: float) -> str:
+    seconds = int(seconds)
+    if seconds < 60:
+        return f"{seconds}s"
+    m, s = divmod(seconds, 60)
+    if m < 60:
+        return f"{m}m{s:02d}s"
+    h, m = divmod(m, 60)
+    return f"{h}h{m:02d}m{s:02d}s"
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = ROOT
@@ -65,10 +126,15 @@ class BigramModel:
         self.uni = Counter()
         self.bi = defaultdict(Counter)
         self.vocab = set()
+        self._vocab_list: list[str] = []
+        self._word_to_idx: dict[str, int] = {}
 
     def fit(self, tokens: list[str]):
         self.uni = Counter(tokens)
         self.vocab = set(tokens)
+        # Sorted for reproducibility across runs
+        self._vocab_list = sorted(self.vocab)
+        self._word_to_idx = {w: i for i, w in enumerate(self._vocab_list)}
         for a, b in zip(tokens[:-1], tokens[1:]):
             self.bi[a][b] += 1
 
@@ -79,20 +145,31 @@ class BigramModel:
         return num / denom
 
     def sample(self, start: str, length: int, rng: random.Random) -> list[str]:
+        """Sample a sequence. Optimised: sparse bigram lookup instead of O(V) dense pass."""
         if not self.vocab:
             return []
-        out = [start if start in self.vocab else rng.choice(list(self.vocab))]
-        vocab_list = list(self.vocab)
+        vocab_list = self._vocab_list
+        w2i = self._word_to_idx
+        v = max(1, len(vocab_list))
+        out = [start if start in self.vocab else vocab_list[rng.randint(0, v - 1)]]
+        # Single numpy RNG per sample call — avoids re-constructing it per token
+        rng_np = np.random.default_rng(rng.randint(0, 2**31 - 1))
+        base_p = self.smoothing
         for _ in range(length - 1):
             prev = out[-1]
             counts = self.bi.get(prev)
             if not counts:
-                out.append(rng.choice(vocab_list))
+                out.append(vocab_list[int(rng_np.integers(v))])
                 continue
-            words = vocab_list
-            probs = np.array([self.next_prob(prev, w) for w in words], dtype=float)
-            probs = probs / probs.sum()
-            out.append(words[int(np.random.default_rng(rng.randint(0, 1_000_000)).choice(len(words), p=probs))])
+            denom = sum(counts.values()) + self.smoothing * v
+            # Start with uniform smoothing, then overwrite known successors (sparse)
+            probs = np.full(v, base_p / denom)
+            for w, c in counts.items():
+                idx = w2i.get(w)
+                if idx is not None:
+                    probs[idx] = (c + base_p) / denom
+            probs /= probs.sum()  # renormalise for float safety
+            out.append(vocab_list[int(rng_np.choice(v, p=probs))])
         return out
 
     def perplexity(self, tokens: list[str]) -> float:
@@ -330,6 +407,19 @@ def run_suite(plan: dict) -> dict:
         "public_domain_snippets": tokenize(collect_public_domain_corpus()),
     }
 
+    # Pre-compute total runs so the progress bar has an accurate denominator
+    total_runs = (
+        len(plan["corpora"])
+        * len(plan["variants"])
+        * len(plan["seeds"])
+        * len(plan["recursion_depths"])
+        * len(plan["synthetic_ratios"])
+        * len(plan["noise_levels"])
+    )
+    progress = Progress(total_runs)
+    sys.stderr.write(f"Starting credibility suite: {total_runs} runs\n")
+    sys.stderr.flush()
+
     all_rows = []
 
     for corpus_name in plan["corpora"]:
@@ -351,6 +441,11 @@ def run_suite(plan: dict) -> dict:
                             )
                             row["corpus"] = corpus_name
                             all_rows.append(row)
+                            progress.update(
+                                label=f"{variant} | corpus: {corpus_name} | seed {seed} d{depth}"
+                            )
+
+    progress.finish()
 
     # Aggregate by variant over all corpora/robustness conditions
     variants = sorted(set(r["variant"] for r in all_rows))
