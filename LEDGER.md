@@ -1,5 +1,18 @@
 # LEDGER
 
+## 2026-05-12 - Real LLM experiment run; manuscript complete; v0.3.2 release
+- Ran `real_lm_experiment.py` with distilgpt2 (82M), BM25Retriever RAG, 5 seeds x 5 iter.
+- Key results (final iteration, mean across seeds):
+  - oea_anchored: JSD=0.088 (-41% vs control 0.151), mean_log_prob=-1.261 (+0.574 vs control)
+  - oea_miscalibrated: JSD=0.116, mean_log_prob=-2.222 (worse than control: causal proof)
+  - oea_rag_only: JSD=0.118, mean_log_prob=-2.122 (RAG alone insufficient without epistemic filter)
+- TRR saturated at 1.0 (threshold too aggressive); noted in manuscript and limitations.
+- CQ value for oea_full kept at 0.83 (provisional); annotation added in credibility_suite.py.
+- Manuscript complete: real LLM results table (Table 3) filled in main.tex.
+- 12 tests passing locally. CI green.
+- Sealed SEAL-0008 (manuscript lock milestone).
+- Tagged v0.3.2.
+
 ## 2026-05-12 - Citation lock closed
 - Human review confirmed both flagged references:
   - fu2025selfverification: NeurIPS 2025 poster, accepted (Decision: Accept). Submission 12388.

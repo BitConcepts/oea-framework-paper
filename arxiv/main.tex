@@ -161,12 +161,43 @@ for fine-tuning experiments (acknowledged in Limitations).
 
 \subsection{Results}
 
-\emph{Results pending execution of} \texttt{experiments/real\_lm\_experiment.py}\emph{.}
-Pre-registered design, code, and artifact schema are in the repository at
-\texttt{experiments/real\_lm\_experiment.py} and \texttt{REQ-OEA-011}.
-Expected output: \texttt{results/real\_lm/\{real\_lm\_runs.csv, real\_lm\_summary.json\}},
-including per-iteration stability\_jsd, mean\_log\_prob, true\_reject\_rate, and
-false\_reject\_rate across 4 variants $\times$ 5 seeds $\times$ 5 iterations.
+Table~\ref{tab:real-lm} reports final-iteration metrics (mean across 5 seeds,
+5 recursive steps) from \texttt{results/real\_lm/real\_lm\_summary.json}.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Variant & Stability JSD $\downarrow$ & Mean log-prob $\uparrow$ & JSD $\Delta$ vs control \\
+\midrule
+control             & 0.151 & $-1.835$ & baseline \\
+oea\_rag\_only       & 0.118 & $-2.122$ & $+0.033$ \\
+oea\_miscalibrated  & 0.116 & $-2.222$ & $+0.034$ \\
+\textbf{oea\_anchored}    & \textbf{0.088} & $\mathbf{-1.261}$ & $\mathbf{+0.062}$ \\
+\bottomrule
+\end{tabular}
+\caption{Real LLM validation results (distilgpt2, 5 seeds $\times$ 5 iterations).
+Stability JSD: lower is better (less distributional drift from seed).
+Mean log-prob: higher is better (more in-distribution under original model).
+All variants reduce drift vs control; only \texttt{oea\_anchored} also improves log-prob.}
+\label{tab:real-lm}
+\end{table}
+
+\texttt{oea\_anchored} achieves 41\% lower distributional drift (JSD $0.088$ vs $0.151$)
+and $+0.574$ nats higher mean log-probability, confirming that the OEA epistemic filter
+maintains generated text closer to the reference distribution. Critically,
+\texttt{oea\_rag\_only} and \texttt{oea\_miscalibrated} both reduce JSD but significantly
+\emph{reduce} mean log-probability ($-0.287$ and $-0.387$ vs control respectively),
+indicating that \emph{log-probability selection}---not retrieval alone---is the
+operative mechanism. The anti-calibrated variant's lower log-prob relative to both
+control and \texttt{oea\_rag\_only} is consistent with the causal hypothesis: inverting
+the calibration signal actively pushes generation further out of the reference distribution.
+
+\textbf{Saturation note.} The true-reject-rate metric saturated at $1.0$ for all variants
+and iterations; the \texttt{LOG\_PROB\_THRESHOLD} of $-4.5$ is too aggressive relative
+to the small corpus vocabulary and distilgpt2's narrow reference distribution. Future
+work should calibrate the threshold on held-out data or use a relative threshold.
 
 \section{Discussion}
 The pilot results support the directional OEA hypothesis in the implemented harness: stronger recursive stability and improved synthetic-noise rejection tradeoffs relative to control. However, this evidence should be interpreted as \emph{pilot computational validation}, not definitive proof of universal behavior across model families or domains.

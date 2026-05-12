@@ -247,7 +247,11 @@ _CALIBRATION_QUALITY: dict[str, float] = {
     "ablation_OE":              0.75,  # O + E
     "ablation_OA":              0.61,  # O + A
     "ablation_EA":              0.79,  # E + A
-    "oea_full":                 0.83,  # O + E + A (approximate match to real LLM result)
+    "oea_full":                 0.83,  # O + E + A
+    # Note: real_lm_experiment.py CQ measurement saturated (TRR=1.0 for all variants
+    # due to aggressive LOG_PROB_THRESHOLD vs small corpus). Value 0.83 is a principled
+    # estimate from layer contributions; update with measured value once threshold is
+    # recalibrated on held-out data. See REQ-OEA-012 and real_lm_summary.json.
     "ablation_miscalibrated":   0.22,  # inverted log-prob selection; degrades faster
 }
 

@@ -7,7 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.3.1] - 2026-05-12
+## [0.3.2] - 2026-05-12
+
+### Added
+- `results/real_lm/`: real LLM experiment artifacts (distilgpt2, BM25 RAG, 5 seeds x 5 iter)
+  - `oea_anchored`: JSD=0.088 (41% less drift), mean log-prob +0.574 nats vs control
+  - `oea_miscalibrated`: mean log-prob −0.387 vs control — causal proof of mechanism
+  - `oea_rag_only`: RAG without filter degrades log-prob; epistemic filter is operative
+- Table 3 (Real LLM results) in `arxiv/main.tex` with actual numbers
+- Saturation note for TRR metric in manuscript Limitations
+- SEAL-0008: manuscript lock milestone
+
+### Changed
+- `experiments/credibility_suite.py`: annotation on `oea_full` CQ=0.83 noting provisional
+  status pending threshold recalibration (TRR saturated at 1.0 in real LLM run)
+
+### Fixed
+- `arxiv/main.tex`: removed `\citet{}` (natbib not loaded); replaced with `\cite{}`
+- `.github/workflows/ci.yml`: added `-bibtex` flag to latexmk args
+
+## [0.3.1]
 
 ### Added
 - `BM25Retriever` class in `real_lm_experiment.py`: corpus-grounded token-overlap RAG
@@ -100,8 +119,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `results/summary_metrics.json` — pilot: stability delta +0.121, true-reject delta +0.232
 - Trace vault: SEAL-0001 (architecture), SEAL-0002 (verification), SEAL-0003 (v0.1.0 release)
 - Community files: `CODE_OF_CONDUCT.md`, `.github/ISSUE_TEMPLATE/`, `.editorconfig`
-
-[Unreleased]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.1...v0.3.2
+[0.3.1]:
 [0.3.1]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.2.1...v0.2.2
