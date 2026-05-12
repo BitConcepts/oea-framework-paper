@@ -103,3 +103,39 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
   Any unresolvable reference must be flagged and either corrected or removed before citation lock.
 - **Evidence**: `arxiv/references.bib` — `roumeliotis2025trust` (arXiv:2507.10571) and
   `fu2025selfverification` (NeurIPS 2025 OpenReview) require verification
+
+### REQ-OEA-010
+- **Component**: real-lm-rag
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Covers `real_lm_experiment.py` only; bigram suite uses calibration-quality formula
+- **Description**: The real LLM experiment RAG component must use actual corpus-grounded
+  token-overlap retrieval (`BM25Retriever`), not log-probability as a retrieval proxy.
+  Retrieval must index the seed corpus into passage-level units and prepend the highest-scoring
+  passage to the generation prompt before each epistemic filter step.
+- **Evidence**: `experiments/real_lm_experiment.py` — `BM25Retriever.from_text()` + `_rag_prompt()`
+
+### REQ-OEA-011
+- **Component**: manuscript
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: medium
+- **Boundary**: Results section pending run completion; methodology pre-registered
+- **Description**: A "Real LLM Validation" section must appear in `arxiv/main.tex` covering:
+  (a) experimental design with BM25 RAG and 4-variant ablation, (b) frozen-weights scope as
+  explicit necessary-condition framing, (c) actual results from `results/real_lm/` once run,
+  (d) updated CQ values for `_CALIBRATION_QUALITY` sourced from `real_lm_summary.json`.
+- **Evidence**: `arxiv/main.tex` — section skeleton added; results pending
+
+### REQ-OEA-012
+- **Component**: calibration-chain
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: medium
+- **Boundary**: Applies to `_CALIBRATION_QUALITY` dict in `credibility_suite.py`
+- **Description**: `_CALIBRATION_QUALITY["oea_full"]` (and optionally `oea_rag_only`) must be
+  updated from the measured `true_reject_rate` output of `real_lm_experiment.py` before
+  submission. The `cq_measurement` block in `real_lm_summary.json` provides the formula.
+  This closes the evidence chain: real log-probs → measured TRR → CQ → suite parameters.
+- **Evidence**: `experiments/real_lm_experiment.py` — CQ Measurement output in `main()`

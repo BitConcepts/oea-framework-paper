@@ -109,6 +109,50 @@ contribute independently to different aspects of reliability.}
 \label{tab:ablation}
 \end{table}
 
+\section{Real LLM Validation}
+
+\subsection{Design and Motivation}
+
+To address the scope limitations of the bigram proxy harness and to establish whether the OEA
+epistemic filter operates on real neural probability distributions, we designed a second experiment
+using \texttt{distilgpt2} (82M parameters; \citet{lewis2020rag} for retrieval architecture).
+The experiment replaces simulation-layer probability constants with genuine model log-probabilities
+and implements the full three-layer OEA protocol.
+
+\textbf{Retrieval-augmented generation (RAG) — Ontological Anchoring.}
+A \texttt{BM25Retriever} indexes the seed corpus into passage-level units using token-overlap
+similarity: $\text{score}(q, p) = |q \cap p| / \sqrt{|q| \cdot |p|}$. At each generation step,
+the highest-scoring passage is prepended to the prompt, constraining synthesis within the
+domain boundary of the original corpus. This is corpus-grounded retrieval, not a log-probability
+proxy.
+
+\textbf{Epistemic filtering.} $K{=}3$ candidate continuations are generated per step and scored
+by their mean log-probability under the \emph{original frozen model}: $s_{\text{verify}}(y|x) =
+\log G_0(y|x)$, directly implementing the verification score of \citet{fu2025selfverification}.
+The highest-scoring candidate is retained (\texttt{oea\_anchored}).
+
+\textbf{Anti-calibrated control.} \texttt{oea\_miscalibrated} keeps the \emph{lowest}-log-prob
+candidate. If this variant degrades faster than even the no-RAG \texttt{control}, it constitutes
+causal evidence that calibration quality is the operative variable, not filtering per se.
+
+\textbf{Ablation: RAG-only baseline.} \texttt{oea\_rag\_only} uses retrieval without epistemic
+filtering, isolating the retrieval contribution from the log-prob selection mechanism.
+
+\textbf{Frozen-weights scope.} Model weights are not updated; this is a generation-time experiment.
+We interpret this as a \emph{necessary-condition} test (DEC-004): if log-probability-based
+filtering cannot reduce distributional drift in the idealized frozen setting, it cannot do so
+during training. Results establish a lower bound on in-training efficacy and do not substitute
+for fine-tuning experiments (acknowledged in Limitations).
+
+\subsection{Results}
+
+\emph{Results pending execution of} \texttt{experiments/real\_lm\_experiment.py}\emph{.}
+Pre-registered design, code, and artifact schema are in the repository at
+\texttt{experiments/real\_lm\_experiment.py} and \texttt{REQ-OEA-011}.
+Expected output: \texttt{results/real\_lm/\{real\_lm\_runs.csv, real\_lm\_summary.json\}},
+including per-iteration stability\_jsd, mean\_log\_prob, true\_reject\_rate, and
+false\_reject\_rate across 4 variants $\times$ 5 seeds $\times$ 5 iterations.
+
 \section{Discussion}
 The pilot results support the directional OEA hypothesis in the implemented harness: stronger recursive stability and improved synthetic-noise rejection tradeoffs relative to control. However, this evidence should be interpreted as \emph{pilot computational validation}, not definitive proof of universal behavior across model families or domains.
 

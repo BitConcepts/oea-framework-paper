@@ -84,3 +84,33 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
   `roumeliotis2025trust` and `fu2025selfverification` explicitly checked and corrected or
   confirmed. No hallucinated entries remain.
 - **Evidence**: `arxiv/references.bib` — audit completed in cycle 2
+
+## TEST-OEA-010
+- **REQ**: REQ-OEA-010 (RAG must be token-overlap retrieval)
+- **File**: `experiments/real_lm_experiment.py`
+- **Method**: Code inspection + unit test of `BM25Retriever.retrieve()`
+- **Status**: Implemented
+- **Assertion**: `BM25Retriever.from_text()` splits corpus into passages; `retrieve()` returns
+  the passage with highest token-overlap score, not the lowest log-probability candidate.
+  `_rag_prompt()` prepends the retrieved passage to the generation context.
+- **Evidence**: `BM25Retriever` class + `_rag_prompt()` in `real_lm_experiment.py`
+
+## TEST-OEA-011
+- **REQ**: REQ-OEA-011 (real LLM results in manuscript)
+- **File**: `arxiv/main.tex`
+- **Method**: Manual review of manuscript after `real_lm_experiment.py` completes
+- **Status**: Planned
+- **Assertion**: Section \\section{Real LLM Validation} exists in `main.tex` with:
+  (a) 4-variant ablation table or text from `real_lm_summary.json`, (b) explicit frozen-weights
+  scope note as necessary-condition framing, (c) updated CQ values from `cq_measurement` block.
+- **Evidence**: `arxiv/main.tex` — section skeleton present; results to be filled
+
+## TEST-OEA-012
+- **REQ**: REQ-OEA-012 (CQ values measured, not hand-assigned)
+- **File**: `experiments/credibility_suite.py`
+- **Method**: Verify `_CALIBRATION_QUALITY` comment references `real_lm_summary.json` measurement
+- **Status**: Planned
+- **Assertion**: After `real_lm_experiment.py` runs, `_CALIBRATION_QUALITY["oea_full"]` comment
+  must cite the measured `suggested_cq` value from `results/real_lm/real_lm_summary.json`.
+  The existing hand-assigned value of 0.83 is a provisional estimate to be replaced.
+- **Evidence**: `real_lm_experiment.py` CQ Measurement output + `real_lm_summary.json`

@@ -7,7 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.3.0] - 2026-05-12
+## [0.3.1] - 2026-05-12
+
+### Added
+- `BM25Retriever` class in `real_lm_experiment.py`: corpus-grounded token-overlap RAG
+  implementing OEA Layer 1 (Ontological Anchoring). Not a log-probability proxy.
+- `oea_rag_only` variant: retrieval without epistemic filtering; isolates RAG contribution
+- REQ-OEA-010/011/012 and TEST-OEA-010/011/012 (RAG spec, manuscript results, CQ chain)
+- `\section{Real LLM Validation}` in `arxiv/main.tex`: design, frozen-weights scope as
+  necessary-condition framing, results placeholder (pending `real_lm_experiment.py` run)
+- DEC-004 in `docs/ARCHITECTURE.md`: explicit frozen-weights scope decision
+- CQ Measurement output in `real_lm_experiment.py main()`: derives `_CALIBRATION_QUALITY`
+  updates from measured `true_reject_rate` (closes evidence chain: REQ-OEA-012)
+
+### Changed
+- `real_lm_experiment.py`: N_SEEDS 3 → 5; RAG added to all non-control variants;
+  `oea_anchored` = RAG + K=3 + highest log-prob + vocab anchoring;
+  `oea_miscalibrated` = RAG + K=3 + lowest log-prob (anti-calibrated falsification control)
+- `docs/ARCHITECTURE.md`: updated component table, data flow, key decisions
+
+## [0.3.0]
 
 ### Added
 - `experiments/real_lm_experiment.py` — distilgpt2 (82M) recursive stability experiment
@@ -82,7 +101,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Trace vault: SEAL-0001 (architecture), SEAL-0002 (verification), SEAL-0003 (v0.1.0 release)
 - Community files: `CODE_OF_CONDUCT.md`, `.github/ISSUE_TEMPLATE/`, `.editorconfig`
 
-[Unreleased]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.2.0...v0.2.1
