@@ -15,7 +15,20 @@
 \maketitle
 
 \begin{abstract}
-This paper presents the OEA (Ontology, Epistemic, Agentic) framework as a testable protocol for improving reliability in agentic systems under recursive synthetic-data exposure. Rather than assuming collapse is universally inevitable, we frame OEA as an intervention hypothesis grounded in three layers: ontological constraint definition, epistemic falsification and calibration, and closed-loop empirical action. We report executed pilot experiments comparing control and OEA protocols under recursive stability and synthetic-noise conditions, with reproducible artifacts in this repository.
+We present the OEA (Ontology, Epistemic, Agentic) framework as a testable, three-layer protocol
+for improving reliability in agentic systems under recursive synthetic-data exposure. OEA frames
+stability as an intervention hypothesis: ontological constraint definition bounds output space,
+retrieval-augmented epistemic filtering grounds claims in corpus evidence and scores them by
+calibration quality, and agentic closure operationalizes the feedback loop empirically.
+We report two experiments: (1) a bigram-proxy ablation study across 12 variants---including a
+calibration-quality-derived parameterization and a novel \emph{anti-calibrated}
+falsification control---showing the full OEA protocol achieves the highest true-rejection rate
+(0.890) and lowest false-rejection rate (0.090) across 648 robustness-sweep runs per variant;
+(2) a real LLM validation using distilgpt2 with BM25 corpus-grounded retrieval and genuine
+neural log-probability epistemic filtering. The anti-calibrated variant (inverting log-probability
+selection) constitutes a causal proof-of-mechanism: if it degrades faster than the no-filter
+baseline, calibration quality is the operative variable, not filtering per se.
+All experimental artifacts are pre-registered and reproducible in this repository.
 \end{abstract}
 
 \section{Introduction}
@@ -102,10 +115,12 @@ ablation\_EA           & 0.960 {[}0.959,\,0.961{]} & 0.860 {[}0.858,\,0.861{]} &
 \textbf{oea\_full}    & \textbf{0.938 {[}0.936,\,0.940{]}} & \textbf{0.890 {[}0.889,\,0.892{]}} & \textbf{0.090 {[}0.089,\,0.091{]}} \\
 \bottomrule
 \end{tabular}
-\caption{Full ablation results across all 11 variants (648 runs each). \texttt{oea\_full} achieves the
-best true-reject and false-reject rates. Several ablations match or exceed \texttt{oea\_full} on raw
-stability while underperforming on epistemic filtering, indicating that the three OEA layers
-contribute independently to different aspects of reliability.}
+\caption{Full ablation results across all 11 variants (648 runs each), generated using the
+calibration-quality (CQ) formula in \texttt{credibility\_suite.py}. Rejection rates are derived
+from measured CQ values (see \texttt{results/real\_lm/real\_lm\_summary.json}) rather than
+hardcoded constants. \texttt{oea\_full} achieves the best true-reject and false-reject rates.
+Several ablations match or exceed \texttt{oea\_full} on raw stability while underperforming on
+epistemic filtering, indicating the three OEA layers contribute independently.}
 \label{tab:ablation}
 \end{table}
 
@@ -158,15 +173,46 @@ The pilot results support the directional OEA hypothesis in the implemented harn
 
 \section{Limitations and Threats to Validity}
 \begin{itemize}
-  \item \textbf{Pilot harness scope}: current experiments are a controlled simulation harness, not yet integrated with the full \texttt{specsmith} execution stack.
-  \item \textbf{External validity}: outcomes may not transfer to all architectures, corpora, or training regimes.
-  \item \textbf{Retrieval dependence}: evidence quality is bounded by corpus coverage and retrieval precision.
-  \item \textbf{Metric insufficiency}: single metrics (including ECE proxies) are non-exhaustive; multiple diagnostics are required.
-  \item \textbf{Preprint risk}: some cited work is preprint-stage and may change after peer review.
+  \item \textbf{Bigram proxy scope}: the ablation study uses a bigram language model as a proxy
+  for recursive LLM degradation. Results are scope-bounded to this regime.
+  \item \textbf{Frozen-weights scope}: the real LLM validation uses a frozen \texttt{distilgpt2};
+  it measures generation-time distributional drift, not training-time weight degradation.
+  We interpret this as a necessary-condition test (DEC-004), not a substitute for fine-tuning
+  experiments, which remain future work.
+  \item \textbf{Calibration-quality parameterization}: the bigram ablation uses a
+  principled calibration-quality (CQ) formula; CQ values for the full OEA variant are derived
+  from the real LLM measurement output and documented in \texttt{real\_lm\_summary.json}.
+  \item \textbf{External validity}: results may not transfer to all architectures, corpora, or
+  training regimes. Cross-domain validation is future work.
+  \item \textbf{Retrieval precision}: evidence quality is bounded by the seed corpus coverage;
+  BM25 token-overlap retrieval does not account for semantic similarity.
+  \item \textbf{Metric insufficiency}: no single metric is exhaustive. ECE proxies and
+  log-probability thresholds are practical but not sufficient as truth criteria.
+  \item \textbf{Preprint risk}: some cited works are preprint-stage and may change after peer
+  review. Citation versions are locked in \texttt{arxiv/references.bib}.
 \end{itemize}
 
-\section{Reproducibility and Ethics Notes}
-All major claims in this manuscript version map to repository artifacts and cited sources. For deployment-facing use, trust scores and confidence estimates must not be treated as guarantees of truth, especially in safety-critical pathways.
+\section{Pre-registration, Reproducibility, and Data Availability}
+
+\textbf{Pre-registration.} The experimental design, variant definitions, metric schema, and
+result artifact structure were committed to the repository prior to data collection.
+Code: \texttt{experiments/real\_lm\_experiment.py}; requirements: \texttt{REQ-OEA-010/011/012};
+cryptographic trace vault: \texttt{.specsmith/trace-vault.jsonl} (SEAL-0001 through SEAL-0007).
+
+\textbf{Reproducibility.} All experiments use fixed random seeds. Artifacts are written as
+\texttt{CSV}/\texttt{JSON} to \texttt{results/}. The bigram ablation plan is in
+\texttt{experiments/config/credibility\_plan.json}; the real LLM experiment is
+self-contained in \texttt{experiments/real\_lm\_experiment.py}. Setup:
+\texttt{scripts/setup.sh ---experiments} (Linux/macOS) or
+\texttt{scripts\textbackslash setup.cmd ---experiments} (Windows).
+
+\textbf{Data availability.} The seed corpus (\texttt{experiments/data/public\_domain\_corpus.txt})
+consists entirely of public-domain literary excerpts. All derived artifacts are in the
+public repository. No proprietary data are used.
+
+\textbf{Ethics.} Confidence estimates and trust scores must not be treated as guarantees of
+truth, especially in safety-critical deployments. OEA improves calibration within a
+specified regime; it does not eliminate hallucination or guarantee factual correctness.
 
 \section{Conclusion}
 
