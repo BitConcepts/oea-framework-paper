@@ -130,7 +130,7 @@ epistemic filtering, indicating the three OEA layers contribute independently.}
 
 To address the scope limitations of the bigram proxy harness and to establish whether the OEA
 epistemic filter operates on real neural probability distributions, we designed a second experiment
-using \texttt{distilgpt2} (82M parameters; \citet{lewis2020rag} for retrieval architecture).
+using \texttt{distilgpt2} (82M parameters; RAG architecture following \cite{lewis2020rag}).
 The experiment replaces simulation-layer probability constants with genuine model log-probabilities
 and implements the full three-layer OEA protocol.
 
@@ -143,7 +143,7 @@ proxy.
 
 \textbf{Epistemic filtering.} $K{=}3$ candidate continuations are generated per step and scored
 by their mean log-probability under the \emph{original frozen model}: $s_{\text{verify}}(y|x) =
-\log G_0(y|x)$, directly implementing the verification score of \citet{fu2025selfverification}.
+\log G_0(y|x)$, directly implementing the verification score of \cite{fu2025selfverification}.
 The highest-scoring candidate is retained (\texttt{oea\_anchored}).
 
 \textbf{Anti-calibrated control.} \texttt{oea\_miscalibrated} keeps the \emph{lowest}-log-prob
