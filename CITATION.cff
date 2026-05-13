@@ -6,11 +6,17 @@ authors:
     given-names: "BitConcepts"
 repository-code: "https://github.com/BitConcepts/oea-framework-paper"
 license: MIT
-version: "1.2.0-alpha"
-date-released: 2026-04-30
+version: "0.4.0"
+date-released: 2026-05-13
 abstract: >
   The OEA (Ontology, Epistemic, Agentic) framework specifies a hypothesis-driven,
-  falsification-oriented protocol for improving reliability in recursive agentic systems.
+  falsification-oriented protocol for improving reliability in recursive agentic systems
+  under recursive synthetic-data exposure. A bigram-proxy ablation study (12 variants,
+  648 runs per variant, two domain corpora) and a two-model real LLM validation
+  (distilgpt2 82M and gpt2 124M, 10 seeds x 10 iterations) demonstrate that OEA
+  epistemic filtering improves mean log-probability by +1.14 to +1.61 nats, with
+  an anti-calibrated control consistently degrading it by -0.80 to -0.82 nats across
+  both models, confirming calibration direction as the causal mechanism.
 keywords:
   - agentic ai
   - ontology
@@ -18,3 +24,4 @@ keywords:
   - model collapse
   - retrieval augmented generation
   - calibration
+  - epistemic uncertainty

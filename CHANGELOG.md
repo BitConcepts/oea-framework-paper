@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-05-13
+
+### Added
+- `experiments/data/scientific_corpus.txt` — 50-sentence scientific/natural-philosophy public
+  domain corpus (Newton, Feynman, Sagan); second independent domain for credibility suite
+- Two-model real LLM validation: `--model` CLI arg to `real_lm_experiment.py`;
+  `results/real_lm/distilgpt2/` and `results/real_lm/gpt2/` committed
+  - distilgpt2 (82M): `oea_anchored` log-prob +1.14 nats; `oea_miscalibrated` -0.82 nats
+  - gpt2 (124M): `oea_anchored` log-prob +1.61 nats; `oea_miscalibrated` -0.80 nats
+  - Causal mechanism model-size independent; effect strengthens with capacity
+- 5 new verified citations: drayson2025detection (EMNLP 2025), zhu2025synthesize (ICML 2025),
+  kovac2025recursive, keisha2025knowledge (NeurIPS 2025 workshop), abbasiyadkori2024believe
+- Differentiation paragraphs in §2.1 (OEA vs. Drayson/Zhu) and §2.3 (Abbasi Yadkori)
+- UNK-002 resolved in UNCERTAINTY-MAP.md; stable two-corpus setup documented
+
+### Changed
+- `experiments/data/public_domain_corpus.txt`: expanded from 18 lines to 62 lines spanning
+  Carroll, Austen, Melville, Hume, Darwin (~1600 words; 5 domains)
+- `experiments/credibility_suite.py`: corpus plan v2 uses `[public_domain_snippets,
+  scientific_snippets]` — removes `arxiv/main.tex` self-reference (UNK-002 fix)
+- `experiments/config/credibility_plan.json`: study_name → oea_credibility_suite_v2;
+  corpora → `[public_domain_snippets, scientific_snippets]`
+- `real_lm_experiment.py`: N_SEEDS 5→10, N_ITERATIONS 5→10; results dir per model
+- Table 2: refreshed with 2-domain values; Cohen d: 3.10→4.56, p<0.001
+- Table 3: restructured as two-model comparison; log-probability as primary metric;
+  JSD-anchoring interaction finding documented in dedicated subsection
+- Abstract, conclusion updated with two-model results and new statistics
+- CITATION.cff: version 0.4.0, date 2026-05-13, abstract updated
+- references.bib: citation audit cycle 3 — all 13/13 VERIFIED
+
 ## [0.3.2] - 2026-05-12
 
 ### Added
@@ -119,7 +149,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `results/summary_metrics.json` — pilot: stability delta +0.121, true-reject delta +0.232
 - Trace vault: SEAL-0001 (architecture), SEAL-0002 (verification), SEAL-0003 (v0.1.0 release)
 - Community files: `CODE_OF_CONDUCT.md`, `.github/ISSUE_TEMPLATE/`, `.editorconfig`
-[Unreleased]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.2...v0.4.0
 [0.3.2]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.1...v0.3.2
 [0.3.1]:
 [0.3.1]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.0...v0.3.1

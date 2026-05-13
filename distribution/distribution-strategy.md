@@ -32,7 +32,14 @@
 
 ## Locks Required Before Submission (REQ-OEA-006)
 
-- **Citation lock**: CLOSED (SEAL-0007, all 8/8 verified)
-- **Evidence lock**: CLOSED (pilot artifacts + real LLM artifacts in `results/`)
-- **Manuscript lock**: PENDING (run `real_lm_experiment.py`, fill results, read PDF)
-- **Distribution lock**: PENDING (set target venue, confirm submission metadata)
+- **Citation lock**: CLOSED (cycle 3, 2026-05-13 — all 13/13 VERIFIED; 8 original +
+  5 new from v0.4.0: drayson2025detection, zhu2025synthesize, kovac2025recursive,
+  keisha2025knowledge, abbasiyadkori2024believe)
+- **Evidence lock**: CLOSED (pilot artifacts + real LLM artifacts for two models +
+  credibility suite; all in `results/`, committed)
+- **Manuscript lock**: CLOSED (v0.4.0 — two-model Table 3, refreshed Table 2, all
+  placeholders removed, Gate C items verified)
+- **Distribution lock**: PENDING — arXiv/PhilSci submission package compilation
+  required. Next steps: (1) verify LaTeX compiles to PDF via CI, (2) confirm
+  arXiv metadata (category cs.AI + cs.CL cross-list), (3) final proofread PDF,
+  (4) prepare PhilSci-Archive submission form
