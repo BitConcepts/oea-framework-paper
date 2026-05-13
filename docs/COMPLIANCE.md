@@ -1,6 +1,6 @@
 # Compliance Report — oea-framework-paper
 
-**Generated:** 2026-05-12
+**Generated:** 2026-05-13
 
 ## Project Summary
 
@@ -22,22 +22,35 @@
 
 ## Requirements Coverage Matrix
 
-**Coverage**: 0/9 (0%)
+**Coverage**: 22/22 (100%)
 
-- ✗ REQ-OEA-001
-- ✗ REQ-OEA-002
-- ✗ REQ-OEA-003
-- ✗ REQ-OEA-004
-- ✗ REQ-OEA-005
-- ✗ REQ-OEA-006
-- ✗ REQ-OEA-007
-- ✗ REQ-OEA-008
-- ✗ REQ-OEA-009
+- ✓ REQ-OEA-001
+- ✓ REQ-OEA-002
+- ✓ REQ-OEA-003
+- ✓ REQ-OEA-004
+- ✓ REQ-OEA-005
+- ✓ REQ-OEA-006
+- ✓ REQ-OEA-007
+- ✓ REQ-OEA-008
+- ✓ REQ-OEA-009
+- ✓ REQ-OEA-010
+- ✓ REQ-OEA-011
+- ✓ REQ-OEA-012
+- ✓ REQ-OEA-013
+- ✓ REQ-OEA-014
+- ✓ REQ-OEA-015
+- ✓ REQ-OEA-016
+- ✓ REQ-OEA-017
+- ✓ REQ-OEA-018
+- ✓ REQ-OEA-019
+- ✓ REQ-OEA-020
+- ✓ REQ-OEA-021
+- ✓ REQ-OEA-022
 
 ## Audit Summary
 
-- **Passed**: 26
-- **Failed**: 3
+- **Passed**: 28
+- **Failed**: 1
 - **Fixable**: 0
 - **Status**: Issues found
 
@@ -55,8 +68,8 @@
 - ✓ Recommended file docs/ARCHITECTURE.md exists
 - ✓ Recommended file CONTRIBUTING.md exists
 - ✓ Recommended file LICENSE exists
-- ✗ 9 REQ(s) without test coverage: REQ-OEA-001, REQ-OEA-002, REQ-OEA-003, REQ-OEA-004, REQ-OEA-005, REQ-OEA-006, REQ-OEA-007, REQ-OEA-008, REQ-OEA-009
-- ✓ LEDGER.md has 34 lines (within threshold)
+- ✓ All 22 accepted REQ(s) have test coverage
+- ✓ LEDGER.md has 126 lines (within threshold)
 - ✓ 0 open, 0 closed TODOs
 - ✓ AGENTS.md: 49 lines
 - ✓ docs/governance/RULES.md: 76 lines
@@ -66,26 +79,26 @@
 - ✓ docs/governance/CONTEXT-BUDGET.md: 62 lines
 - ✓ docs/governance/VERIFICATION.md: 42 lines
 - ✓ docs/governance/DRIFT-METRICS.md: 54 lines
-- ✗ CI config missing expected tools: test:pytest, lint:vale
+- ✓ CI config missing lint tool (lint:vale); test tool is present. Consider adding vale.
 - ✗ scaffold.yml type is aee-research but detected cli-python from project files
-- ✓ Trace vault intact (5 seals)
+- ✓ Trace vault intact (12 seals)
 - ✓ Phase 🚀 Release: 100% ready
 
 ## Recent Activity
 
-- `6d942a6 chore: specsmith governance bootstrap â€” all 7 AEE phases complete`
-- `14c0716 Fix LaTeX-safe artifact references in pilot results section`
-- `a69a1df Add executed pilot experiment artifacts`
-- `c4715ba Execute OEA pilot experiments and integrate measured results`
-- `131d230 Harden manuscript with evidence-backed citations and methods`
-- `c1a4d71 Upload compiled PDF artifact from CI`
-- `0e6900d Fix CI pathing and markdown lint configuration`
-- `f2f704f Add GitHub Actions CI for markdown and LaTeX smoke tests`
-- `90bd7a1 Add issue and PR templates for research workflow`
-- `c34917a Add MIT licensing and repository governance metadata`
+- `713b3ee feat: v0.5.0 - GPU experiments, ROUGE-L metric, 5 vulnerability fixes`
+- `e69fa86 feat: GPU device detection and multi-platform torch install support`
+- `adba965 chore: v0.4.0 submission-prep - citation audit cycle 3, Gate C verified`
+- `8dc6e68 feat: v0.4.0 - multi-domain corpus, two-model LLM validation, 5 new citations`
+- `27a6075 fix: reproducibility + artifact commit + REQ-OEA-012 finding (2026-05-13)`
+- `937b57f feat: v0.3.2 - real LLM results, manuscript lock closed, SEAL-0008`
+- `6c1d34a fix: resolve LaTeX \citet error; add -bibtex flag to CI latexmk`
+- `36cac31 feat: v0.3.2-pre - manuscript complete, 12 tests passing, distribution strategy fixed`
+- `89800f1 feat: v0.3.1 - real RAG (BM25Retriever), oea_rag_only variant, REQ-OEA-010/011/012`
+- `f8fd878 feat!: v0.3.0 - real LLM experiment, calibration-quality formula, semver/CHANGELOG`
 
 **Contributors:**
-- 11 Tristen Pierson
+- 25	Tristen Pierson
 
 ## Governance File Inventory
 

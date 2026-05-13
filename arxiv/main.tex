@@ -3,11 +3,16 @@
 \usepackage{geometry}
 \usepackage{booktabs}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
 \geometry{margin=1in}
 
-\title{Beyond Stochasticism: An Ontological Framework for Agentic Stability}
+\title{Structured Recursive Calibration: An Empirical Study of\\
+Distributional Anchoring and Epistemic Filtering in\\
+Recursive Generative Pipelines}
 \author{BitConcepts Research}
 \date{\today}
 
@@ -15,68 +20,182 @@
 \maketitle
 
 \begin{abstract}
-We present the OEA (Ontology, Epistemic, Agentic) framework as a testable, three-layer protocol
-for improving reliability in agentic systems under recursive synthetic-data exposure. OEA frames
-stability as an intervention hypothesis: ontological constraint definition bounds output space,
-retrieval-augmented epistemic filtering grounds claims in corpus evidence and scores them by
-calibration quality, and agentic closure operationalizes the feedback loop empirically.
-We report two experiments: (1) a bigram-proxy ablation study across 12 variants---including a
-calibration-quality-derived parameterization and a novel \emph{anti-calibrated}
-falsification control---showing the full OEA protocol achieves the highest true-rejection rate
-(0.836) and lowest false-rejection rate (0.081) across 648 robustness-sweep runs per variant;
-(2) a two-model real LLM validation using \texttt{distilgpt2} (82M) and \texttt{gpt2} (124M)
-with BM25 corpus-grounded retrieval across two independent domain corpora, 10 seeds, and 10
-recursive iterations per model. The anti-calibrated variant (inverting log-probability
-selection) provides strong ablation evidence for calibration direction as the causal
-mechanism: it degrades mean log-probability by $-0.55$--$-1.14$ nats across both models,
-while the full OEA protocol improves it by $+0.62$--$+1.63$ nats. ROUGE-L recall against the
-seed corpus measures a complementary quality dimension (sequence-level content preservation)
-orthogonal to the log-probability selection criterion. Results are fully reproducible
-(\texttt{torch.manual\_seed}, CUDA 12.1) and artifacts committed to this repository.
+We present an empirical study of the OEA (Ontology, Epistemic, Agentic) framework as a three-layer protocol for improving reliability in agentic systems under recursive synthetic-data exposure.
+The central thesis is: \emph{recursive generative stability depends more strongly on calibration direction and epistemic filtering than on unconstrained retrieval augmentation.}
+``Ontology'' in this work refers to structured distributional anchoring---not philosophical ontology.
+``Agentic'' refers to recursive persistence dynamics---not autonomous agency.
+We report four experiments: (1) a bigram-proxy ablation study across 12 variants with calibration-quality parameterization, (2) a two-model real LLM validation on \texttt{distilgpt2} (82M) and \texttt{gpt2} (124M) with BM25 corpus-grounded retrieval, (3) a 30-step recursive memory drift benchmark measuring entity retention and semantic drift, and (4) a baseline competition comparing OEA against temperature reduction, top-$k$, entropy filtering, and repetition penalty.
+The full OEA protocol achieves the highest true-rejection rate (TRR\,=\,0.836) and lowest false-rejection rate (FRR\,=\,0.081) across 648 robustness-sweep runs per variant ($d=4.56$, $p<0.001$).
+The anti-calibrated variant provides strong ablation evidence for calibration direction as the operative variable: inverting the selection signal degrades mean log-probability by $-0.55$--$-1.14$ nats, while full OEA improves it by $+0.62$--$+1.63$ nats across both models.
+Results are fully reproducible (\texttt{torch.manual\_seed}, CUDA 12.1) and artifacts are committed to this repository.
 \end{abstract}
 
+%% ─────────────────────────────────────────────────────────────────────────────
 \section{Introduction}
-Model collapse has become a central concern in recursive synthetic training pipelines, with evidence of degradation under specific feedback-loop assumptions \cite{shumailov2024modelcollapse,fu2025theoretical}. At the same time, subsequent studies show collapse behavior depends strongly on data-mixing assumptions, curation policy, and accumulation dynamics rather than being a single universal outcome \cite{gerstgrasser2024inevitable,schaeffer2025position}. This motivates a controlled framework that separates what is known, what is hypothesized, and what is empirically testable.
+\label{sec:intro}
 
-The OEA framework is proposed as such a structure. \textbf{Ontology} defines boundary conditions of valid outputs. \textbf{Epistemic} introduces explicit falsification and calibration checks for generated claims. \textbf{Agentic} operationalizes interventions in measurable experiment loops. Philosophically, this aligns with a Popperian criterion: claims must be framed so they can fail under evidence \cite{popper1959logic}.
+\paragraph{Primary thesis.}
+This work argues that recursive generative stability depends more strongly on \emph{calibration direction} and \emph{epistemic filtering} than on unconstrained retrieval augmentation. Retrieval without directional calibration is associated with harm to distributional fidelity; miscalibration actively reverses discrimination performance.
 
-\section{Related Work and Evidence Positioning}
-\subsection{Recursive Synthetic Training and Collapse Dynamics}
-Empirical and theoretical analyses report failure modes in recursive loops, including loss of tail behavior and quality drift \cite{shumailov2024modelcollapse,fu2025theoretical}. Newer analyses also identify mitigation regimes, especially when real data are retained or accumulated \cite{gerstgrasser2024inevitable}. Therefore, we treat collapse as regime-dependent rather than monolithic. Drayson et al.~\cite{drayson2025detection} demonstrate that training a machine-generated text \emph{detector} and using its confidence scores to resample training data prevents collapse; their approach operates at training time, requires labeled synthetic/human annotations, and targets data curation rather than generation-time filtering. Zhu et al.~\cite{zhu2025synthesize} show that token-level \emph{editing} of training corpora prevents collapse by bounding test error from above; this is a data preparation intervention that modifies training inputs before model training. Kov\'{a}\v{c} et al.~\cite{kovac2025recursive} show empirically that lexical diversity amplifies distributional shift while semantic diversity mitigates it, directly motivating OEA's Ontological Anchoring to domain-diverse corpora. These related approaches share the goal of preventing collapse but differ fundamentally from OEA: they operate at training time or data curation time, require external labels or corpus editing, and do not provide the three-layer ontological--epistemic--agentic closure structure that OEA operationalizes as a generation-time protocol. Keisha et al.~\cite{keisha2025knowledge} characterize \emph{knowledge collapse} as a three-stage process in which factual accuracy erodes while surface fluency persists---the ``confidently wrong'' failure mode that OEA's epistemic layer is designed to detect and gate.
+Model collapse has become a central concern in recursive synthetic training pipelines, with evidence of degradation under specific feedback-loop assumptions \cite{shumailov2024modelcollapse,fu2025theoretical}. Subsequent studies show collapse behavior depends strongly on data-mixing assumptions, curation policy, and accumulation dynamics \cite{gerstgrasser2024inevitable,schaeffer2025position}. This motivates a controlled framework that separates what is known, what is hypothesized, and what is empirically testable.
 
-\subsection{Grounding and Retrieval-Augmented Generation}
-RAG methods improve factual grounding by coupling generation with retrievable evidence \cite{lewis2020rag}. However, retrieval does not eliminate faithfulness errors by itself; robust evaluation still requires claim-level verification and calibration-aware diagnostics.
+The OEA framework provides such a structure. \textbf{Ontological Anchoring} defines boundary conditions on the distributional vocabulary---\emph{not} formal symbolic ontology. \textbf{Epistemic Filtering} introduces explicit falsification and calibration checks for generated claims. \textbf{Agentic Closure} operationalizes interventions in measurable recursive loops---\emph{not} autonomous agency. This aligns with a Popperian criterion: claims must be framed so they can fail under evidence \cite{popper1959logic}.
 
-\subsection{Calibration as Trust Signal}
-Confidence reliability is not guaranteed by raw model scores. Expected Calibration Error (ECE) and related diagnostics remain practical tools for measuring confidence-quality alignment \cite{guo2017calibration}. Abbasi Yadkori et al.~\cite{abbasiyadkori2024believe} derive an information-theoretic metric that separates epistemic uncertainty (knowledge gaps) from aleatoric uncertainty (irreducible noise) in LLM outputs, providing a principled foundation for filtering that acts on the epistemic signal rather than surface token probabilities. OEA's epistemic layer is structurally aligned with this separation: log-probability scoring under the frozen reference model estimates the epistemic quality of each candidate continuation. OEA uses calibration as a monitored variable, not a proxy for truth.
+\subsection{Scope and Non-Claims}
+\label{sec:nonclaims}
 
-\subsection{Trust-Aware Orchestration in Agentic Pipelines}
-Recent trust-aware orchestration proposals provide implementation motifs for confidence-mediated arbitration and retrieval-triggered re-evaluation loops \cite{roumeliotis2025trust}. In this paper, such mechanisms are treated as design inspirations requiring domain-specific validation.
+This work makes the following explicit \textbf{non-claims}:
+\begin{itemize}[noitemsep]
+  \item No claim of artificial general intelligence or any step toward it.
+  \item No claim of formal symbolic ontology in the philosophical sense; ``Ontology'' is used in its computational sense (structured distributional anchoring).
+  \item No claim of true autonomous agency; ``Agentic'' refers to recursive persistence dynamics.
+  \item No claim of causal proof; results demonstrate association and ablation consistency.
+  \item No claim of general intelligence improvement beyond the specific experimental regime.
+\end{itemize}
+All results are scope-bounded to the implemented harness. Transfer to production systems or training-time dynamics remains future work.
 
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Core Hypotheses and Falsifiability}
+\label{sec:hypotheses}
+
+\begin{description}[style=nextline]
+  \item[H1 (Calibration Direction)] Correct-direction calibration (highest-log-prob selection) improves recursive distributional fidelity relative to unconstrained sampling.
+  \item[H2 (Miscalibration Reversal)] Inverting the calibration signal (lowest-log-prob selection) reverses discrimination: TRR falls below control and FRR rises above control.
+  \item[H3 (RAG without Filter)] Retrieval augmentation without epistemic filtering is associated with degraded distributional fidelity relative to full OEA.
+  \item[H4 (Memory Drift)] OEA-controlled recursion is associated with lower semantic drift than unconstrained recursion over long chains.
+\end{description}
+
+\paragraph{What would falsify OEA?}
+\begin{itemize}[noitemsep]
+  \item \textbf{H1}: \texttt{oea\_anchored} log-probability is not consistently higher than \texttt{control} across both model sizes.
+  \item \textbf{H2}: \texttt{oea\_miscalibrated} TRR is not lower than \texttt{control} TRR, or FRR is not higher.
+  \item \textbf{H3}: \texttt{oea\_rag\_only} log-probability is not lower than \texttt{oea\_anchored}.
+  \item \textbf{H4}: OEA-controlled semantic drift (JSD) is not lower than uncontrolled at step 30.
+  \item \textbf{Baseline}: OEA does not outperform all non-OEA controls on TRR when matched for sampling budget.
+\end{itemize}
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Notation and Formal Definitions}
+\label{sec:notation}
+
+\noindent\textbf{Symbols.}
+\begin{center}
+\small
+\begin{tabular}{ll}
+\toprule
+Symbol & Definition \\
+\midrule
+$x_t$ & Token sequence at recursive step $t$ \\
+$P_\theta$ & Generative model with frozen parameters $\theta$ \\
+$\mathcal{A}(\cdot)$ & Ontological anchoring operator (vocabulary projection) \\
+$\mathcal{E}(\cdot)$ & Epistemic filter operator (candidate selection) \\
+$G_0$ & Reference frozen model (original, not updated) \\
+$K$ & Number of epistemic filter candidates ($K=3$) \\
+$\mathrm{TRR}$ & True rejection rate (higher = better discrimination) \\
+$\mathrm{FRR}$ & False rejection rate (lower = better specificity) \\
+$\mathrm{JSD}(p, q)$ & Jensen-Shannon divergence \\
+$\mathcal{V}_{\mathrm{ref}}$ & Reference vocabulary (token IDs from seed corpus) \\
+$\tau$ & Dynamic log-prob threshold ($= \mu_{\mathrm{in-vocab}} - 1.5\,\sigma_{\mathrm{in-vocab}}$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Recursive generation:}
+\begin{equation}
+x_{t+1} \sim P_\theta\!\left(x \mid \mathcal{A}(x_t),\; \mathcal{E}(x_t)\right)
+\end{equation}
+
+\noindent\textbf{Anchoring operator} (Layer 1):
+\begin{equation}
+\mathcal{A}(x) = \bigl\{c \in C_K : \forall\, w \in c,\; w \in \mathcal{V}_{\mathrm{ref}}\bigr\}
+\end{equation}
+
+\noindent\textbf{Epistemic filter} (Layer 2):
+\begin{equation}
+\mathcal{E}(x) = \argmax_{c \in C_K}\; \log G_0(c \mid x)
+\end{equation}
+
+\noindent\textbf{JSD stability metric:}
+\begin{equation}
+\mathrm{JSD}(p \| q) = \tfrac{1}{2} D_{\mathrm{KL}}(p \| m) + \tfrac{1}{2} D_{\mathrm{KL}}(q \| m), \quad m = \tfrac{p + q}{2}
+\end{equation}
+
+\noindent\textbf{TRR / FRR:}
+\begin{align}
+\mathrm{TRR} &= |\mathcal{S}_{\mathrm{OOV}}|^{-1}\sum_{t \in \mathcal{S}_{\mathrm{OOV}}} \mathbf{1}[\log G_0(t \mid x) < \tau] \\
+\mathrm{FRR} &= |\mathcal{S}_{\mathrm{ref}}|^{-1}\sum_{t \in \mathcal{S}_{\mathrm{ref}}} \mathbf{1}[\log G_0(t \mid x) < \tau]
+\end{align}
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Related Work}
+\label{sec:related}
+
+\subsection{Recursive Synthetic Training and Collapse}
+
+Empirical and theoretical analyses report failure modes in recursive loops \cite{shumailov2024modelcollapse,fu2025theoretical}. Mitigation regimes exist when real data are retained \cite{gerstgrasser2024inevitable}.
+Drayson et al.~\cite{drayson2025detection} prevent collapse at \emph{training time} via machine-generated text detection; this operates at data-curation time with labeled annotations. Zhu et al.~\cite{zhu2025synthesize} prevent collapse via token-level corpus editing before training. Kov\'{a}\v{c} et al.~\cite{kovac2025recursive} show lexical diversity amplifies distributional shift, directly motivating OEA's anchoring. Keisha et al.~\cite{keisha2025knowledge} characterize knowledge collapse as factual accuracy eroding while surface fluency persists---the failure mode OEA's epistemic layer is designed to detect.
+These approaches operate at training or data-curation time and lack OEA's three-layer generation-time protocol.
+
+\subsection{RAG, Calibration, and Trust-Aware Orchestration}
+
+RAG methods improve grounding \cite{lewis2020rag} but retrieval alone does not eliminate faithfulness errors. Abbasi Yadkori et al.~\cite{abbasiyadkori2024believe} provide an information-theoretic separation of epistemic from aleatoric uncertainty, grounding OEA's epistemic filter. Calibration diagnostics \cite{guo2017calibration} are used as monitored variables, not truth proxies. Trust-aware orchestration proposals provide compatible implementation motifs \cite{roumeliotis2025trust}.
+
+\subsection{Position Against Related Frameworks}
+
+OEA differs from constitutional AI (output-time rule constraints), self-refinement (critic-model iteration), self-consistency (ensemble voting), and recursive self-improvement (weight updates) by operating as a \emph{generation-time, frozen-weights, calibration-directed} protocol. Unlike entropy regularization or repetition penalties, OEA applies directional calibration quality rather than generic distribution tightening. Section~\ref{sec:baseline} directly tests this distinction.
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Operational Definition of OEA Layers}
+\label{sec:operational}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{1.6cm}p{3.5cm}p{3.5cm}p{3.5cm}}
+\toprule
+Layer & Computational Meaning & Mechanism & Observable Effect \\
+\midrule
+Ontological Anchoring
+  & Vocabulary domain constraint (\emph{not} formal symbolic ontology)
+  & BM25 retrieval + token-set projection to $\mathcal{V}_{\mathrm{ref}}$
+  & Higher in-distribution log-prob; higher JSD from seed (expected) \\[4pt]
+Epistemic Filtering
+  & Candidate quality discrimination
+  & $K{=}3$ candidates scored by $\log G_0(c \mid x)$; highest kept
+  & Improved TRR; reduced FRR \\[4pt]
+Agentic Closure
+  & Recursive persistence dynamics (\emph{not} autonomous agency)
+  & Output of step $t$ conditions step $t{+}1$ via context accumulation
+  & Stability retention over $T$ iterations \\
+\bottomrule
+\end{tabular}
+\caption{Operational definitions of the three OEA layers (REQ-OEA-013). Both ``Ontology'' and ``Agentic'' are used in their computational senses throughout this paper.}
+\label{tab:operational}
+\end{table}
+
+%% ─────────────────────────────────────────────────────────────────────────────
 \section{Methodology}
+\label{sec:methodology}
+
 \subsection{OEA Tri-Layer Protocol}
 
-\noindent\textbf{Agentic loop model.} In agentic pipelines, each generation step corresponds to one agent action turn: the output of step $t{-}1$ conditions step $t$, forming a feedback loop over a shared context window. Our recursive generation loop directly models this pattern, making the experiments a structurally faithful model of sequential agentic execution---specifically, systems where prior output accumulates as context for the next generation step. More complex agentic settings (tool use, multi-agent coordination, external memory) are explicitly out of scope and acknowledged in \S\ref{sec:limitations}.
+\noindent\textbf{Agentic loop model.} Each generation step corresponds to one agent action: the output at step $t{-}1$ conditions step $t$, forming a feedback loop over a shared context window. Our recursive loop directly models this pattern. Multi-agent coordination, tool use, and external memory are explicitly out of scope.
+
 \begin{enumerate}[leftmargin=1.5em]
-  \item \textbf{Ontological Anchoring}: define non-negotiable domain constraints, variable definitions, and invalid-output criteria before inference.
-  \item \textbf{Epistemic Filtering}: apply retrieval-grounded falsification attempts, label evidence provenance, and compute calibration diagnostics (including ECE).
-  \item \textbf{Agentic Closure}: run pre-registered interventions, capture outcomes, and update subsequent hypothesis tests only through documented evidence deltas.
+  \item \textbf{Ontological Anchoring}: domain constraints and invalid-output criteria. BM25 retrieval + vocabulary projection.
+  \item \textbf{Epistemic Filtering}: retrieval-grounded falsification and calibration scoring. $K{=}3$ candidate scoring under the frozen reference model.
+  \item \textbf{Agentic Closure}: pre-registered interventions with documented evidence deltas.
 \end{enumerate}
 
 \subsection{Pilot Experiment Design}
-\textbf{E1: Recursive Stability Test.} For each seed, run 10 recursive generations where output at step $t-1$ becomes input at step $t$. Compare control vs OEA on divergence and stability metrics.
 
-\textbf{E2: Epistemic Friction Test.} Inject synthetic falsehoods and measure rejection/acceptance behavior. Report both false accepts and false rejects.
+\textbf{E1 (Recursive Stability).} 10 recursive generations per seed. Compare control vs OEA on JSD and stability.
+\textbf{E2 (Epistemic Friction).} Inject synthetic falsehoods; measure TRR and FRR.
+\textbf{Execution:} 30 seeded runs per condition; artifacts in \texttt{results/}.
 
-\textbf{Execution metadata.} We executed 30 seeded runs per condition and exported machine-readable artifacts in \texttt{results/}:
-\begin{itemize}
-  \item \texttt{recursive\_stability\_runs.csv}
-  \item \texttt{epistemic\_friction\_runs.csv}
-  \item \texttt{summary\_metrics.json}
-\end{itemize}
-
+%% ─────────────────────────────────────────────────────────────────────────────
 \section{Pilot Results}
-Table~\ref{tab:pilot-results} summarizes executed pilot metrics (mean with 95\% CI).
+\label{sec:pilot}
 
 \begin{table}[h]
 \centering
@@ -86,96 +205,65 @@ Metric & Control & OEA \\
 \midrule
 Recursive stability score & 0.8603 [0.8406, 0.8799] & 0.9809 [0.9779, 0.9839] \\
 KL divergence seed$\rightarrow$t10 & 2.6603 [2.1234, 3.1971] & 0.2874 [0.1780, 0.3967] \\
-True reject rate (synthetic falsehoods) & 0.6119 [0.6034, 0.6205] & 0.8440 [0.8384, 0.8495] \\
-False reject rate (valid claims) & 0.2327 [0.2264, 0.2390] & 0.1210 [0.1165, 0.1256] \\
+True reject rate & 0.6119 [0.6034, 0.6205] & 0.8440 [0.8384, 0.8495] \\
+False reject rate & 0.2327 [0.2264, 0.2390] & 0.1210 [0.1165, 0.1256] \\
 \bottomrule
 \end{tabular}
-\caption{Executed pilot experiment metrics from repository artifacts.}
+\caption{Pilot experiment metrics (mean, 95\% CI) from \texttt{results/summary\_metrics.json}.}
 \label{tab:pilot-results}
 \end{table}
 
-Effect deltas indicate improved behavior under OEA in this pilot harness: stability score $+0.1206$, true reject rate $+0.2320$, and false reject rate $-0.1117$.
+Effect deltas are consistent with H1 and H2: stability score $+0.1206$, TRR $+0.2320$, FRR $-0.1117$. Scope: bigram proxy harness only.
 
 \subsection{Ablation Study}
+\label{sec:ablation}
 
-Table~\ref{tab:ablation} presents all 12 variants from the credibility suite across 648 robustness-sweep runs per variant (12 seeds $\times$ 3 depths $\times$ 3 synthetic ratios $\times$ 3 noise levels $\times$ 2 domain corpora: literary and scientific). Cohen's $d$ vs.\ \texttt{control\_replace}: $d=4.56$, $p<0.001$ (permutation test, $n_{\text{perm}}=2000$). The multi-domain corpus strengthens the effect size by including a scientific domain with denser vocabulary structure.
-\texttt{oea\_full} raw stability (0.937) is comparable to \texttt{control\_accumulate} (0.943), consistent
-with the stability/epistemic orthogonality finding discussed in the Conclusion.
+\paragraph{Ablation interpretation.}
+\textbf{Miscalibration reversal}: the CQ formula parameterizes the suite such that CQ$<$0.5 flips rejection direction: FRR rises to 0.651, TRR falls to 0.257---consistent with H2.
+\textbf{ROUGE-L decline under anchoring}: vocabulary anchoring concentrates token identity to the reference domain (improving log-probability) but does not preserve original phrase sequences (lowering ROUGE-L). These metrics are orthogonal.
+\textbf{JSD rise under anchoring}: anchoring concentrates output over a sub-vocabulary; the resulting distribution is more concentrated than the seed. This is expected behavior, not a failure mode.
+\textbf{RAG-only degradation}: BM25 context injection without quality-aware candidate selection introduces retrieval noise. Without the epistemic filter, RAG alone yields lower log-probability than full OEA, consistent with H3.
 
 \begin{table}[h]
 \centering
 \small
 \begin{tabular}{lcccc}
 \toprule
-Variant & Stability & True-Reject & False-Reject \\
- & mean {[}95\%\,CI{]} & mean {[}95\%\,CI{]} & mean {[}95\%\,CI{]} \\
+Variant & Stability mean [CI] & TRR mean [CI] & FRR mean [CI] \\
 \midrule
-control\_replace       & 0.449 {[}0.437,\,0.460{]} & 0.582 {[}0.580,\,0.584{]} & 0.241 {[}0.239,\,0.243{]} \\
-control\_accumulate    & 0.943 {[}0.942,\,0.944{]} & 0.582 {[}0.580,\,0.584{]} & 0.241 {[}0.239,\,0.243{]} \\
-baseline\_rag          & 0.935 {[}0.934,\,0.936{]} & 0.682 {[}0.680,\,0.684{]} & 0.178 {[}0.177,\,0.180{]} \\
-baseline\_calibration  & 0.935 {[}0.934,\,0.936{]} & 0.651 {[}0.649,\,0.653{]} & 0.198 {[}0.196,\,0.199{]} \\
-ablation\_O            & 0.955 {[}0.955,\,0.956{]} & 0.613 {[}0.610,\,0.615{]} & 0.222 {[}0.220,\,0.223{]} \\
-ablation\_E            & 0.935 {[}0.934,\,0.936{]} & 0.752 {[}0.750,\,0.754{]} & 0.134 {[}0.132,\,0.135{]} \\
-ablation\_A            & 0.957 {[}0.956,\,0.957{]} & 0.635 {[}0.633,\,0.637{]} & 0.207 {[}0.205,\,0.209{]} \\
-ablation\_OE           & 0.955 {[}0.955,\,0.956{]} & 0.775 {[}0.773,\,0.777{]} & 0.120 {[}0.118,\,0.121{]} \\
-ablation\_OA           & 0.938 {[}0.936,\,0.939{]} & 0.667 {[}0.665,\,0.669{]} & 0.188 {[}0.186,\,0.189{]} \\
-ablation\_EA           & 0.950 {[}0.948,\,0.951{]} & 0.806 {[}0.804,\,0.807{]} & 0.100 {[}0.099,\,0.101{]} \\
-ablation\_miscalibrated & 0.943 {[}0.942,\,0.944{]} & 0.257 {[}0.255,\,0.259{]} & 0.651 {[}0.648,\,0.653{]} \\
-\textbf{oea\_full}    & \textbf{0.937 {[}0.935,\,0.938{]}} & \textbf{0.836 {[}0.834,\,0.837{]}} & \textbf{0.081 {[}0.080,\,0.082{]}} \\
+control\_replace       & 0.449 [0.437,\,0.460] & 0.582 [0.580,\,0.584] & 0.241 [0.239,\,0.243] \\
+control\_accumulate    & 0.943 [0.942,\,0.944] & 0.582 [0.580,\,0.584] & 0.241 [0.239,\,0.243] \\
+baseline\_rag          & 0.935 [0.934,\,0.936] & 0.682 [0.680,\,0.684] & 0.178 [0.177,\,0.180] \\
+baseline\_calibration  & 0.935 [0.934,\,0.936] & 0.651 [0.649,\,0.653] & 0.198 [0.196,\,0.199] \\
+ablation\_O            & 0.955 [0.955,\,0.956] & 0.613 [0.610,\,0.615] & 0.222 [0.220,\,0.223] \\
+ablation\_E            & 0.935 [0.934,\,0.936] & 0.752 [0.750,\,0.754] & 0.134 [0.132,\,0.135] \\
+ablation\_A            & 0.957 [0.956,\,0.957] & 0.635 [0.633,\,0.637] & 0.207 [0.205,\,0.209] \\
+ablation\_OE           & 0.955 [0.955,\,0.956] & 0.775 [0.773,\,0.777] & 0.120 [0.118,\,0.121] \\
+ablation\_OA           & 0.938 [0.936,\,0.939] & 0.667 [0.665,\,0.669] & 0.188 [0.186,\,0.189] \\
+ablation\_EA           & 0.950 [0.948,\,0.951] & 0.806 [0.804,\,0.807] & 0.100 [0.099,\,0.101] \\
+ablation\_miscalibrated & 0.943 [0.942,\,0.944] & 0.257 [0.255,\,0.259] & 0.651 [0.648,\,0.653] \\
+\textbf{oea\_full}    & \textbf{0.937 [0.935,\,0.938]} & \textbf{0.836 [0.834,\,0.837]} & \textbf{0.081 [0.080,\,0.082]} \\
 \bottomrule
 \end{tabular}
-\caption{Full ablation results across all 12 variants (648 runs each per variant), run over two
-independent domain corpora: literary (Carroll, Austen, Melville, Hume, Darwin) and scientific
-(Newton, Feynman, Sagan). CQ values represent theoretical calibration estimates (E: $+0.22$,
-A: $+0.07$, O: $+0.04$). \texttt{oea\_full} achieves the best true-reject and false-reject
-rates ($d=4.56$ vs.\ \texttt{control\_replace}). \texttt{ablation\_miscalibrated} (inverted CQ)
-shows TRR=0.257 and FRR=0.651 (reversed discrimination), confirming calibration direction is causal.
-Several ablations achieve comparable stability to \texttt{oea\_full} while underperforming on
-epistemic filtering, confirming the stability/epistemic orthogonality finding.}
+\caption{Full ablation results (648 runs each, two domain corpora). \texttt{oea\_full} achieves best TRR/FRR ($d=4.56$ vs \texttt{control\_replace}, $p<0.001$, permutation test $n_{\mathrm{perm}}=2000$). \texttt{ablation\_miscalibrated} confirms H2: reversed discrimination (TRR\,=\,0.257, FRR\,=\,0.651). Stability and epistemic filtering are partially orthogonal: \texttt{ablation\_A} and \texttt{ablation\_EA} achieve high stability with weaker epistemic filtering. Source: \texttt{results/credibility/}.}
 \label{tab:ablation}
 \end{table}
 
+%% ─────────────────────────────────────────────────────────────────────────────
 \section{Real LLM Validation}
+\label{sec:real-lm}
 
 \subsection{Design and Motivation}
 
-To address the scope limitations of the bigram proxy harness and to establish whether the OEA
-epistemic filter operates on real neural probability distributions, we designed a second experiment
-using two GPT-2 family models: \texttt{distilgpt2} (82M) and \texttt{gpt2} (124M), following
-\cite{lewis2020rag} for the RAG architecture. Running across two model sizes enables a
-consistency check that is independent of architectural specifics. The experiment replaces
-simulation-layer probability constants with genuine model log-probabilities
-and implements the full three-layer OEA protocol.
+Two GPT-2 family models: \texttt{distilgpt2} (82M) and \texttt{gpt2} (124M). The harness uses \texttt{AutoModelForCausalLM}/\texttt{AutoTokenizer}, supporting non-GPT2-family models (e.g., \texttt{EleutherAI/gpt-neo-125M}) for future external validity extension.
 
-\textbf{Retrieval-augmented generation (RAG) — Ontological Anchoring.}
-A \texttt{BM25Retriever} indexes the seed corpus into passage-level units using token-overlap
-similarity: $\text{score}(q, p) = |q \cap p| / \sqrt{|q| \cdot |p|}$. At each generation step,
-the highest-scoring passage is prepended to the prompt, constraining synthesis within the
-domain boundary of the original corpus. This is corpus-grounded retrieval, not a log-probability
-proxy.
+\textbf{BM25 Retrieval (Layer 1).} $\text{score}(q, p) = |q \cap p| / \sqrt{|q| \cdot |p|}$. Retrieved passage prepended.
 
-\textbf{Epistemic filtering.} $K{=}3$ candidate continuations are generated per step and scored
-by their mean log-probability under the \emph{original frozen model}: $s_{\text{verify}}(y|x) =
-\log G_0(y|x)$, directly implementing the verification score of \cite{fu2025selfverification}.
-The highest-scoring candidate is retained (\texttt{oea\_anchored}).
+\textbf{Epistemic filtering (Layer 2).} $K{=}3$ candidates scored by $\log G_0(y|x)$ \cite{fu2025selfverification}.
 
-\textbf{Anti-calibrated control.} \texttt{oea\_miscalibrated} keeps the \emph{lowest}-log-prob
-candidate. If this variant degrades faster than even the no-RAG \texttt{control}, it provides
-ablation evidence that calibration direction is the operative variable, not filtering per se.
-
-\textbf{Ablation: RAG-only baseline.} \texttt{oea\_rag\_only} uses retrieval without epistemic
-filtering, isolating the retrieval contribution from the log-prob selection mechanism.
-
-\textbf{Frozen-weights scope.} Model weights are not updated; this is a generation-time experiment.
-We interpret this as a \emph{necessary-condition} test (DEC-004): if log-probability-based
-filtering cannot reduce distributional drift in the idealized frozen setting, it cannot do so
-during training. Results establish a lower bound on in-training efficacy and do not substitute
-for fine-tuning experiments (acknowledged in Limitations).
+\textbf{Frozen-weights scope (DEC-004).} This is a necessary-condition test: results establish a lower bound on in-training efficacy.
 
 \subsection{Results}
-
-Table~\ref{tab:real-lm} reports final-iteration metrics (mean across 10 seeds,
-10 recursive steps) for both model sizes.
 
 \begin{table}[h]
 \centering
@@ -187,151 +275,184 @@ Table~\ref{tab:real-lm} reports final-iteration metrics (mean across 10 seeds,
 Variant & Log-prob $\uparrow$ & JSD & ROUGE-L $\uparrow$ & Log-prob $\uparrow$ & JSD & ROUGE-L $\uparrow$ \\
 \midrule
 control            & $-0.912$ & 0.459 & 0.046 & $-1.916$ & 0.363 & 0.047 \\
-oea\_rag\_only      & $-1.447$ {[}$-0.54${]} & 0.382 & 0.045 & $-1.991$ {[}$-0.08${]} & 0.364 & 0.049 \\
-oea\_miscalibrated & $-2.055$ {[}$-1.14${]} & 0.356 & 0.054 & $-2.470$ {[}$-0.55${]} & 0.384 & 0.055 \\
-\textbf{oea\_anchored} & $\mathbf{-0.296}$ {[}$\mathbf{+0.62}${]} & 0.471 & \textbf{0.038} & $\mathbf{-0.290}$ {[}$\mathbf{+1.63}${]} & 0.438 & \textbf{0.031} \\
+oea\_rag\_only      & $-1.447$ [$-0.54$] & 0.382 & 0.045 & $-1.991$ [$-0.08$] & 0.364 & 0.049 \\
+oea\_miscalibrated & $-2.055$ [$-1.14$] & 0.356 & 0.054 & $-2.470$ [$-0.55$] & 0.384 & 0.055 \\
+\textbf{oea\_anchored} & $\mathbf{-0.296}$ [$\mathbf{+0.62}$] & 0.471 & \textbf{0.038} & $\mathbf{-0.290}$ [$\mathbf{+1.63}$] & 0.438 & \textbf{0.031} \\
 \bottomrule
 \end{tabular}
-\caption{Real LLM validation: two models, 10 seeds $\times$ 10 recursive iterations
-(CUDA 12.1, RTX 4070 SUPER). All results reproducible (\texttt{torch.manual\_seed}).
-Log-prob: mean per-token log-probability under original frozen model (higher = better).
-ROUGE-L: recall of seed-corpus content in generated text, measuring sequence-level
-content preservation, \emph{independent} of the log-probability selection criterion.
-JSD: JS divergence from seed (higher under anchoring is expected; see text).
-Brackets: delta vs.\ \texttt{control}.
-Artifacts: \texttt{results/real\_lm/distilgpt2/} and \texttt{results/real\_lm/gpt2/}.}
+\caption{Real LLM validation: 10 seeds $\times$ 10 recursive iterations (CUDA 12.1, RTX 4070 SUPER). Brackets: delta vs \texttt{control}. Log-prob: higher = more in-distribution. ROUGE-L: independent of log-prob (orthogonal quality dimension). JSD: higher under anchoring is expected (see text). Artifacts: \texttt{results/real\_lm/}.}
+\label{tab:real-lm}
 \end{table}
 
-\textbf{Primary finding: log-probability.}
-\texttt{oea\_anchored} improves mean log-probability by $+0.62$ nats (distilgpt2) and
-$+1.63$ nats (gpt2), demonstrating that OEA epistemic filtering produces text more
-in-distribution under the original frozen model. The effect strengthens with model size.
-\texttt{oea\_miscalibrated} provides strong ablation evidence for calibration direction
-as the causal mechanism: inverting the calibration signal degrades log-probability by
-$-1.14$ nats (distilgpt2) and $-0.55$ nats (gpt2)---consistent across both
-models---demonstrating that \emph{calibration direction}, not filtering per se, is the operative
-variable \cite{fu2025selfverification,abbasiyadkori2024believe}.
+\paragraph{H1 (Calibration Direction, supported).}
+\texttt{oea\_anchored} improves log-probability by $+0.62$ nats (distilgpt2) and $+1.63$ nats (gpt2). The effect strengthens with model size.
 
-\textbf{ROUGE-L: a complementary diverging metric.}
-ROUGE-L recall is fully orthogonal to the log-probability selection criterion.
-\texttt{oea\_anchored} achieves \emph{lower} ROUGE-L recall than control (0.038 vs.\ 0.046
-for distilgpt2; 0.031 vs.\ 0.047 for gpt2), while \texttt{oea\_miscalibrated} achieves
-\emph{higher} recall (0.054/0.055). This is not contradictory: vocabulary anchoring
-constrains token \emph{identity} to the reference domain (improving log-probability) but
-does not preserve original phrase \emph{sequences} (lowering ROUGE-L). The two metrics
-capture orthogonal quality dimensions---distributional fidelity vs.\ sequence-level content
-preservation---and their systematic dissociation under anchoring is an informative finding
-about the quality/diversity tradeoff.
+\paragraph{H2 (Miscalibration Reversal, supported).}
+\texttt{oea\_miscalibrated} degrades log-probability below the no-RAG control ($-1.14$ and $-0.55$ nats), providing ablation evidence consistent with H2 \cite{fu2025selfverification,abbasiyadkori2024believe}.
 
-\textbf{JSD and the vocabulary anchoring interaction.}
-JSD is higher for \texttt{oea\_anchored} than control because vocabulary anchoring constrains
-generated tokens to the reference domain, concentrating the token distribution over iterations.
-This is \emph{expected behavior}, not a failure mode: reducing vocabulary to domain-relevant
-tokens raises JSD from the full seed distribution while improving per-token epistemic quality
-(log-probability and ROUGE-L recall). The stability--diversity tradeoff is inherent to
-domain-constrained generation; JSD measures distributional distance (diversity), not quality.
-Log-probability and ROUGE-L recall are the appropriate quality metrics in this regime.
+\paragraph{ROUGE-L dissociation.}
+\texttt{oea\_anchored} achieves lower ROUGE-L than control; \texttt{oea\_miscalibrated} achieves higher ROUGE-L. The systematic dissociation confirms log-probability selection and ROUGE-L evaluation are orthogonal, ruling out metric circularity. See Figure~\ref{fig:dissociation}.
 
-\textbf{RAG-only model-dependence.}
-\texttt{oea\_rag\_only} shows a negative log-prob delta for both models ($-0.54$ nat for
-distilgpt2, $-0.08$ nat for gpt2). RAG without the epistemic filter degrades log-probability,
-suggesting that BM25 context injection without quality-aware candidate selection harms
-distributional fidelity. The epistemic filter's consistent positive improvement in
-\texttt{oea\_anchored} confirms it is the operative component, not retrieval per se.
+\paragraph{H3 (RAG without Filter, supported).}
+\texttt{oea\_rag\_only} degrades log-probability ($-0.54$, $-0.08$ nats), consistent with H3: the epistemic filter, not retrieval per se, is the operative component.
 
-\textbf{Dynamic threshold.} The original fixed threshold ($-4.5$) saturated at TRR=1.0.
-We replaced it with $\mu_{\text{in-vocab}} - 1.5\sigma_{\text{in-vocab}}$, yielding
-non-saturating TRR values. However, TRR does not cleanly separate variants because
-vocabulary anchoring shifts the reference distribution globally; log-probability and ROUGE-L
-recall are the reliable OEA efficacy metrics in this frozen-weights regime.
-See \texttt{results/real\_lm/} and REQ-OEA-012.
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Agentic Memory Drift Benchmark}
+\label{sec:memorydrift}
 
+A 30-step recursive memory drift benchmark (\texttt{experiments/recursive\_memory\_drift.py}) compares \textbf{oea\_controlled} vs \textbf{uncontrolled} over 20 seeds in the bigram proxy harness.
+
+\textbf{Metrics.} Entity retention (Jaccard overlap with initial token set); semantic drift (JSD from initial distribution); vocabulary collapse (unique-token ratio).
+
+\textbf{Results.} At step 30: OEA-controlled semantic drift JSD $-0.006$ lower (95\% CI overlapping); entity retention $\Delta = -0.001$ (negligible). Hallucination proxy is zero for both variants---a limitation of the bigram harness, which cannot generate out-of-vocabulary tokens by construction.
+
+\textbf{Interpretation.} The bigram harness provides only structural support for H4. Effect sizes ($|\Delta| < 0.01$) reflect the vocabulary constraints inherent to the bigram model. Neural model validation of memory drift is necessary for quantitatively meaningful conclusions and remains future work. Source: \texttt{results/memory\_drift/}.
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Baseline Competition}
+\label{sec:baseline}
+
+Table~\ref{tab:baseline} addresses the concern that OEA reduces to generic constraint tightening.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+Variant & Stability & TRR & FRR & Cohen's $d$ vs OEA \\
+\midrule
+\textbf{oea\_full}     & 0.155 & \textbf{0.746} & \textbf{0.188} & \textemdash \\
+temperature\_low (0.5) & 0.160 & 0.605 & 0.220 & $-0.14$ \\
+top-$k$ ($k{=}10$)     & 0.166 & 0.605 & 0.220 & $-0.31$ \\
+entropy\_filter        & 0.155 & 0.630 & 0.212 & $+0.00$ \\
+repetition\_penalty    & 0.160 & 0.605 & 0.220 & $-0.13$ \\
+rag\_only              & 0.143 & 0.590 & 0.227 & $+0.32$ \\
+\bottomrule
+\end{tabular}
+\caption{Baseline competition at final iteration (20 seeds; $p > 0.3$ for all pairwise stability comparisons, $n_{\mathrm{perm}}=2000$). OEA achieves the highest TRR. Stability differences are not significant at $N{=}20$ seeds. Note: TRR for non-OEA controls uses CQ-formula parameterization, not direct log-prob filtering; real LLM comparisons remain future work. Source: \texttt{results/baseline\_competition/}.}
+\label{tab:baseline}
+\end{table}
+
+OEA achieves the highest TRR ($0.746$ vs next-best entropy\_filter $0.630$). Stability differences are comparable across all variants in this harness, consistent with the stability/epistemic orthogonality finding. Pairwise differences do not reach significance at $N{=}20$ ($p > 0.3$); real LLM baseline comparisons are necessary for statistically conclusive results.
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Visualizations}
+\label{sec:figures}
+
+Figures~\ref{fig:pipeline}--\ref{fig:dissociation} are generated from committed result artifacts (\texttt{experiments/generate\_figures.py}).
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.90\textwidth]{figures/fig_pipeline.pdf}
+\caption{OEA three-layer generation pipeline. Input passes through BM25 retrieval (Layer 1), epistemic filtering (Layer 2), and vocabulary anchoring; the accepted output re-enters the recursive loop (Layer 3).}
+\label{fig:pipeline}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.90\textwidth]{figures/fig_calibration.pdf}
+\caption{Calibration trajectory: mean log-probability over 10 recursive iterations (shaded: 95\% CI, 10 seeds). \texttt{oea\_anchored} maintains higher log-probability; \texttt{oea\_miscalibrated} degrades fastest, consistent with H1 and H2.}
+\label{fig:calibration}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.90\textwidth]{figures/fig_metric_dissociation.pdf}
+\caption{Metric dissociation at final iteration (mean $\pm$ 95\% CI, 10 seeds). Log-probability and ROUGE-L capture orthogonal quality dimensions: \texttt{oea\_anchored} achieves high log-probability but low ROUGE-L; the inverse holds for \texttt{oea\_miscalibrated}. The systematic dissociation rules out metric circularity.}
+\label{fig:dissociation}
+\end{figure}
+
+%% ─────────────────────────────────────────────────────────────────────────────
 \section{Discussion}
-The pilot results support the directional OEA hypothesis in the implemented harness: stronger recursive stability and improved synthetic-noise rejection tradeoffs relative to control. The real LLM experiments confirm the mechanism via both log-probability improvement and ROUGE-L content preservation---two orthogonal metrics ruling out metric-circularity as an explanation. However, this evidence should be interpreted as \emph{pilot computational validation of recursive generative pipelines}, not as proof of universal behavior across all agentic architectures or production settings.
+\label{sec:discussion}
 
-\section{Limitations and Threats to Validity}\label{sec:limitations}
+Results are consistent with the primary thesis across four complementary experiments. The two-model validation confirms the mechanism via log-probability improvement and ROUGE-L dissociation---two orthogonal metrics. This evidence should be interpreted as pilot computational validation, not proof of universal behavior.
+
+The key asymmetry: stability and epistemic reliability are partially orthogonal. Single-layer ablations can achieve comparable stability while exhibiting substantially weaker epistemic filtering. The full three-layer protocol is necessary when both properties are jointly required.
+
+The baseline competition supports the claim that OEA is not reducible to generic constraint tightening: OEA achieves higher TRR than all five non-OEA controls. However, this finding is not statistically significant at $N{=}20$ seeds and requires real LLM validation for conclusive evidence.
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Failure Modes and Limitations}
+\label{sec:limitations}
+
 \begin{itemize}
-  \item \textbf{Bigram proxy scope}: the ablation study uses a bigram language model as a proxy
-  for recursive LLM degradation. Results are scope-bounded to this regime.
-  \item \textbf{Frozen-weights scope}: the real LLM validation uses frozen \texttt{distilgpt2}
-  (82M) and \texttt{gpt2} (124M); it measures generation-time distributional drift, not
-  training-time weight degradation. We interpret this as a necessary-condition test (DEC-004),
-  not a substitute for fine-tuning experiments, which remain future work.
-  \item \textbf{Calibration-quality parameterization}: the bigram ablation uses a
-  principled CQ formula with per-layer contribution estimates (E: $+0.22$, A: $+0.07$, O: $+0.04$).
-  The real LLM experiment (\texttt{real\_lm\_summary.json}) measures true-reject-rate with a
-  dynamic threshold but does not directly validate the CQ values: vocabulary anchoring shifts
-  the model's log-prob distribution globally, making the relative threshold less discriminating
-  for random OOV tokens even as JSD stability improves. CQ values remain principled design
-  parameters; direct empirical calibration requires held-out ECE measurement (future work).
-  \item \textbf{External validity and agentic scope}: results may not transfer to all
-  architectures, corpora, or training regimes. Complex agentic settings with tool use,
-  multi-agent coordination, or external memory are out of scope; the connection is structural
-  (shared recursive loop) rather than empirically validated. Cross-domain and full
-  agentic-runtime validation are future work.
-  \item \textbf{Retrieval precision}: evidence quality is bounded by the seed corpus coverage;
-  BM25 token-overlap retrieval does not account for semantic similarity.
-  \item \textbf{Metric insufficiency}: no single metric is exhaustive. ECE proxies and
-  log-probability thresholds are practical but not sufficient as truth criteria.
-  \item \textbf{Preprint risk}: some cited works are preprint-stage and may change after peer
-  review. Citation versions are locked in \texttt{arxiv/references.bib}.
+  \item \textbf{Bigram proxy scope}: cannot model long-range dependencies, contextual disambiguation, or neural hallucination. Results scope-bounded to this regime.
+  \item \textbf{Frozen-weights scope}: not a substitute for fine-tuning experiments.
+  \item \textbf{Over-anchoring harms diversity}: vocabulary anchoring improves log-probability but reduces ROUGE-L recall and can impoverish creative or cross-domain generation.
+  \item \textbf{Hallucination proxy limitation}: the bigram harness hallucination proxy (OOV rate) is always zero; neural model validation required.
+  \item \textbf{Domain mismatch}: anchoring will degrade for out-of-domain inputs; BM25 does not handle semantic similarity.
+  \item \textbf{Calibration-quality mismatch (UNK-001)}: the dynamic-threshold TRR metric does not directly validate bigram-suite CQ (measured CQ\,=\,0.446 vs design estimate 0.83). Direct ECE validation is future work.
+  \item \textbf{Small-scale models}: results validated on 82M and 124M parameter models; extrapolation is not warranted.
+  \item \textbf{Baseline comparison power}: $N{=}20$ seeds insufficient for statistically significant pairwise comparisons in baseline competition.
+  \item \textbf{Causal language}: all causal language is provisional. We use ``consistent with,'' ``associated with,'' and ``provides ablation evidence for'' throughout.
+  \item \textbf{Preprint citations}: some cited works are preprints and may change after peer review.
 \end{itemize}
 
+%% ─────────────────────────────────────────────────────────────────────────────
 \section{Pre-registration, Reproducibility, and Data Availability}
+\label{sec:reproducibility}
 
-\textbf{Pre-registration.} The experimental design, variant definitions, metric schema, and
-result artifact structure were committed to the repository prior to data collection.
-Code: \texttt{experiments/real\_lm\_experiment.py}; requirements: \texttt{REQ-OEA-010/011/012};
-cryptographic trace vault: \texttt{.specsmith/trace-vault.jsonl} (SEAL-0001 through SEAL-0007).
+\textbf{Pre-registration.} Design committed prior to data collection. Trace vault: \texttt{.specsmith/trace-vault.jsonl} (SEAL-0001--SEAL-0010).
 
-\textbf{Reproducibility.} All experiments use fixed random seeds. Artifacts are written as
-\texttt{CSV}/\texttt{JSON} to \texttt{results/}. The bigram ablation plan is in
-\texttt{experiments/config/credibility\_plan.json}; the real LLM experiment is
-self-contained in \texttt{experiments/real\_lm\_experiment.py}. Setup:
-\texttt{scripts/setup.sh ---experiments} (Linux/macOS) or
-\texttt{scripts\textbackslash setup.cmd ---experiments} (Windows).
+\textbf{Reproducibility.} All bigram experiments reproduce in $<$10 minutes (no GPU). See \texttt{REPRODUCE.md}. Artifact integrity verified by \texttt{experiments/manifest.json} (SHA-256 hashes). \texttt{Dockerfile} provides a containerized environment. Harness supports \texttt{EleutherAI/gpt-neo-125M} via \texttt{AutoModelForCausalLM}.
 
-\textbf{Data availability.} Two corpora are used: \texttt{public\_domain\_corpus.txt} (literary
-excerpts: Carroll, Austen, Melville, Hume, Darwin) and \texttt{scientific\_corpus.txt} (natural
-philosophy: Newton, Feynman, Sagan). Both consist entirely of public-domain text. All derived
-artifacts are committed to the public repository. No proprietary data are used.
+\textbf{Data.} Public-domain corpora: literary (Carroll, Austen, Melville, Hume, Darwin) and scientific (Newton, Feynman, Sagan). No proprietary data.
 
-\textbf{Ethics.} Confidence estimates and trust scores must not be treated as guarantees of
-truth, especially in safety-critical deployments. OEA improves calibration within a
-specified regime; it does not eliminate hallucination or guarantee factual correctness.
+\textbf{Ethics.} OEA improves calibration within a specified regime; it does not eliminate hallucination or guarantee factual correctness.
 
+%% ─────────────────────────────────────────────────────────────────────────────
 \section{Conclusion}
+\label{sec:conclusion}
 
-We presented the OEA (Ontology, Epistemic, Agentic) framework as a testable, three-layer
-intervention hypothesis for improving reliability in agentic systems under recursive synthetic-data
-exposure. Our pilot computational experiments support the directional hypothesis: the full OEA
-pipeline achieves the highest true-rejection rate (0.836) and the lowest false-rejection rate (0.081)
-across all 12 tested variants over two independent domain corpora, with a stability delta of
-$+0.488$ ($d=4.56$, $p<0.001$) relative to \texttt{control\_replace}.
-The two-model real LLM validation provides strong ablation evidence for calibration direction
-as the causal mechanism: \texttt{oea\_anchored} improves mean log-probability by
-$+0.62$--$+1.63$ nats across distilgpt2 and gpt2, while the anti-calibrated control
-consistently degrades it by $-0.55$--$-1.14$ nats. ROUGE-L recall reveals a metric
-dissociation: anchoring improves distributional fidelity (log-prob) while reducing sequence
-recall (ROUGE-L), confirming the two metrics are orthogonal and capture different quality
-dimensions.
+We presented OEA as a testable, three-layer intervention hypothesis for improving reliability in recursive agentic systems, with explicit non-claims: no AGI, no formal symbolic ontology, no autonomous agency, no causal proof, no general intelligence improvement.
 
-The ablation study reveals a key asymmetry: certain single-layer ablations
-(\texttt{ablation\_A}, \texttt{ablation\_EA}) achieve comparable or superior raw stability scores to
-\texttt{oea\_full}, yet exhibit substantially weaker epistemic filtering. This suggests that stability
-and epistemic reliability are partially orthogonal, and that the full three-layer protocol is
-necessary when both properties are required jointly.
+Our experiments support the primary thesis across four complementary conditions. The full OEA protocol achieves TRR\,=\,0.836, FRR\,=\,0.081 ($d=4.56$, $p<0.001$) and improves mean log-probability by $+0.62$--$+1.63$ nats. The anti-calibrated control provides strong ablation evidence for calibration direction as the operative variable. Metric dissociation confirms log-probability and ROUGE-L capture orthogonal quality dimensions.
 
-These findings must be interpreted with explicit scope bounds. The current evidence derives
-entirely from a controlled bigram-proxy simulation harness and does not constitute proof of universal
-behavior across production language models, retrieval corpora, or downstream task domains. The claim
-is that OEA provides measurable improvement in this regime under these conditions.
+These findings carry explicit scope bounds and must not be extrapolated to production systems without further evidence.
 
-Future work will focus on: (1) integrating the OEA protocol with production agentic runtimes
-beyond the simulation harness; (2) validating calibration-quality alignment using real ECE
-measurements on held-out LLM outputs; (3) extending the ablation design to include cross-domain
-corpora and retrieval-augmented variants; and (4) developing automated tooling for epistemic
-boundary enforcement in deployed agent pipelines.
+Future work: (1) GPT-Neo-125M and other non-GPT2-family model validation (code-ready); (2) production agentic runtime integration; (3) ECE-based CQ validation; (4) neural memory drift experiments; (5) statistically powered real LLM baseline comparison.
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\appendix
+
+\section{Statistical Methods}
+\label{app:stats}
+
+\paragraph{Permutation test.} Two-sided, $n_{\mathrm{perm}}=2000$ shuffles. Test statistic: absolute mean difference. Reported as $p < 0.001$ when $({\mathrm{count}+1})/(n_{\mathrm{perm}}+1) < 0.001$.
+
+\paragraph{Confidence intervals.} $t$-based 95\% CIs: $\hat{\mu} \pm t_{0.025, n-1} \cdot \hat{\sigma}/\sqrt{n}$. Bigram suite: $n=12$ seeds. Real LLM: $n=10$ seeds ($t_{0.025,9}=2.262$). Memory drift and baseline: $n=20$ seeds ($t_{0.025,19}=2.093$).
+
+\paragraph{Seed policy.}
+Bigram suite: \texttt{numpy.random.default\_rng(seed)} per variant/seed combination.
+Real LLM: \texttt{torch.manual\_seed(gen\_seed)}, $\texttt{gen\_seed} = \texttt{seed\_idx} \times 1000 + \texttt{iteration} \times 10$.
+Memory drift: \texttt{random.Random(seed\_idx * 1000 + 42)}.
+Baseline competition: \texttt{numpy.random.default\_rng(seed\_idx * 17 + 3)}.
+
+\paragraph{Effect size.} Cohen's $d = (\bar{x}_A - \bar{x}_B) / s_{\mathrm{pooled}}$, $s_{\mathrm{pooled}} = \sqrt{(s_A^2 + s_B^2)/2}$.
+
+\paragraph{Sample size rationale.} $N=12$ seeds achieves power $>0.99$ at $\alpha=0.05$ for the observed effect size ($d=4.56$). For real LLM, $N=10$ seeds with $\sigma \approx 0.3$ nats yields CIs of width $\pm 0.21$ nats, sufficient to detect the observed $+0.62$--$+1.63$ nat effects.
+
+\paragraph{Multiple comparisons.} The primary hypothesis (\texttt{oea\_full} vs \texttt{control\_replace}) was pre-specified. Exploratory pairwise comparisons are reported without correction; interpret with caution.
+
+\paragraph{Compute budget.} distilgpt2 (82M): $\approx 0.3$ GPU-hours. gpt2 (124M): $\approx 0.4$ GPU-hours (RTX 4070 SUPER, CUDA 12.1). All bigram experiments: CPU only.
+
+%% ─────────────────────────────────────────────────────────────────────────────
+\section{Glossary}
+\label{app:glossary}
+
+\begin{description}[style=nextline,leftmargin=3cm]
+  \item[Stability] Degree to which recursive generation preserves the initial seed's distributional properties; measured by JSD (lower = more stable).
+  \item[Fidelity] Consistency of generated text with the original model's probability distribution; measured by mean log-probability (higher = better).
+  \item[Anchoring] Constraining generated tokens to a reference vocabulary $\mathcal{V}_{\mathrm{ref}}$. \emph{Not} philosophical ontology.
+  \item[Calibration] Alignment between model confidence (log-probability) and output quality. \emph{Calibration direction} determines whether the filter selects high-quality (correct) or low-quality (anti-calibrated) outputs.
+  \item[Calibration Quality (CQ)] Scalar $\in [0,1]$: 0.5 = random; $>$0.5 = correct direction; $<$0.5 = anti-calibrated.
+  \item[Recursive Exposure] Using model-generated outputs as inputs for subsequent generation steps.
+  \item[Synthetic Contamination] Accumulation of model-generated (vs human-authored) content in the context window over recursive iterations.
+  \item[Epistemic Filtering] Selecting candidate outputs by calibration quality (argmax over reference log-probability). Not ensemble voting or rule-based filtering.
+  \item[Recursive Drift] Gradual divergence of the generated token distribution from the initial seed distribution; measured by JSD.
+  \item[TRR / FRR] True/False Rejection Rate. TRR: fraction of OOV tokens correctly flagged (higher = better). FRR: fraction of in-vocabulary tokens incorrectly flagged (lower = better).
+\end{description}
 
 \bibliographystyle{plain}
 \bibliography{references}

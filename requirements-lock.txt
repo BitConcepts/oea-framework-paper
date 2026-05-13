@@ -1,0 +1,20 @@
+# OEA Framework Paper — Locked Experiment Dependencies (REQ-OEA-020)
+# Generated: 2026-05-13 on Python 3.11 (Windows/Linux/macOS compatible)
+#
+# Core experiment dependencies (no GPU required):
+numpy==2.4.4
+matplotlib==3.10.9
+scipy==1.17.1
+pytest==9.0.3
+specsmith==0.10.1
+
+# Neural LLM experiment dependencies (required for real_lm_experiment.py):
+# Install separately — platform-dependent.
+# CPU:  pip install torch==2.3.1 transformers==4.41.0 rouge-score==0.1.2
+# CUDA: pip install torch==2.3.1+cu121 transformers==4.41.0 rouge-score==0.1.2 --index-url https://download.pytorch.org/whl/cu121
+# MPS:  pip install torch==2.3.1 transformers==4.41.0 rouge-score==0.1.2  (macOS, Apple Silicon)
+#
+# Minimum versions (if pinning causes conflicts):
+# torch>=2.0.0
+# transformers>=4.28.0  (required for AutoModelForCausalLM + GPT-Neo support)
+# rouge-score>=0.1.2

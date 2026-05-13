@@ -4,7 +4,7 @@ Test specifications for the OEA Framework paper. Each TEST-OEA-\* entry maps to 
 corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance phases.
 
 ## TEST-OEA-001
-- **REQ**: REQ-OEA-001 (recursive stability)
+- Covers: REQ-OEA-001
 - **File**: `tests/test_credibility_suite.py`
 - **Method**: `test_recursive_stability_oea_vs_control`
 - **Status**: Implemented
@@ -12,7 +12,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Evidence**: `results/summary_metrics.json` — effect_delta_stability = 0.1206
 
 ## TEST-OEA-002
-- **REQ**: REQ-OEA-002 (epistemic friction)
+- Covers: REQ-OEA-002
 - **File**: `tests/test_credibility_suite.py`
 - **Method**: `test_epistemic_friction_true_reject_delta`
 - **Status**: Implemented
@@ -20,7 +20,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Evidence**: `results/summary_metrics.json` — true_reject delta +0.232, false_reject delta −0.112
 
 ## TEST-OEA-003
-- **REQ**: REQ-OEA-003 (OEA tri-layer)
+- Covers: REQ-OEA-003
 - **File**: `tests/test_credibility_suite.py`
 - **Method**: `test_oea_layer_ordering_ablation`
 - **Status**: Implemented
@@ -29,7 +29,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Evidence**: Ablation results in `results/credibility/credibility_aggregate_metrics.csv`
 
 ## TEST-OEA-004
-- **REQ**: REQ-OEA-004 (credibility suite)
+- Covers: REQ-OEA-004
 - **File**: `tests/test_credibility_suite.py`
 - **Method**: `test_credibility_suite_artifacts`
 - **Status**: Implemented
@@ -38,7 +38,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Evidence**: `experiments/credibility_suite.py` — write_csv(), run_suite()
 
 ## TEST-OEA-005
-- **REQ**: REQ-OEA-005 (statistical reporting)
+- Covers: REQ-OEA-005
 - **File**: `tests/test_credibility_suite.py`
 - **Method**: `test_statistical_reporting_contract`
 - **Status**: Implemented
@@ -47,7 +47,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Evidence**: `experiments/credibility_suite.py` — cohen_d(), permutation_pvalue(), ci95()
 
 ## TEST-OEA-006
-- **REQ**: REQ-OEA-006 (submission guardrail)
+- Covers: REQ-OEA-006
 - **File**: `docs/research-agent-spec.md`
 - **Method**: Manual gate check (Section VI lock verification)
 - **Status**: Planned
@@ -56,7 +56,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Evidence**: `docs/research-agent-spec.md` Section VI; `distribution/distribution-strategy.md`
 
 ## TEST-OEA-007
-- **REQ**: REQ-OEA-007 (conclusion section)
+- Covers: REQ-OEA-007
 - **File**: `arxiv/main.tex`
 - **Method**: Manual review of compiled LaTeX
 - **Status**: Implemented
@@ -66,7 +66,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Evidence**: `arxiv/main.tex` — Conclusion section added in cycle 2
 
 ## TEST-OEA-008
-- **REQ**: REQ-OEA-008 (full ablation results table)
+- Covers: REQ-OEA-008
 - **File**: `arxiv/main.tex`
 - **Method**: Verify table columns against `results/credibility/credibility_aggregate_metrics.csv`
 - **Status**: Implemented
@@ -76,7 +76,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Evidence**: `results/credibility/credibility_aggregate_metrics.csv` + `credibility_summary.json`
 
 ## TEST-OEA-009
-- **REQ**: REQ-OEA-009 (citation audit)
+- Covers: REQ-OEA-009
 - **File**: `arxiv/references.bib`
 - **Method**: Manual verification of each DOI/URL; cross-check author/year against source
 - **Status**: Implemented
@@ -86,7 +86,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Evidence**: `arxiv/references.bib` — audit completed in cycle 2
 
 ## TEST-OEA-010
-- **REQ**: REQ-OEA-010 (RAG must be token-overlap retrieval)
+- Covers: REQ-OEA-010
 - **File**: `experiments/real_lm_experiment.py`
 - **Method**: Code inspection + unit test of `BM25Retriever.retrieve()`
 - **Status**: Implemented
@@ -96,7 +96,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Evidence**: `BM25Retriever` class + `_rag_prompt()` in `real_lm_experiment.py`
 
 ## TEST-OEA-011
-- **REQ**: REQ-OEA-011 (real LLM results in manuscript)
+- Covers: REQ-OEA-011
 - **File**: `arxiv/main.tex`
 - **Method**: Manual review of manuscript after `real_lm_experiment.py` completes
 - **Status**: Implemented
@@ -108,7 +108,7 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
   `results/real_lm/distilgpt2/` and `results/real_lm/gpt2/`. 10 seeds x 10 iters. UNK-002 resolved.
 
 ## TEST-OEA-012
-- **REQ**: REQ-OEA-012 (CQ values measured, not hand-assigned)
+- Covers: REQ-OEA-012
 - **File**: `experiments/credibility_suite.py`
 - **Method**: Verify `_CALIBRATION_QUALITY` comment references `real_lm_summary.json` measurement
 - **Status**: Implemented (with finding)
@@ -118,3 +118,104 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
   anchoring shifts the full log-prob distribution. CQ=0.83 retained as principled design estimate.
 - **Evidence**: `credibility_suite.py` comment block on `oea_full`; `real_lm_summary.json`
   `cq_measurement` block; UNCERTAINTY-MAP.md entry for CQ evidence chain mismatch.
+
+## TEST-OEA-013
+- Covers: REQ-OEA-013
+- **File**: `arxiv/main.tex`
+- **Method**: Manual review of compiled LaTeX
+- **Status**: Implemented
+- **Assertion**: An "Operational Definition of OEA Layers" table exists with columns: Layer,
+  Computational Meaning, Mechanism, Observable Effect. The section explicitly states "Ontology"
+  refers to distributional anchoring and "Agentic" refers to recursive persistence dynamics.
+- **Evidence**: `arxiv/main.tex` — Operational Definition subsection
+
+## TEST-OEA-014
+- Covers: REQ-OEA-014
+- **File**: `arxiv/main.tex`
+- **Method**: Manual review; keyword scan for each required non-claim
+- **Status**: Implemented
+- **Assertion**: A "Scope and Non-Claims" subsection is present and contains all five required
+  disclaimers: no AGI claim, no formal symbolic ontology, no true agency, no causal proof,
+  no general intelligence improvement.
+- **Evidence**: `arxiv/main.tex` — Scope and Non-Claims subsection
+
+## TEST-OEA-015
+- Covers: REQ-OEA-015
+- **File**: `arxiv/main.tex`
+- **Method**: Manual review of compiled LaTeX
+- **Status**: Implemented
+- **Assertion**: A notation/definitions section exists with symbols table and all seven required
+  formal elements: recursive generation equation, anchoring operator, epistemic filter as argmax,
+  TRR formula, FRR formula, JSD definition, log-probability optimization target.
+- **Evidence**: `arxiv/main.tex` — Notation and Formal Definitions section
+
+## TEST-OEA-016
+- Covers: REQ-OEA-016
+- **File**: `experiments/baseline_competition.py`
+- **Method**: Run `python experiments/baseline_competition.py` and inspect artifacts
+- **Status**: Implemented
+- **Assertion**: `results/baseline_competition/` contains `baseline_runs.csv` and `baseline_summary.json`;
+  CSV includes all five non-OEA control variants; summary includes mean ± CI95 and Cohen's d
+  vs `oea_full` for stability, true-reject, and false-reject metrics.
+- **Evidence**: `results/baseline_competition/baseline_summary.json`
+
+## TEST-OEA-017
+- Covers: REQ-OEA-017
+- **File**: `experiments/recursive_memory_drift.py`
+- **Method**: Run `python experiments/recursive_memory_drift.py` and inspect artifacts
+- **Status**: Implemented
+- **Assertion**: `results/memory_drift/` contains `drift_runs.csv` and `drift_summary.json`;
+  CSV covers 30 iterations × 2 variants (oea_controlled, uncontrolled) × N_SEEDS seeds;
+  summary reports entity_retention, semantic_drift, hallucination_proxy, vocab_collapse
+  with mean ± CI95 for both variants at final step.
+- **Evidence**: `results/memory_drift/drift_summary.json`
+
+## TEST-OEA-018
+- Covers: REQ-OEA-018
+- **File**: `arxiv/main.tex`
+- **Method**: Manual review of appendix section
+- **Status**: Implemented
+- **Assertion**: Appendix A: Statistical Methods contains all six required elements:
+  permutation test description, CI derivation, seed policy, Cohen's d formula,
+  sample-size rationale, multiple-comparison discussion.
+- **Evidence**: `arxiv/main.tex` — Appendix A
+
+## TEST-OEA-019
+- Covers: REQ-OEA-019
+- **File**: `experiments/generate_figures.py`
+- **Method**: Run `python experiments/generate_figures.py` and inspect `arxiv/figures/`
+- **Status**: Implemented
+- **Assertion**: Three PDF files exist: `fig_pipeline.pdf`, `fig_calibration.pdf`,
+  `fig_metric_dissociation.pdf`. All three are referenced with `\includegraphics` in `arxiv/main.tex`.
+- **Evidence**: `arxiv/figures/` + `arxiv/main.tex`
+
+## TEST-OEA-020
+- Covers: REQ-OEA-020
+- **File**: `Dockerfile`, `requirements-lock.txt`, `experiments/manifest.json`, `REPRODUCE.md`
+- **Method**: Confirm all four files exist and are non-empty; verify manifest hashes match
+  committed artifact files
+- **Status**: Implemented
+- **Assertion**: All four reproducibility artifacts exist. `REPRODUCE.md` documents complete
+  reproduction commands. `experiments/manifest.json` contains SHA-256 hashes for all files
+  in `results/`.
+- **Evidence**: `REPRODUCE.md`, `experiments/manifest.json`
+
+## TEST-OEA-021
+- Covers: REQ-OEA-021
+- **File**: `arxiv/main.tex`
+- **Method**: Manual review of hypotheses section
+- **Status**: Implemented
+- **Assertion**: A "Core Hypotheses" section lists H1-H4 as stated in REQ-OEA-021.
+  A "What Would Falsify OEA" subsection lists at least one disconfirmation criterion for each
+  hypothesis. No hypothesis is stated without a corresponding falsification condition.
+- **Evidence**: `arxiv/main.tex` — Core Hypotheses and Falsification sections
+
+## TEST-OEA-022
+- Covers: REQ-OEA-022
+- **File**: `arxiv/main.tex`
+- **Method**: Manual review of glossary appendix
+- **Status**: Implemented
+- **Assertion**: Appendix B: Glossary contains definitions for all ten required terms:
+  stability, fidelity, anchoring, calibration, recursive exposure, synthetic contamination,
+  epistemic filtering, recursive drift, calibration quality (CQ), TRR/FRR.
+- **Evidence**: `arxiv/main.tex` — Appendix B: Glossary

@@ -35,8 +35,17 @@ They must satisfy Axiom 1 (Observability) — alternatives must be stated.
 Assumptions about the system that are not explicitly verified but are relied upon.
 Unverified assumptions reduce confidence in all dependent artifacts.
 
+### ARCH-001 — scaffold.yml type:aee-research vs specsmith auto-detection
+
+- **Propositions**: `type: aee-research` in scaffold.yml is the correct authoritative project type; specsmith's `detect_project()` heuristic classifies any Python-file project as `cli-python` when `aee-research` is not in its detection ruleset.
+- **Epistemic boundary**: Applies to specsmith 0.10.1 audit check `type-mismatch`. Detection heuristic is source-inspectable at `specsmith/importer.py`.
+- **Risk if false**: Low — `type: aee-research` affects tool selection and threshold overrides only; no runtime behavior depends on this field.
+- **Confidence**: high
+- **Status**: accepted
+- **Verification plan**: Track specsmith releases; if `aee-research` is added to detection rules, mismatch warning will clear automatically.
+
 <!-- Template entry:
-### ARCH-001 — [Assumption statement]
+### ARCH-002 — [Assumption statement]
 
 - **Propositions**: [The assumption, stated as a falsifiable claim]
 - **Epistemic boundary**: [When/where this assumption holds]

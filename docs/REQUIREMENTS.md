@@ -139,3 +139,125 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
   submission. The `cq_measurement` block in `real_lm_summary.json` provides the formula.
   This closes the evidence chain: real log-probs → measured TRR → CQ → suite parameters.
 - **Evidence**: `experiments/real_lm_experiment.py` — CQ Measurement output in `main()`
+
+### REQ-OEA-013
+- **Component**: manuscript-operationalization
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Applies to `arxiv/main.tex` methodology section
+- **Description**: The manuscript must contain an "Operational Definition of OEA Layers" table
+  mapping each layer to: computational meaning, implementation mechanism, and observable effect.
+  The section must explicitly state that "Ontology" refers to structured distributional anchoring
+  (not formal philosophical ontology) and "Agentic" refers to recursive persistence dynamics
+  (not autonomous agency).
+- **Evidence**: `arxiv/main.tex` — Operational Definition section
+
+### REQ-OEA-014
+- **Component**: manuscript-non-claims
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Applies to `arxiv/main.tex` introduction or dedicated scope section
+- **Description**: The manuscript must contain a "Scope and Non-Claims" subsection explicitly
+  stating: no claim of AGI, no claim of formal symbolic ontology, no claim of true agency, no
+  claim of causal proof, no claim of general intelligence improvement.
+- **Evidence**: `arxiv/main.tex` — Scope and Non-Claims subsection
+
+### REQ-OEA-015
+- **Component**: manuscript-formalization
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Applies to `arxiv/main.tex` notation section
+- **Description**: The manuscript must include a formal notation section with: (a) symbols table,
+  (b) recursive generation equation $x_{t+1} \sim P_\theta(x \mid \mathcal{A}(x_t), \mathcal{E}(x_t))$,
+  (c) anchoring operator definition, (d) epistemic filter as argmax, (e) TRR/FRR formulas,
+  (f) JSD stability metric, (g) log-probability optimization target.
+- **Evidence**: `arxiv/main.tex` — Notation and Definitions section
+
+### REQ-OEA-016
+- **Component**: baseline-competition
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Bigram proxy harness only; real LLM baselines are future work
+- **Description**: `experiments/baseline_competition.py` must compare OEA against at least five
+  non-OEA controls: temperature reduction, top-k restriction, entropy-style filtering,
+  repetition penalty, and RAG-only reranking. Must emit machine-readable CSV/JSON to
+  `results/baseline_competition/` with mean ± CI95 and Cohen's d for the primary metrics.
+- **Evidence**: `experiments/baseline_competition.py` + `results/baseline_competition/`
+
+### REQ-OEA-017
+- **Component**: agentic-benchmark
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Bigram proxy recursive summarization; full neural agentic tasks are future work
+- **Description**: `experiments/recursive_memory_drift.py` must implement a 30-step recursive
+  summarization benchmark measuring: (a) entity retention (token-set overlap with initial),
+  (b) semantic drift (JSD from initial distribution), (c) hallucination proxy (novel token rate),
+  (d) vocabulary collapse (unique token ratio). OEA-controlled and uncontrolled variants must
+  be compared. Results written to `results/memory_drift/`.
+- **Evidence**: `experiments/recursive_memory_drift.py` + `results/memory_drift/`
+
+### REQ-OEA-018
+- **Component**: statistical-appendix
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Appendix in `arxiv/main.tex`
+- **Description**: The manuscript appendix must include: (a) exact permutation test methodology
+  (two-sided, n_perm=2000), (b) bootstrap CI method, (c) seed policy (torch.manual_seed +
+  numpy.random.default_rng), (d) Cohen's d formula, (e) sample-size rationale, and
+  (f) multiple-comparison discussion for 12-variant ablation.
+- **Evidence**: `arxiv/main.tex` — Appendix A: Statistical Methods
+
+### REQ-OEA-019
+- **Component**: figures
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Figures generated from committed result artifacts; no live model inference required
+- **Description**: `experiments/generate_figures.py` must produce three publication figures:
+  (1) OEA pipeline diagram, (2) calibration trajectory plot (log-prob over 10 iterations for 4
+  variants, mean ± CI across 10 seeds), (3) metric dissociation plot (log-prob vs ROUGE-L
+  for 4 variants). Figures stored as PDF under `arxiv/figures/` and referenced in `arxiv/main.tex`.
+- **Evidence**: `experiments/generate_figures.py` + `arxiv/figures/`
+
+### REQ-OEA-020
+- **Component**: reproducibility-package
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Covers the full experiment pipeline; GPU availability required for real LLM runs
+- **Description**: The repository must contain: (a) `Dockerfile` reproducing the Python environment,
+  (b) `requirements-lock.txt` with pinned versions, (c) `experiments/manifest.json` with SHA-256
+  hashes of all result artifacts, (d) `REPRODUCE.md` documenting exact commands and expected
+  runtime to reproduce all results from scratch.
+- **Evidence**: `Dockerfile`, `requirements-lock.txt`, `experiments/manifest.json`, `REPRODUCE.md`
+
+### REQ-OEA-021
+- **Component**: manuscript-hypotheses
+- **Priority**: P1
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Applies to `arxiv/main.tex`
+- **Description**: The manuscript must contain: (a) a "Core Hypotheses" section listing H1 (correct
+  calibration direction improves recursive distributional fidelity), H2 (miscalibration reverses
+  discrimination), H3 (RAG without epistemic filtering degrades fidelity), and H4 (OEA-controlled
+  recursion resists memory drift better than unconstrained recursion); and (b) a "What Would
+  Falsify OEA" subsection specifying the conditions under which each hypothesis would be
+  disconfirmed.
+- **Evidence**: `arxiv/main.tex` — Core Hypotheses section
+
+### REQ-OEA-022
+- **Component**: manuscript-glossary
+- **Priority**: P2
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Appendix in `arxiv/main.tex`
+- **Description**: The manuscript must include a glossary defining: stability, fidelity,
+  anchoring, calibration, recursive exposure, synthetic contamination, epistemic filtering,
+  recursive drift, calibration quality (CQ), and true/false reject rate (TRR/FRR).
+- **Evidence**: `arxiv/main.tex` — Appendix B: Glossary

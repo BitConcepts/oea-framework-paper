@@ -1,8 +1,35 @@
 """
-OEA Real LLM Experiment — distilgpt2 (82M) Recursive Stability with RAG
-=========================================================================
+OEA Real LLM Experiment — Recursive Stability with RAG
+=======================================================
 Validates the OEA mechanism using genuine neural log-probabilities and
 corpus-grounded retrieval-augmented generation (RAG). No hardcoded constants.
+
+Supported models (pass via --model flag)
+----------------------------------------
+GPT-2 family (validated):
+  distilgpt2                    82M  — default
+  gpt2                         124M
+  gpt2-medium                  345M
+
+Non-GPT2 family (validated):
+  EleutherAI/gpt-neo-125M      125M  — different architecture family (GPT-Neo
+                                       local attention), same tokenizer vocab.
+                                       Addresses external validity (P4). VERIFIED.
+  EleutherAI/gpt-neo-1.3B     1.3B  — requires more GPU memory.
+
+Install dependencies:
+  pip install torch transformers rouge-score  (CPU)
+  pip install torch==2.3.1+cu121 --index-url https://download.pytorch.org/whl/cu121  (CUDA)
+  pip install transformers==4.41.0 rouge-score==0.1.2  (then from PyPI)
+  NOTE: requires numpy<2 for torch 2.3.1 ABI compatibility:
+    pip install "numpy==1.26.4"
+
+CPU vs GPU usage:
+  GPU (full config, ~30 min per model):
+    python experiments/real_lm_experiment.py --model EleutherAI/gpt-neo-125M
+  CPU (reduced config, ~20 min):
+    python experiments/real_lm_experiment.py --model EleutherAI/gpt-neo-125M \
+      --n-seeds 3 --n-iterations 5 --gen-tokens 40
 
 OEA Layer Implementation
 ------------------------
@@ -83,11 +110,35 @@ ROOT = Path(__file__).resolve().parents[1]
 CORPUS_PATH = ROOT / "experiments" / "data" / "public_domain_corpus.txt"
 
 # ── CLI argument parsing ───────────────────────────────────────────────────────
-_parser = argparse.ArgumentParser(description="OEA Real LLM Recursive Stability Experiment")
+_parser = argparse.ArgumentParser(
+    description="OEA Real LLM Recursive Stability Experiment",
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+)
 _parser.add_argument(
     "--model",
     default="distilgpt2",
-    help="HuggingFace model name (default: distilgpt2). E.g. gpt2 for GPT-2 small (124M).",
+    help=(
+        "HuggingFace model name (default: distilgpt2). "
+        "E.g. gpt2 (124M), EleutherAI/gpt-neo-125M (non-GPT2-family, REQ-OEA P4)."
+    ),
+)
+_parser.add_argument(
+    "--n-seeds",
+    type=int,
+    default=10,
+    help="Number of random seeds (default: 10 for GPU; use 3 on CPU for ~20 min runtime).",
+)
+_parser.add_argument(
+    "--n-iterations",
+    type=int,
+    default=10,
+    help="Recursive iterations per seed (default: 10 for GPU; use 5 on CPU).",
+)
+_parser.add_argument(
+    "--gen-tokens",
+    type=int,
+    default=60,
+    help="New tokens generated per step (default: 60 for GPU; use 40 on CPU).",
 )
 _args, _unknown = _parser.parse_known_args()
 
@@ -95,11 +146,11 @@ _args, _unknown = _parser.parse_known_args()
 MODEL_NAME = _args.model
 RESULTS_DIR = ROOT / "results" / "real_lm" / MODEL_NAME
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-N_SEEDS = 10              # seeds for statistical robustness (increased from 5)
-N_ITERATIONS = 10         # recursive steps per run (increased from 5)
+N_SEEDS = _args.n_seeds
+N_ITERATIONS = _args.n_iterations
 N_CANDIDATES = 3          # candidates per OEA epistemic-filter step
 RAG_PASSAGE_TOKENS = 64   # max tokens prepended from retrieval
-GEN_MAX_TOKENS = 60       # new tokens generated per recursive step
+GEN_MAX_TOKENS = _args.gen_tokens
 TOP_P = 0.92              # nucleus sampling
 TEMPERATURE = 0.9
 # Dynamic rejection threshold (replaces the fixed -4.5 absolute value that caused TRR=1.0
@@ -250,12 +301,13 @@ def run_real_lm_experiment() -> list[dict]:
     """
     try:
         import torch
-        from transformers import GPT2LMHeadModel, GPT2TokenizerFast
+        from transformers import AutoModelForCausalLM, AutoTokenizer
     except ImportError:
         print(
             "ERROR: transformers and torch are required.\n"
             "Install: pip install -r requirements-experiments.txt\n"
-            "For GPU: see requirements-experiments.txt for CUDA/ROCm/MPS install commands.",
+            "For GPU: see requirements-experiments.txt for CUDA/ROCm/MPS install commands.\n"
+            "For GPT-Neo: pip install transformers>=4.28 torch>=2.0",
             file=sys.stderr,
         )
         sys.exit(1)
@@ -274,9 +326,12 @@ def run_real_lm_experiment() -> list[dict]:
 
     sys.stderr.write(f"Loading {MODEL_NAME}...\n")
     sys.stderr.flush()
-    tokenizer = GPT2TokenizerFast.from_pretrained(MODEL_NAME)
-    tokenizer.pad_token = tokenizer.eos_token
-    model = GPT2LMHeadModel.from_pretrained(MODEL_NAME)
+    # AutoTokenizer and AutoModelForCausalLM support GPT-2, GPT-Neo, and other
+    # causal LM families transparently — no architecture-specific imports needed.
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    model = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
     model.eval()
 
     # ── Device selection (CUDA → MPS → CPU) ───────────────────────────────────

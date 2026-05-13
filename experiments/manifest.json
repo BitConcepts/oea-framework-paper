@@ -1,0 +1,20 @@
+{
+  "_generated": "2026-05-13",
+  "_description": "SHA-256 hashes of all committed result artifacts (REQ-OEA-020). Verify integrity with: python experiments/verify_manifest.py",
+  "results/baseline_competition/baseline_runs.csv": "16c4147f68098be78e03b6e87440384eb53f1fd9ffc4bdfa5a7d5b3fd1649a91",
+  "results/baseline_competition/baseline_summary.json": "2dbfb3860e8a6bfb8fb33b1588aff0d1fb4d33b29da8a97b66c6b867c114ec14",
+  "results/credibility/credibility_aggregate_metrics.csv": "40f0e32fb5c2418e6a048a34dcb7e2090d9c3a3146658c4e37a411849ee27af2",
+  "results/credibility/credibility_insights.txt": "9ec1ae5de81ced29a670a1fa53a315c191838089b932d8f0ebc91abde9368b64",
+  "results/credibility/credibility_raw_runs.csv": "6c11e19f431ba32a899deb7985b9cff0cb5f026edbf9ce08a94e066f1f22097d",
+  "results/credibility/credibility_summary.json": "b735ca740562fc8b7586a277a16c3fdb37bacdcb643c2d5720d814b2265f40a5",
+  "results/credibility/error_taxonomy_summary.csv": "989e2b165f2c9dab5ced226dd286bf2e117d8e29c9af5edbbad00c797b07c6af",
+  "results/epistemic_friction_runs.csv": "166fce4e6815c2c4c066b4f341d5e988a4e9f7e1dff6bfb97126bceaade32202",
+  "results/memory_drift/drift_runs.csv": "8c8b16406e43252eeca6df598975b8660bc80e54f36f18d2534802187cc29bf0",
+  "results/memory_drift/drift_summary.json": "608469a33d7d9892719a497e232c369ec4cba5c022e910904244c6bdf56313d1",
+  "results/real_lm/distilgpt2/real_lm_runs.csv": "2a88e34b5ca24d899bd7cb021358ac16f88f998dfcdd428f7d8d2c5f203fc706",
+  "results/real_lm/distilgpt2/real_lm_summary.json": "5c35bd9c756a0fd30a38c11b36c944dbec46dc181ea5fa756da9abcddc25d7fb",
+  "results/real_lm/gpt2/real_lm_runs.csv": "5622fcf035537a6fbbecf802b061f64a60a567eb9c1b3322c921a59daaf10a50",
+  "results/real_lm/gpt2/real_lm_summary.json": "d68f9bd524a7ca28c9bff8e2137a61f88392572471618c135b20e00165bbe153",
+  "results/recursive_stability_runs.csv": "95b363892b853940f06ceb3d0c86844996dd08e1226b06c1e70f1c030acceabc",
+  "results/summary_metrics.json": "17a94b3f86167099b6259d91edfc441d542e3862b14025dbf77788b6031605cd"
+}

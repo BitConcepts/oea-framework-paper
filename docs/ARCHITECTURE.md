@@ -36,25 +36,38 @@ and feeds empirical outcomes back into subsequent hypothesis design.
 |---|---|---|
 | Credibility suite | `experiments/credibility_suite.py` | Bigram proxy ablation (12 variants, calibration-quality formula) |
 | Run runner | `experiments/run_experiments.py` | Pilot recursive stability + epistemic friction (n=30 seeds) |
-| Real LLM harness | `experiments/real_lm_experiment.py` | distilgpt2 + BM25Retriever RAG (necessary-condition test) |
+| Real LLM harness | `experiments/real_lm_experiment.py` | AutoModel/AutoTokenizer; distilgpt2, gpt2, gpt-neo-125M (necessary-condition test) |
 | BM25 retriever | `BM25Retriever` class in `real_lm_experiment.py` | Token-overlap corpus retrieval (OEA Layer 1 RAG) |
+| Memory drift benchmark | `experiments/recursive_memory_drift.py` | Agentic benchmark: 30-step recursive summarization; entity retention, drift, hallucination proxy |
+| Baseline competition | `experiments/baseline_competition.py` | Compare OEA vs temperature reduction, top-k, entropy filtering, repetition penalty, RAG-only |
+| Figure generator | `experiments/generate_figures.py` | Renders 3 publication figures (pipeline, calibration trajectory, metric dissociation) |
 | Config plans | `experiments/config/` | JSON plans controlling variant/seed/depth sweep |
-| Corpus data | `experiments/data/` | Public domain corpus (Alice, P&P, Moby Dick) for RAG grounding |
+| Corpus data | `experiments/data/` | Public domain corpus (literary + scientific) for RAG grounding |
 | Raw results | `results/` | CSV/JSON experiment artifacts (reproducible, fixed seeds) |
+| Figures | `arxiv/figures/` | PDF figures generated from committed result artifacts |
 | LaTeX manuscript | `arxiv/main.tex` | Publication scaffold |
+| Reproducibility package | `Dockerfile`, `requirements-lock.txt`, `experiments/manifest.json`, `REPRODUCE.md` | Exact reproduction in <10 minutes |
 
 ## Data Flow
 
 ```text
-experiments/data/public_domain_corpus.txt
+experiments/data/{public_domain_corpus.txt, scientific_corpus.txt}
         ↓
   BM25Retriever.from_text()           <- OEA Layer 1: corpus index
         ↓
-experiments/real_lm_experiment.py
+experiments/real_lm_experiment.py     <- AutoModel/AutoTokenizer (distilgpt2, gpt2, gpt-neo-125M)
   control / oea_rag_only / oea_anchored / oea_miscalibrated
         ↓
-results/real_lm/{real_lm_runs.csv, real_lm_summary.json}
+results/real_lm/{model_name}/{runs.csv, summary.json}
   -> cq_measurement: suggested _CALIBRATION_QUALITY updates
+        ↓
+experiments/recursive_memory_drift.py <- Agentic benchmark (bigram, 30 steps)
+        ↓
+results/memory_drift/{runs.csv, summary.json}
+        ↓
+experiments/baseline_competition.py   <- OEA vs non-OEA controls (bigram)
+        ↓
+results/baseline_competition/{runs.csv, summary.json}
         ↓
 experiments/config/credibility_plan.json
         ↓
@@ -62,7 +75,11 @@ credibility_suite.run_suite()         <- calibration-quality formula
         ↓
 results/credibility/{raw_runs.csv, aggregate.csv, summary.json}
         ↓
-arxiv/main.tex  (pilot table + ablation table + real LLM validation)
+experiments/generate_figures.py       <- reads committed CSVs
+        ↓
+arxiv/figures/{fig_pipeline.pdf, fig_calibration.pdf, fig_metric_dissociation.pdf}
+        ↓
+arxiv/main.tex  (all tables, figures, appendix, formal notation)
         ↓
 arXiv / PhilSci-Archive submission
 ```

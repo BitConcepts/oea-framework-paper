@@ -2,7 +2,7 @@
 
 This project follows the 7-phase Applied Epistemic Engineering (AEE) development lifecycle. Each phase has readiness checks that must pass before advancing.
 
-**Current phase:** 🌱 **Inception** (`inception`)
+**Current phase:** 🚀 **Release** (`release`)
 
 ## Phases
 
@@ -16,7 +16,7 @@ This project follows the 7-phase Applied Epistemic Engineering (AEE) development
 
 ## Phase Flow
 
-```text
+```
 inception → architecture → requirements → test_spec → implementation → verification → release
                                                                                         ↓
                                                                                   (next cycle)
