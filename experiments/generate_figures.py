@@ -167,7 +167,7 @@ def fig_pipeline() -> Path:
     ax.annotate("", xy=(0.6, cy - box_h / 2 - 0.08), xytext=(9.3, cy - box_h / 2 - 0.08),
                 arrowprops=dict(arrowstyle="-|>", color="#78909c", lw=0.7,
                                 connectionstyle="arc3,rad=0.0"))
-    ax.text(4.95, cy - box_h / 2 - 0.42, "Agentic Closure (Layer 3): recursive feedback loop",
+    ax.text(4.95, cy - box_h / 2 - 0.42, "Recursive Feedback Loop (Layer 3): output conditions next iteration",
             ha="center", va="top", fontsize=6.5, color="#546e7a", style="italic")
 
     ax.set_title("OEA Three-Layer Generation Pipeline", pad=6, fontsize=10)

@@ -12,9 +12,7 @@
 \usepackage{xcolor}
 \geometry{margin=1in}
 
-\title{Structured Recursive Calibration: An Empirical Study of\\
-Distributional Anchoring and Epistemic Filtering in\\
-Recursive Generative Pipelines}
+\title{OEA: Structured Recursive Calibration\\for Generative Stability}
 \author{BitConcepts Research}
 \date{\today}
 
@@ -22,7 +20,7 @@ Recursive Generative Pipelines}
 \maketitle
 
 \begin{abstract}
-We present an empirical study of the OEA (Ontology, Epistemic, Agentic) framework as a three-layer protocol for improving reliability in agentic systems under recursive synthetic-data exposure.
+We present an empirical study of the OEA (Ontology, Epistemic, Agentic) framework as a three-layer protocol for improving reliability in recursive generative systems under synthetic-data exposure.
 The central thesis is: \emph{recursive generative stability depends more strongly on calibration direction and epistemic filtering than on unconstrained retrieval augmentation.}
 ``Ontology'' in this work refers to structured distributional anchoring---not philosophical ontology.
 ``Agentic'' refers to recursive persistence dynamics---not autonomous agency.
@@ -314,13 +312,13 @@ oea\_miscalib.     & [$-1.14$] & .356 & .054 & [$-.55$] & .384 & .055 & [$-1.37$
 \texttt{oea\_miscalibrated} degrades log-probability below the no-RAG control ($-1.14$, $-0.55$, $-1.37$, and $-0.62$ nats across the four models), providing ablation evidence consistent with H2 \cite{fu2025selfverification,abbasiyadkori2024believe}.
 
 \paragraph{ROUGE-L dissociation.}
-\texttt{oea\_anchored} achieves lower ROUGE-L than control; \texttt{oea\_miscalibrated} achieves higher ROUGE-L. The systematic dissociation confirms log-probability selection and ROUGE-L evaluation are orthogonal, ruling out metric circularity. See Figure~\ref{fig:dissociation}.
+\texttt{oea\_anchored} achieves lower ROUGE-L than control; \texttt{oea\_miscalibrated} achieves higher ROUGE-L. The systematic dissociation is consistent with log-probability selection and ROUGE-L evaluation being orthogonal quality dimensions, addressing the metric-circularity concern. See Figure~\ref{fig:dissociation}.
 
 \paragraph{H3 (RAG without Filter, supported).}
 \texttt{oea\_rag\_only} degrades log-probability ($-0.54$, $-0.08$, $-0.43$, $-0.07$ nats), consistent with H3: the epistemic filter, not retrieval per se, is the operative component.
 
 %% ─────────────────────────────────────────────────────────────────────────────
-\section{Agentic Memory Drift Benchmark}
+\section{Recursive Memory Drift Benchmark}
 \label{sec:memorydrift}
 
 A 30-step recursive memory drift benchmark (\texttt{experiments/recursive\_memory\_drift.py}) compares \textbf{oea\_controlled} vs \textbf{uncontrolled} over 20 seeds in the bigram proxy harness.
@@ -389,21 +387,21 @@ Figures~\ref{fig:pipeline}--\ref{fig:dissociation} are generated from committed 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.90\textwidth]{figures/fig_pipeline.pdf}
-\caption{OEA three-layer generation pipeline. Input passes through BM25 retrieval (Layer 1), epistemic filtering (Layer 2), and vocabulary anchoring; the accepted output re-enters the recursive loop (Layer 3).}
+\caption{OEA three-layer generation pipeline. Input passes through BM25 retrieval (Layer 1), epistemic filtering (Layer 2), and vocabulary anchoring; the accepted output re-enters the recursive feedback loop (Layer 3). This is an operational pipeline, not a claim of autonomous agency.}
 \label{fig:pipeline}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.90\textwidth]{figures/fig_calibration.pdf}
-\caption{Calibration trajectory: mean log-probability over 10 recursive iterations (shaded: 95\% CI, 10 seeds). \texttt{oea\_anchored} maintains higher log-probability; \texttt{oea\_miscalibrated} degrades fastest, consistent with H1 and H2.}
+\caption{Calibration trajectory: mean log-probability over 10 recursive iterations (shaded: 95\% CI, 10 seeds) across four models including Qwen2.5-1.5B (modern 2024 architecture). \texttt{oea\_anchored} maintains higher log-probability; \texttt{oea\_miscalibrated} degrades fastest, consistent with H1 and H2.}
 \label{fig:calibration}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.90\textwidth]{figures/fig_metric_dissociation.pdf}
-\caption{Metric dissociation at final iteration (mean $\pm$ 95\% CI, 10 seeds). Log-probability and ROUGE-L capture orthogonal quality dimensions: \texttt{oea\_anchored} achieves high log-probability but low ROUGE-L; the inverse holds for \texttt{oea\_miscalibrated}. The systematic dissociation rules out metric circularity.}
+\caption{Metric dissociation at final iteration (mean $\pm$ 95\% CI, 10 seeds). Log-probability and ROUGE-L capture orthogonal quality dimensions: \texttt{oea\_anchored} achieves high log-probability but reduced ROUGE-L (expected under vocabulary anchoring); the inverse holds for \texttt{oea\_miscalibrated}. This systematic dissociation addresses metric-circularity concerns.}
 \label{fig:dissociation}
 \end{figure}
 
@@ -411,7 +409,7 @@ Figures~\ref{fig:pipeline}--\ref{fig:dissociation} are generated from committed 
 \section{Discussion}
 \label{sec:discussion}
 
-Results are consistent with the primary thesis across four complementary experiments. The four-model, three-architecture validation confirms the mechanism via log-probability improvement and ROUGE-L dissociation---two orthogonal metrics. Cross-architecture consistency (GPT-2, GPT-Neo, and Qwen2.5) and cross-scale consistency (82M to 1.5B) strengthen external validity. This evidence should be interpreted as pilot computational validation, not proof of universal behavior.
+Results are consistent with the primary thesis across four complementary experiments. The four-model, three-architecture validation supports the mechanism via log-probability improvement and ROUGE-L dissociation---two orthogonal metrics. Cross-architecture consistency (GPT-2, GPT-Neo, and Qwen2.5) and cross-scale consistency (82M to 1.5B) strengthen external validity. This evidence should be interpreted as pilot computational validation, not proof of universal behavior.
 
 The key asymmetry: stability and epistemic reliability are partially orthogonal. Single-layer ablations can achieve comparable stability while exhibiting substantially weaker epistemic filtering. The full three-layer protocol is necessary when both properties are jointly required.
 
@@ -465,13 +463,13 @@ These connections are \emph{suggestive, not demonstrated}. The experiments in th
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented OEA as a testable, three-layer intervention hypothesis for improving reliability in recursive agentic systems, with explicit non-claims: no AGI, no formal symbolic ontology, no autonomous agency, no causal proof, no general intelligence improvement.
+We presented OEA as a testable, three-layer intervention hypothesis for improving reliability in recursive generative systems, with explicit non-claims: no AGI, no formal symbolic ontology, no autonomous agency, no causal proof, no general intelligence improvement.
 
-Our experiments support the primary thesis across four complementary conditions. The full OEA protocol achieves TRR\,=\,0.836, FRR\,=\,0.081 ($d=4.56$, $p<0.001$) and improves mean log-probability by $+0.62$--$+1.63$ nats across four models and three architecture families (82M--1.5B parameters). The anti-calibrated control provides strong ablation evidence for calibration direction as the operative variable. Metric dissociation confirms log-probability and ROUGE-L capture orthogonal quality dimensions.
+Our experiments support the primary thesis across four complementary conditions. The full OEA protocol achieves TRR\,=\,0.836, FRR\,=\,0.081 ($d=4.56$, $p<0.001$) and improves mean log-probability by $+0.62$--$+1.63$ nats across four models and three architecture families (82M--1.5B parameters). The anti-calibrated control provides strong ablation evidence for calibration direction as the operative variable. Metric dissociation supports the conclusion that log-probability and ROUGE-L capture orthogonal quality dimensions.
 
 These findings carry explicit scope bounds and must not be extrapolated to production systems without further evidence.
 
-Future work: (1) frontier-scale model validation ($>$10B parameters); (2) production agentic runtime integration with tool use and persistent memory; (3) ECE-based CQ validation; (4) neural memory drift experiments; (5) statistically powered real LLM baseline comparison.
+Future work: (1) frontier-scale model validation ($>$10B parameters); (2) recursive system integration with tool use and persistent memory; (3) ECE-based CQ validation; (4) neural recursive memory drift experiments; (5) statistically powered real LLM baseline comparison.
 
 %% ─────────────────────────────────────────────────────────────────────────────
 \appendix
