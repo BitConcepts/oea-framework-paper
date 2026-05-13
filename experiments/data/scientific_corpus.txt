@@ -1,0 +1,50 @@
+Every body continues in its state of rest or of uniform motion in a right line unless it is compelled to change that state by forces impressed upon it.
+The change of motion is proportional to the motive force impressed and is made in the direction of the right line in which that force is impressed.
+To every action there is always opposed an equal reaction; or, the mutual actions of two bodies upon each other are always equal and directed to contrary parts.
+If a body impinge upon another, and by its force change the motion of the other, that body also will undergo an equal change in its own motion toward the contrary part.
+I have not been able to discover the cause of those properties of gravity from phenomena, and I frame no hypotheses.
+Whatever is not deduced from the phenomena is to be called a hypothesis; and hypotheses, whether metaphysical or physical, whether of occult qualities or mechanical, have no place in experimental philosophy.
+In this philosophy particular propositions are inferred from the phenomena, and afterwards rendered general by induction.
+
+Light is never known to follow crooked passages nor to bend into the shadow, which argues that it doth not consist of motions propagated through a fluid medium.
+Are not all hypotheses erroneous in which light is supposed to consist in pression or motion propagated through a fluid medium?
+The changing of bodies into light, and light into bodies, is very conformable to the course of nature which seems delighted with transmutations.
+Do not bodies and light act mutually upon one another; that is to say, bodies upon light in emitting, reflecting, refracting, and inflecting it, and light upon bodies for heating them?
+Query: Is not vision performed chiefly by the vibrations of the retina, excited by the pressure or motion of the rays of light, communicated to the brain along the fibres of the optic nerves?
+
+The surface of the Earth is the shore of the cosmic ocean. From it we have learned most of what we know.
+Recently, we have waded a little out to sea, enough to dampen our toes or, at most, wet our ankles.
+The water seems inviting. The ocean calls. Some part of our being knows this is from where we came.
+We long to return. These aspirations are not, I think, irreverent, although they may trouble whatever gods may be.
+For all our conceits, we live on a mote of dust suspended in a sunbeam.
+Our planet is a lonely speck in the great enveloping cosmic dark. In our obscurity, in all this vastness, there is no hint that help will come from elsewhere to save us from ourselves.
+The Earth is the only world known so far to harbor life. There is nowhere else, at least in the near future, to which our species could migrate.
+Cosmos is a Greek word for the order of the universe. It is in a way the opposite of chaos. It implies the deep interconnectedness of all things.
+
+In science there is only physics; all the rest is stamp collecting.
+The supreme test of a scientific theory is its ability to make predictions that can be checked against observation.
+It is not the job of science to explain everything. Its job is to explain in a way that can be tested.
+Nature uses only the longest threads to weave her patterns, so that each small piece of her fabric reveals the organization of the entire tapestry.
+The imagination of nature is far greater than the imagination of man. No one who did not have some such experience will find it easy to understand how powerful it is.
+Scientific knowledge is a body of statements of varying degrees of certainty, some most unsure, some nearly sure, none absolutely certain.
+The first principle is that you must not fool yourself, and you are the easiest person to fool.
+It is our responsibility as scientists, knowing the great progress and great value of a satisfactory philosophy of ignorance, to proclaim the value of this freedom and teach how doubt is not to be feared but welcomed.
+
+The brain is wider than the sky, for put them side by side, the one the other will contain with ease, and you beside.
+The brain is deeper than the sea, for hold them blue to blue, the one the other will absorb, as sponges buckets do.
+To know that you do not know is the beginning of wisdom. To pretend to know when you do not know is a disease.
+What we observe is not nature itself but nature exposed to our method of questioning. The result of our experiment depends on what we have asked.
+An experiment is a question which science poses to nature, and a measurement is the recording of nature's answer.
+The electron does not have a definite position. It has a superposition of possibilities, each with a different probability amplitude.
+We are part of nature, not apart from it. Our observations change what we observe.
+
+A recursive system that generates its own training data faces a fundamental challenge: it cannot distinguish its own outputs from external ground truth.
+Without an external reference signal, the system drifts toward the most probable next token, which is increasingly its own prior generation.
+The entropy of a closed generative system increases over time unless constrained by information from outside the system boundary.
+Calibration is the alignment between a model's expressed confidence and its actual accuracy. When calibration degrades, expressed certainty becomes decoupled from ground truth.
+The epistemic agent knows the limits of its knowledge; the miscalibrated agent does not know what it does not know.
+Stability in a recursive learning system requires that each generative step be anchored to evidence that was not itself generated by the system.
+When the anchor is removed, the system is free to drift, and drift, once begun, compounds with each subsequent generation.
+The ontological boundary defines what counts as valid output. Without it, the system has no principle for rejecting its own errors.
+Retrieval-augmented generation grounds synthesis in corpus evidence, but retrieval alone is not sufficient if the retrieval quality is not itself monitored and filtered.
+The full prevention of collapse requires three separable mechanisms: bounding the output space, filtering by evidence quality, and closing the feedback loop with measured outcomes.

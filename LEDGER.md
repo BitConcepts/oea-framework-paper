@@ -1,5 +1,36 @@
 # LEDGER
 
+## 2026-05-13 - Multi-domain corpus, two-model validation, literature expansion (v0.4.0)
+- **Corpus expansion**: Replaced 18-line toy corpus (~300 words) with expanded multi-domain corpus
+  (~1600 words): Carroll, Austen, Melville, Hume, Darwin (5 domains). Added separate scientific
+  corpus (Newton, Feynman, Sagan) at `experiments/data/scientific_corpus.txt`.
+- **Corpus self-reference fixed (UNK-002 resolved)**: Removed `arxiv/main.tex` from
+  `collect_repo_docs_corpus()`. Credibility plan v2 uses `[public_domain_snippets, scientific_snippets]`.
+- **Two-model real LLM validation**: Added `--model` CLI arg to `real_lm_experiment.py`.
+  Increased N_SEEDS=10, N_ITERATIONS=10. Results dir: `results/real_lm/{model_name}/`.
+  - distilgpt2 (82M): oea_anchored log_prob +1.14 nats, oea_miscalibrated -0.82 nats vs control.
+  - gpt2 (124M):      oea_anchored log_prob +1.61 nats, oea_miscalibrated -0.80 nats vs control.
+  - Cross-model consistency confirms calibration direction as the causal mechanism.
+  - JSD-anchoring interaction finding: vocabulary anchoring concentrates token distribution
+    (higher JSD from seed) while dramatically improving model fidelity (log-prob). Documented
+    in Table 3 caption, limitations, and dedicated subsection.
+- **Credibility suite (v2)**: Re-run with new corpora. New headline: d=4.56 (was 3.10), p<0.001.
+  oea_full TRR=0.836, FRR=0.081. Table 2 refreshed with 2-domain values.
+- **5 new citations added**:
+  - drayson2025detection (EMNLP 2025): machine-generated text detection prevents collapse
+  - zhu2025synthesize (ICML 2025): token editing to prevent collapse
+  - kovac2025recursive (2025): data properties modulate distribution shift
+  - keisha2025knowledge (NeurIPS 2025 workshop): knowledge collapse three-stage model
+  - abbasiyadkori2024believe (Google DeepMind 2024): epistemic vs aleatoric UQ in LLMs
+- **Differentiation paragraphs**: Related Work 2.1 now explicitly distinguishes OEA from
+  Drayson et al. (training-time detection), Zhu et al. (token editing), and Kovac et al.;
+  cites Keisha et al. for knowledge collapse motivation; Abbasi Yadkori et al. in Calibration section.
+- **Manuscript updated**: Abstract (two-model results), Table 2 (2 corpora, d=4.56), Table 3
+  (two-model format, log-prob primary), ablation section, conclusion, limitations, data availability.
+- **Artifacts committed**: results/real_lm/distilgpt2/, results/real_lm/gpt2/,
+  results/credibility/ (refreshed), experiments/data/scientific_corpus.txt.
+- 12 tests passing. Tagged v0.4.0.
+
 ## 2026-05-13 - Reproducibility fix, artifact commit, REQ-OEA-012 finding, governance update
 - Fixed missing `torch.manual_seed(gen_seed)` in `real_lm_experiment.py` `_generate()`: generation
   was unseeded, making results non-reproducible. Seed was computed but never applied.

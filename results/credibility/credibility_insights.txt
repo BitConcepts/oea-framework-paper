@@ -1,10 +1,10 @@
 OEA credibility suite completed.
 Total runs: 7776
 Top variants by stability:
- - ablation_A: stability=0.9604, ppl=541.6766, true_reject=0.6378, false_reject=0.2066
- - ablation_EA: stability=0.9557, ppl=346.2972, true_reject=0.8076, false_reject=0.0994
- - ablation_OE: stability=0.9508, ppl=375.8758, true_reject=0.7766, false_reject=0.1197
- - ablation_miscalibrated: stability=0.9508, ppl=625.8246, true_reject=0.2561, false_reject=0.6512
- - control_accumulate: stability=0.9508, ppl=625.8246, true_reject=0.5833, false_reject=0.2403
-oea_vs_control_replace: stability_delta=0.4304, perplexity_delta=6.0179, true_reject_delta=0.2553, false_reject_delta=-0.1601
-oea_vs_control_accumulate: stability_delta=-0.0247, perplexity_delta=-267.5348, true_reject_delta=0.2553, false_reject_delta=-0.1601
+ - ablation_A: stability=0.9565, ppl=724.9788, true_reject=0.6351, false_reject=0.2070
+ - ablation_OE: stability=0.9554, ppl=531.7325, true_reject=0.7749, false_reject=0.1197
+ - ablation_O: stability=0.9550, ppl=986.0625, true_reject=0.6127, false_reject=0.2215
+ - ablation_EA: stability=0.9496, ppl=436.3989, true_reject=0.8056, false_reject=0.0999
+ - ablation_miscalibrated: stability=0.9433, ppl=891.6723, true_reject=0.2567, false_reject=0.6506
+oea_vs_control_replace: stability_delta=0.4882, perplexity_delta=231.9496, true_reject_delta=0.2541, false_reject_delta=-0.1600
+oea_vs_control_accumulate: stability_delta=-0.0065, perplexity_delta=-389.4838, true_reject_delta=0.2541, false_reject_delta=-0.1600

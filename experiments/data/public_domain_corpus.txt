@@ -1,17 +1,62 @@
 Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do.
+Once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it.
 The rabbit-hole went straight on like a tunnel for some way, and then dipped suddenly down.
+Alice had not a moment to think about stopping herself before she found herself falling down what seemed a very deep well.
 The Caterpillar and Alice looked at each other for some time in silence.
-The Gryphon sat up and rubbed its eyes: then it watched the Queen till she was out of sight.
-The White Rabbit put on his spectacles and asked in a great hurry where the Duchess was.
+At last the Caterpillar took the hookah out of its mouth, and addressed her in a languid, sleepy voice.
+The Gryphon sat up and rubbed its eyes, then it watched the Queen till she was out of sight.
+Off with their heads the Queen shouted, nobody paid much attention for they were quite used to it.
+Curiouser and curiouser, cried Alice. She was so much surprised that for the moment she quite forgot how to speak good English.
+It takes all the running you can do to keep in the same place, said the Red Queen. If you want to get somewhere else you must run at least twice as fast as that.
 
 It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.
+However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families.
 Mr. Bennet replied that he had not the pleasure of understanding his wife.
 Elizabeth listened in silence, but her mind was intent on every movement in the room.
 Darcy walked with measured pace, speaking little and observing much.
 They parted with civility, though neither was satisfied by the conversation.
+In vain have I struggled. It will not do. My feelings will not be repressed. You must allow me to tell you how ardently I admire and love you.
+She grew more thoughtful as the evening wore on, and tried to form some plan by which the difficulty might be overcome.
+There are few people I really love, and still fewer of whom I think well. The more I see of the world, the more I am dissatisfied with it.
 
 Call me Ishmael.
-Whenever I find myself growing grim about the mouth, I account it high time to get to sea as soon as I can.
-There is nothing surprising in this.
+Some years ago, never mind how long precisely, having little money in my purse and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.
+Whenever I find myself growing grim about the mouth, whenever it is a damp, drizzly November in my soul, I account it high time to get to sea as soon as I can.
 The ship moved steadily into darker waters while the crew kept their posts.
 I observed the horizon and considered the uncertain work ahead.
+There is nothing surprising in this. If they only knew it, almost all men in their degree, at some time or other, cherish very nearly the same feelings toward the ocean.
+Meditation and water are wedded forever. The image of the ungraspable phantom of life is the key to it all.
+Queequeg was a native of an island far away to the West and South, but it is not down in any map; true places never are.
+To produce a mighty book you must choose a mighty theme. No great and enduring volume can ever be written on the flea.
+
+When on board the Beagle as naturalist, I was much struck with certain facts in the distribution of the inhabitants of South America.
+These facts seemed to me to throw some light on the origin of species, that mystery of mysteries, as it has been called by one of our greatest philosophers.
+On my return home, it occurred to me that something might perhaps be made out on this question by patiently accumulating and reflecting on all sorts of facts bearing on it.
+After five years of work I allowed myself to speculate on the subject, and drew up some short notes.
+No one ought to feel surprise at much remaining as yet unexplained in regard to the origin of species and varieties.
+When we look to the individuals of the same variety or sub-variety of our older cultivated plants and animals, one of the first points which strikes us is that they generally differ more from each other than do the individuals of any one species in a state of nature.
+The general conclusion at which I have slowly been driven is that the conditions of life do not act as the sole causes of variability.
+Variability is governed by many unknown laws, more especially by that of correlation of growth.
+Something may be attributed to the direct action of the conditions of life, and something to use and disuse; but it is very difficult to explain the greater part of the variability even in our oldest cultivated species.
+Natural selection can act only by the preservation and accumulation of infinitesimally small inherited modifications, each profitable to the preserved being.
+
+All perceptions of the human mind resolve themselves into two distinct kinds, which I shall call impressions and ideas.
+The difference betwixt these consists in the degrees of force and liveliness with which they strike upon the mind.
+By the term impression I mean all our sensations, passions, and emotions as they make their first appearance in the soul.
+By ideas I mean the faint images of these in thinking and reasoning.
+It seems a proposition which will not admit of much dispute that all our ideas are nothing but copies of our impressions.
+Custom, then, is the great guide of human life. It is that principle alone which renders our experience useful to us.
+Without the influence of custom, we should be entirely ignorant of every matter of fact beyond what is immediately present to the memory and senses.
+A wise man proportions his belief to the evidence. In such conclusions as are founded on an infallible experience, he expects the event with the last degree of assurance.
+In other cases he proceeds with more caution. He weighs the opposite experiments, considers which side is supported by the greater number of experiments.
+When causes are similar, the experienced man infers that the effects will also resemble. But he never proceeds beyond what experience supplies.
+
+The capacity for reasoning is what distinguishes the deliberate life from the merely reactive one. But reasoning must be grounded in observation, not in repetition of prior belief.
+If I let fall a stone from my hand, it falls; if I reason from false premises, my conclusions mislead; if a system generates outputs without epistemic constraint, it drifts.
+The question is not whether error accumulates, but whether it can be measured, anticipated, and bounded by principled intervention.
+A theory that cannot be falsified is no theory at all, but only a description after the fact.
+We must distinguish between the hypothesis that can fail under evidence and the narrative that can only succeed by ignoring counter-examples.
+Science advances not by confirmation of what we already believe, but by the deliberate construction of tests that could show us to be wrong.
+The honest investigator seeks not evidence that supports the hypothesis, but evidence that could, in principle, contradict it.
+When a system is self-referential, when it generates its own training signal, the danger of circular reinforcement is greatest.
+Grounding in external evidence, not in the system's own prior outputs, is the condition for maintaining stability over recursive iterations.

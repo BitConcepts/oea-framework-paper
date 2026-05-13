@@ -96,21 +96,18 @@ def tokenize(text: str) -> list[str]:
     return toks
 
 
-def collect_repo_docs_corpus() -> str:
-    parts = []
-    for p in [
-        REPO_ROOT / "README.md",
-        REPO_ROOT / "docs" / "methodology.md",
-        REPO_ROOT / "docs" / "research-agent-spec.md",
-        REPO_ROOT / "arxiv" / "main.tex",
-    ]:
-        if p.exists():
-            parts.append(p.read_text(encoding="utf-8", errors="ignore"))
-    return "\n".join(parts)
-
-
 def collect_public_domain_corpus() -> str:
     p = REPO_ROOT / "experiments" / "data" / "public_domain_corpus.txt"
+    return p.read_text(encoding="utf-8", errors="ignore") if p.exists() else ""
+
+
+def collect_scientific_corpus() -> str:
+    """Scientific/natural-philosophy public domain corpus.
+
+    Separate from public_domain_corpus.txt to provide cross-domain robustness
+    evaluation. Does NOT include any manuscript file (fixes UNK-002 self-reference).
+    """
+    p = REPO_ROOT / "experiments" / "data" / "scientific_corpus.txt"
     return p.read_text(encoding="utf-8", errors="ignore") if p.exists() else ""
 
 
@@ -451,8 +448,8 @@ def write_csv(path: Path, rows: list[dict]):
 
 def run_suite(plan: dict) -> dict:
     corpora = {
-        "repo_docs": tokenize(collect_repo_docs_corpus()),
         "public_domain_snippets": tokenize(collect_public_domain_corpus()),
+        "scientific_snippets": tokenize(collect_scientific_corpus()),
     }
 
     # Pre-compute total runs so the progress bar has an accurate denominator

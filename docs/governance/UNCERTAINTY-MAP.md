@@ -42,18 +42,14 @@ These are things the project explicitly does not know and has a plan to address.
 - **Target date**: future work (out of scope for this paper)
 - **Status**: open
 
-### UNK-002 — Bigram suite corpus self-reference: repo_docs corpus includes main.tex
+### UNK-002 — ~~Bigram suite corpus self-reference~~ RESOLVED 2026-05-13
 
-- **Artifact affected**: REQ-OEA-004, REQ-OEA-008, `results/credibility/credibility_aggregate_metrics.csv`
-- **Why unknown**: `collect_repo_docs_corpus()` in `credibility_suite.py` reads `arxiv/main.tex` as
-  part of the training corpus. When `main.tex` is revised, the bigram model changes, causing slight
-  changes to the credibility suite aggregate metrics across sessions.
-- **Confidence impact**: Absolute values in Table 2 may shift slightly across manuscript revisions.
-  Directional claims (oea_full best TRR/FRR) remain stable.
-- **Mitigation**: Re-run `credibility_suite.py` after any significant manuscript revision and commit
-  updated artifacts. The current committed artifacts are the ground truth for the current version.
-- **Target date**: each manuscript revision
-- **Status**: investigating (accepted as systematic, addressed by re-running before submission)
+- **Artifact affected**: REQ-OEA-004, REQ-OEA-008
+- **Resolution**: Removed `arxiv/main.tex` from `collect_repo_docs_corpus()`. Replaced `repo_docs`
+  corpus in `credibility_plan.json` with a stable `scientific_snippets` corpus
+  (`experiments/data/scientific_corpus.txt`) consisting entirely of public-domain scientific prose
+  (Newton, Feynman, Sagan). The credibility suite now uses two independent, stable corpora.
+- **Status**: resolved
 
 <!-- Template:
 ### UNK-001 — [What we don't know]

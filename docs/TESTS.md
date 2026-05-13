@@ -101,10 +101,11 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 - **Method**: Manual review of manuscript after `real_lm_experiment.py` completes
 - **Status**: Implemented
 - **Assertion**: Section \\section{Real LLM Validation} exists in `main.tex` with:
-  (a) 4-variant ablation table sourced from `results/real_lm/real_lm_summary.json`, (b) explicit
-  frozen-weights scope note as necessary-condition framing, (c) threshold recalibration note.
-- **Evidence**: `arxiv/main.tex` — Table 3 populated; `results/real_lm/real_lm_summary.json` committed.
-  seeded run (torch.manual_seed fix applied 2026-05-13). CQ chain finding documented in limitations.
+  (a) two-model ablation table (distilgpt2 + gpt2) sourced from committed artifacts, (b) explicit
+  frozen-weights scope note as necessary-condition framing, (c) threshold recalibration note,
+  (d) vocabulary anchoring interaction finding documented.
+- **Evidence**: `arxiv/main.tex` — Table 3 two-model format; artifacts committed to
+  `results/real_lm/distilgpt2/` and `results/real_lm/gpt2/`. 10 seeds x 10 iters. UNK-002 resolved.
 
 ## TEST-OEA-012
 - **REQ**: REQ-OEA-012 (CQ values measured, not hand-assigned)

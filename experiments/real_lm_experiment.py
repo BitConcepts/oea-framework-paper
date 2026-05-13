@@ -64,6 +64,7 @@ Results written to: results/real_lm/
 """
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import math
@@ -75,14 +76,23 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-RESULTS_DIR = ROOT / "results" / "real_lm"
-RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 CORPUS_PATH = ROOT / "experiments" / "data" / "public_domain_corpus.txt"
 
+# ── CLI argument parsing ───────────────────────────────────────────────────────
+_parser = argparse.ArgumentParser(description="OEA Real LLM Recursive Stability Experiment")
+_parser.add_argument(
+    "--model",
+    default="distilgpt2",
+    help="HuggingFace model name (default: distilgpt2). E.g. gpt2 for GPT-2 small (124M).",
+)
+_args, _unknown = _parser.parse_known_args()
+
 # ── Hyperparameters ────────────────────────────────────────────────────────────
-MODEL_NAME = "distilgpt2"
-N_SEEDS = 5               # seeds for statistical robustness
-N_ITERATIONS = 5
+MODEL_NAME = _args.model
+RESULTS_DIR = ROOT / "results" / "real_lm" / MODEL_NAME
+RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+N_SEEDS = 10              # seeds for statistical robustness (increased from 5)
+N_ITERATIONS = 10         # recursive steps per run (increased from 5)
 N_CANDIDATES = 3          # candidates per OEA epistemic-filter step
 RAG_PASSAGE_TOKENS = 64   # max tokens prepended from retrieval
 GEN_MAX_TOKENS = 60       # new tokens generated per recursive step

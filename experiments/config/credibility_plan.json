@@ -1,9 +1,9 @@
 {
-  "study_name": "oea_credibility_suite_v1",
-  "description": "Real-text recursive training credibility suite with baselines, ablations, robustness checks, and statistical reporting.",
+  "study_name": "oea_credibility_suite_v2",
+  "description": "Real-text recursive training credibility suite with baselines, ablations, robustness checks, and statistical reporting. v2: uses public_domain + scientific corpora (no manuscript self-reference per UNK-002).",
   "corpora": [
-    "repo_docs",
-    "public_domain_snippets"
+    "public_domain_snippets",
+    "scientific_snippets"
   ],
   "variants": [
     "control_replace",
