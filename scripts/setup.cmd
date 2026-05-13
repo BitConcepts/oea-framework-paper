@@ -31,7 +31,21 @@ python -m pip install pytest -q
 
 if "%WITH_EXPERIMENTS%"=="1" (
     echo Installing experiment dependencies ^(requires ~2 GB: torch + transformers^)...
-    python -m pip install -r "%PROJECT_ROOT%\requirements-experiments.txt" --extra-index-url https://download.pytorch.org/whl/cpu -q
+    REM Auto-detect NVIDIA GPU via nvidia-smi and select the appropriate torch wheel index
+    where nvidia-smi >nul 2>nul
+    if %ERRORLEVEL%==0 (
+        nvidia-smi >nul 2>nul
+        if %ERRORLEVEL%==0 (
+            echo   NVIDIA GPU detected -- installing torch with CUDA 12.1 support.
+            python -m pip install -r "%PROJECT_ROOT%\requirements-experiments.txt" --index-url https://download.pytorch.org/whl/cu121 -q
+            goto :exp_done
+        )
+    )
+    echo   No CUDA GPU detected -- installing CPU-only torch.
+    echo   For NVIDIA GPU support: install CUDA 12.1 drivers, then re-run or see requirements-experiments.txt.
+    echo   For AMD GPU ^(ROCm^) or Apple Silicon ^(MPS^): see requirements-experiments.txt.
+    python -m pip install -r "%PROJECT_ROOT%\requirements-experiments.txt" --index-url https://download.pytorch.org/whl/cpu -q
+    :exp_done
     echo Experiment dependencies installed.
 )
 

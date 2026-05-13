@@ -263,6 +263,22 @@ def run_real_lm_experiment() -> list[dict]:
     model = GPT2LMHeadModel.from_pretrained(MODEL_NAME)
     model.eval()
 
+    # ── Device selection (CUDA → MPS → CPU) ───────────────────────────────────
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+        gpu_name = torch.cuda.get_device_name(0)
+        sys.stderr.write(f"Device: cuda ({gpu_name})\n")
+    elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        device = torch.device("mps")
+        sys.stderr.write("Device: mps (Apple Metal)\n")
+    else:
+        device = torch.device("cpu")
+        sys.stderr.write(
+            "Device: cpu  [NOTE: no GPU detected — CUDA/ROCm/MPS would give significant "
+            "acceleration; see requirements-experiments.txt for install instructions]\n"
+        )
+    model = model.to(device)
+
     seed_text = load_seed_text()
     seed_ids: list[int] = tokenizer.encode(seed_text, truncation=True, max_length=256)
     seed_dist = _token_dist(seed_ids, tokenizer.vocab_size)
@@ -290,7 +306,7 @@ def run_real_lm_experiment() -> list[dict]:
         """Mean per-token log-prob of sequence under the original model."""
         if len(ids) < 2:
             return -100.0
-        t = torch.tensor([ids[-256:]])  # use last 256 tokens as context
+        t = torch.tensor([ids[-256:]]).to(device)  # use last 256 tokens as context
         out = model(t)
         lp = torch.nn.functional.log_softmax(out.logits[:, :-1, :], dim=-1)
         per_tok = lp.gather(2, t[:, 1:].unsqueeze(-1)).squeeze(-1)
@@ -319,9 +335,9 @@ def run_real_lm_experiment() -> list[dict]:
         true_reject_rate: fraction of OOV tokens correctly flagged (↑ = good)
         false_reject_rate: fraction of in-vocab tokens incorrectly flagged (↓ = good)
         """
-        ctx = torch.tensor([context_ids[-64:]])
+        ctx = torch.tensor([context_ids[-64:]]).to(device)
         out = model(ctx)
-        lp = torch.nn.functional.log_softmax(out.logits[0, -1, :], dim=-1).numpy()
+        lp = torch.nn.functional.log_softmax(out.logits[0, -1, :], dim=-1).cpu().numpy()
 
         rng = np.random.default_rng(99)
         vocab_size = tokenizer.vocab_size
@@ -353,7 +369,7 @@ def run_real_lm_experiment() -> list[dict]:
         """
         import torch
         torch.manual_seed(gen_seed)  # fix: seed was computed but never applied
-        t = torch.tensor([prompt_ids[-128:]])
+        t = torch.tensor([prompt_ids[-128:]]).to(device)
         out = model.generate(
             t,
             max_new_tokens=GEN_MAX_TOKENS,
@@ -362,7 +378,7 @@ def run_real_lm_experiment() -> list[dict]:
             temperature=TEMPERATURE,
             pad_token_id=tokenizer.eos_token_id,
         )
-        return out[0, t.shape[1]:].tolist()
+        return out[0, t.shape[1]:].cpu().tolist()
 
     def _rag_prompt(current_ids: list[int]) -> list[int]:
         """Build a RAG-augmented prompt: retrieved passage + current context.

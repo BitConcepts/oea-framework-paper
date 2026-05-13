@@ -1,11 +1,26 @@
 # OEA real-LLM experiment dependencies
-# Install with:
-#   pip install -r requirements-experiments.txt --extra-index-url https://download.pytorch.org/whl/cpu
-#
-# These are NOT required for the bigram-proxy credibility suite (requirements.txt only).
 # Needed only for experiments/real_lm_experiment.py.
-
---extra-index-url https://download.pytorch.org/whl/cpu
+# NOT required for the bigram-proxy credibility suite (requirements.txt only).
+#
+# The experiment auto-detects CUDA > MPS > CPU at runtime and prints which device is used.
+# Install the right torch build for your hardware:
+#
+#   NVIDIA GPU (CUDA 12.1 — RTX 3000/4000/5000 series, A/H-series):
+#     pip install torch>=2.2.0 --index-url https://download.pytorch.org/whl/cu121
+#
+#   NVIDIA GPU (CUDA 11.8 — older cards):
+#     pip install torch>=2.2.0 --index-url https://download.pytorch.org/whl/cu118
+#
+#   AMD GPU (ROCm 6.x — RX 6000/7000 series, Instinct):
+#     pip install torch>=2.2.0 --index-url https://download.pytorch.org/whl/rocm6.1
+#
+#   Apple Silicon (MPS — M1/M2/M3/M4):
+#     pip install torch>=2.2.0   # standard PyPI build includes MPS
+#
+#   CPU-only fallback (no GPU):
+#     pip install torch>=2.2.0 --index-url https://download.pytorch.org/whl/cpu
+#
+# setup.sh / setup.cmd --experiments auto-selects CUDA or CPU based on nvidia-smi detection.
 
 torch>=2.2.0
 transformers>=4.44.0

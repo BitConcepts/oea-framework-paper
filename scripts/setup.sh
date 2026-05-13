@@ -28,8 +28,24 @@ pip install pytest -q
 
 if [ "$WITH_EXPERIMENTS" = true ]; then
     echo "Installing experiment dependencies (requires ~2 GB: torch + transformers)..."
-    pip install -r "$PROJECT_ROOT/requirements-experiments.txt" \
-        --extra-index-url https://download.pytorch.org/whl/cpu -q
+    # Auto-detect GPU type and select the appropriate torch wheel index
+    if command -v nvidia-smi &>/dev/null && nvidia-smi &>/dev/null 2>&1; then
+        echo "  NVIDIA GPU detected — installing torch with CUDA 12.1 support."
+        TORCH_INDEX="https://download.pytorch.org/whl/cu121"
+    elif [[ "$(uname)" == "Darwin" ]]; then
+        echo "  macOS detected — installing torch with MPS (Apple Metal) support."
+        TORCH_INDEX=""  # standard PyPI torch includes MPS
+    else
+        echo "  No GPU detected — installing CPU-only torch."
+        echo "  For GPU support: install CUDA/ROCm drivers, then re-run or see requirements-experiments.txt."
+        TORCH_INDEX="https://download.pytorch.org/whl/cpu"
+    fi
+    if [ -n "$TORCH_INDEX" ]; then
+        pip install -r "$PROJECT_ROOT/requirements-experiments.txt" \
+            --index-url "$TORCH_INDEX" -q
+    else
+        pip install -r "$PROJECT_ROOT/requirements-experiments.txt" -q
+    fi
     echo "Experiment dependencies installed."
 fi
 
