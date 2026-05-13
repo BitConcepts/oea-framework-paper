@@ -1,0 +1,10 @@
+OEA credibility suite completed.
+Total runs: 7776
+Top variants by stability:
+ - ablation_A: stability=0.9604, ppl=541.6766, true_reject=0.6378, false_reject=0.2066
+ - ablation_EA: stability=0.9557, ppl=346.2972, true_reject=0.8076, false_reject=0.0994
+ - ablation_OE: stability=0.9508, ppl=375.8758, true_reject=0.7766, false_reject=0.1197
+ - ablation_miscalibrated: stability=0.9508, ppl=625.8246, true_reject=0.2561, false_reject=0.6512
+ - control_accumulate: stability=0.9508, ppl=625.8246, true_reject=0.5833, false_reject=0.2403
+oea_vs_control_replace: stability_delta=0.4304, perplexity_delta=6.0179, true_reject_delta=0.2553, false_reject_delta=-0.1601
+oea_vs_control_accumulate: stability_delta=-0.0247, perplexity_delta=-267.5348, true_reject_delta=0.2553, false_reject_delta=-0.1601

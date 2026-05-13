@@ -28,8 +28,13 @@ venv/
 *.synctex.gz
 *.toc
 
-# Research outputs
+# Research outputs — exclude generated run artifacts but keep committed experiment results
+# The primary results (pilot CSVs + summary_metrics.json) are committed directly.
+# Credibility suite and real-LLM artifacts are tracked via force-add and must be
+# recommitted after any run that changes the numbers.
 results/
+!results/credibility/
+!results/real_lm/
 artifacts/
 
 # Local env

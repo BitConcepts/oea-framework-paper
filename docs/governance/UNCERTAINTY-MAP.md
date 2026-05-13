@@ -26,6 +26,35 @@ Artifacts below the certainty threshold are automatically surfaced by:
 
 These are things the project explicitly does not know and has a plan to address.
 
+### UNK-001 — CQ evidence chain mismatch: real LLM TRR does not directly validate bigram-suite CQ
+
+- **Artifact affected**: REQ-OEA-012, `_CALIBRATION_QUALITY` in `credibility_suite.py`
+- **Why unknown**: The `real_lm_experiment.py` dynamic threshold (mean_in_vocab - 1.5*std_in_vocab)
+  yields CQ=0.446 for `oea_anchored` via the formula `CQ = 0.5 + (trr - trr_control)/(2*(1-trr_control))`.
+  This is CQ<0.5 (anti-calibrated), contrary to the design estimate of 0.83. Root cause: vocabulary
+  anchoring shifts the full model log-prob distribution, causing the relative threshold to adapt
+  proportionally. The TRR metric thus measures threshold discrimination dynamics, not the per-claim
+  calibration quality that the bigram suite models.
+- **Confidence impact**: REQ-OEA-012 confidence reduced to medium. CQ=0.83 for `oea_full` is retained
+  as a principled design estimate, not an empirical measurement.
+- **Mitigation**: Direct empirical CQ validation requires held-out ECE measurement on a real LLM
+  with explicit falsehood injection (not random OOV sampling). Documented in main.tex Limitations.
+- **Target date**: future work (out of scope for this paper)
+- **Status**: open
+
+### UNK-002 — Bigram suite corpus self-reference: repo_docs corpus includes main.tex
+
+- **Artifact affected**: REQ-OEA-004, REQ-OEA-008, `results/credibility/credibility_aggregate_metrics.csv`
+- **Why unknown**: `collect_repo_docs_corpus()` in `credibility_suite.py` reads `arxiv/main.tex` as
+  part of the training corpus. When `main.tex` is revised, the bigram model changes, causing slight
+  changes to the credibility suite aggregate metrics across sessions.
+- **Confidence impact**: Absolute values in Table 2 may shift slightly across manuscript revisions.
+  Directional claims (oea_full best TRR/FRR) remain stable.
+- **Mitigation**: Re-run `credibility_suite.py` after any significant manuscript revision and commit
+  updated artifacts. The current committed artifacts are the ground truth for the current version.
+- **Target date**: each manuscript revision
+- **Status**: investigating (accepted as systematic, addressed by re-running before submission)
+
 <!-- Template:
 ### UNK-001 — [What we don't know]
 

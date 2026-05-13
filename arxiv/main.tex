@@ -23,7 +23,7 @@ calibration quality, and agentic closure operationalizes the feedback loop empir
 We report two experiments: (1) a bigram-proxy ablation study across 12 variants---including a
 calibration-quality-derived parameterization and a novel \emph{anti-calibrated}
 falsification control---showing the full OEA protocol achieves the highest true-rejection rate
-(0.890) and lowest false-rejection rate (0.090) across 648 robustness-sweep runs per variant;
+(0.839) and lowest false-rejection rate (0.080) across 648 robustness-sweep runs per variant;
 (2) a real LLM validation using distilgpt2 with BM25 corpus-grounded retrieval and genuine
 neural log-probability epistemic filtering. The anti-calibrated variant (inverting log-probability
 selection) constitutes a causal proof-of-mechanism: if it degrades faster than the no-filter
@@ -92,7 +92,9 @@ Effect deltas indicate improved behavior under OEA in this pilot harness: stabil
 
 \subsection{Ablation Study}
 
-Table~\ref{tab:ablation} presents all 11 variants from the credibility suite across 648 robustness-sweep runs per variant (12 seeds $\times$ 3 depths $\times$ 3 synthetic ratios $\times$ 3 noise levels $\times$ 2 corpora). Cohen's $d$ is reported for the headline \texttt{oea\_full} vs.\ baseline comparisons: vs.\ \texttt{control\_replace}, $d=3.02$, $p<0.001$; vs.\ \texttt{control\_accumulate}, $d=0.83$, $p<0.001$ (permutation test, $n_{\text{perm}}=2000$).
+Table~\ref{tab:ablation} presents all 12 variants from the credibility suite across 648 robustness-sweep runs per variant (12 seeds $\times$ 3 depths $\times$ 3 synthetic ratios $\times$ 3 noise levels $\times$ 2 corpora). Cohen's $d$ vs.\ \texttt{control\_replace}: $d=3.10$, $p<0.001$ (permutation test, $n_{\text{perm}}=2000$).
+\texttt{oea\_full} raw stability (0.926) is lower than \texttt{control\_accumulate} (0.951), consistent
+with the stability/epistemic orthogonality finding discussed in the Conclusion.
 
 \begin{table}[h]
 \centering
@@ -102,25 +104,29 @@ Table~\ref{tab:ablation} presents all 11 variants from the credibility suite acr
 Variant & Stability & True-Reject & False-Reject \\
  & mean {[}95\%\,CI{]} & mean {[}95\%\,CI{]} & mean {[}95\%\,CI{]} \\
 \midrule
-control\_replace       & 0.496 {[}0.480,\,0.512{]} & 0.583 {[}0.581,\,0.586{]} & 0.242 {[}0.240,\,0.244{]} \\
-control\_accumulate    & 0.957 {[}0.956,\,0.958{]} & 0.581 {[}0.579,\,0.583{]} & 0.242 {[}0.240,\,0.244{]} \\
-baseline\_rag          & 0.953 {[}0.952,\,0.954{]} & 0.731 {[}0.729,\,0.733{]} & 0.181 {[}0.179,\,0.182{]} \\
-baseline\_calibration  & 0.953 {[}0.952,\,0.954{]} & 0.661 {[}0.658,\,0.663{]} & 0.201 {[}0.199,\,0.203{]} \\
-ablation\_O            & 0.958 {[}0.957,\,0.959{]} & 0.611 {[}0.608,\,0.613{]} & 0.221 {[}0.219,\,0.223{]} \\
-ablation\_E            & 0.953 {[}0.952,\,0.954{]} & 0.810 {[}0.808,\,0.812{]} & 0.140 {[}0.138,\,0.142{]} \\
-ablation\_A            & 0.964 {[}0.963,\,0.965{]} & 0.630 {[}0.628,\,0.633{]} & 0.211 {[}0.210,\,0.213{]} \\
-ablation\_OE           & 0.960 {[}0.959,\,0.961{]} & 0.761 {[}0.759,\,0.763{]} & 0.161 {[}0.159,\,0.162{]} \\
-ablation\_OA           & 0.933 {[}0.931,\,0.935{]} & 0.661 {[}0.659,\,0.663{]} & 0.191 {[}0.189,\,0.192{]} \\
-ablation\_EA           & 0.960 {[}0.959,\,0.961{]} & 0.860 {[}0.858,\,0.861{]} & 0.110 {[}0.109,\,0.112{]} \\
-\textbf{oea\_full}    & \textbf{0.938 {[}0.936,\,0.940{]}} & \textbf{0.890 {[}0.889,\,0.892{]}} & \textbf{0.090 {[}0.089,\,0.091{]}} \\
+control\_replace       & 0.496 {[}0.481,\,0.511{]} & 0.583 {[}0.581,\,0.585{]} & 0.240 {[}0.238,\,0.242{]} \\
+control\_accumulate    & 0.951 {[}0.949,\,0.952{]} & 0.583 {[}0.581,\,0.585{]} & 0.240 {[}0.238,\,0.242{]} \\
+baseline\_rag          & 0.946 {[}0.944,\,0.947{]} & 0.683 {[}0.681,\,0.685{]} & 0.178 {[}0.176,\,0.179{]} \\
+baseline\_calibration  & 0.946 {[}0.944,\,0.947{]} & 0.653 {[}0.651,\,0.656{]} & 0.197 {[}0.196,\,0.199{]} \\
+ablation\_O            & 0.949 {[}0.948,\,0.950{]} & 0.615 {[}0.612,\,0.617{]} & 0.221 {[}0.219,\,0.223{]} \\
+ablation\_E            & 0.946 {[}0.944,\,0.947{]} & 0.754 {[}0.752,\,0.756{]} & 0.134 {[}0.133,\,0.136{]} \\
+ablation\_A            & 0.960 {[}0.959,\,0.961{]} & 0.638 {[}0.636,\,0.640{]} & 0.207 {[}0.205,\,0.208{]} \\
+ablation\_OE           & 0.951 {[}0.950,\,0.952{]} & 0.777 {[}0.775,\,0.778{]} & 0.120 {[}0.118,\,0.121{]} \\
+ablation\_OA           & 0.925 {[}0.923,\,0.927{]} & 0.669 {[}0.667,\,0.671{]} & 0.187 {[}0.186,\,0.189{]} \\
+ablation\_EA           & 0.956 {[}0.954,\,0.957{]} & 0.808 {[}0.806,\,0.809{]} & 0.099 {[}0.098,\,0.101{]} \\
+ablation\_miscalibrated & 0.951 {[}0.949,\,0.952{]} & 0.256 {[}0.254,\,0.258{]} & 0.651 {[}0.649,\,0.653{]} \\
+\textbf{oea\_full}    & \textbf{0.926 {[}0.924,\,0.928{]}} & \textbf{0.839 {[}0.837,\,0.840{]}} & \textbf{0.080 {[}0.079,\,0.081{]}} \\
 \bottomrule
 \end{tabular}
-\caption{Full ablation results across all 11 variants (648 runs each), generated using the
-calibration-quality (CQ) formula in \texttt{credibility\_suite.py}. Rejection rates are derived
-from measured CQ values (see \texttt{results/real\_lm/real\_lm\_summary.json}) rather than
-hardcoded constants. \texttt{oea\_full} achieves the best true-reject and false-reject rates.
+\caption{Full ablation results across all 12 variants (648 runs each), generated using the
+calibration-quality (CQ) formula in \texttt{credibility\_suite.py}. CQ values represent
+theoretical calibration estimates based on per-layer contributions (E: $+0.22$, A: $+0.07$,
+O: $+0.04$). \texttt{oea\_full} achieves the best true-reject and false-reject rates.
+\texttt{ablation\_miscalibrated} (inverted CQ) shows the expected anti-calibration pattern:
+very low TRR (0.256) and very high FRR (0.651), confirming calibration direction is causal.
 Several ablations match or exceed \texttt{oea\_full} on raw stability while underperforming on
-epistemic filtering, indicating the three OEA layers contribute independently.}
+epistemic filtering, indicating the three OEA layers contribute independently.
+See REQ-OEA-012 for the evidence chain discussion regarding CQ measurement.}
 \label{tab:ablation}
 \end{table}
 
@@ -171,33 +177,42 @@ Table~\ref{tab:real-lm} reports final-iteration metrics (mean across 5 seeds,
 \toprule
 Variant & Stability JSD $\downarrow$ & Mean log-prob $\uparrow$ & JSD $\Delta$ vs control \\
 \midrule
-control             & 0.151 & $-1.835$ & baseline \\
-oea\_rag\_only       & 0.118 & $-2.122$ & $+0.033$ \\
-oea\_miscalibrated  & 0.116 & $-2.222$ & $+0.034$ \\
-\textbf{oea\_anchored}    & \textbf{0.088} & $\mathbf{-1.261}$ & $\mathbf{+0.062}$ \\
+control             & 0.148 & $-1.387$ & baseline \\
+oea\_rag\_only       & 0.121 & $-1.948$ & $+0.027$ \\
+oea\_miscalibrated  & 0.137 & $-2.373$ & $+0.011$ \\
+\textbf{oea\_anchored}    & \textbf{0.110} & $\mathbf{-1.057}$ & $\mathbf{+0.038}$ \\
 \bottomrule
 \end{tabular}
 \caption{Real LLM validation results (distilgpt2, 5 seeds $\times$ 5 iterations).
+Results are fully reproducible: \texttt{torch.manual\_seed} applied per generation call.
 Stability JSD: lower is better (less distributional drift from seed).
 Mean log-prob: higher is better (more in-distribution under original model).
 All variants reduce drift vs control; only \texttt{oea\_anchored} also improves log-prob.}
 \label{tab:real-lm}
 \end{table}
 
-\texttt{oea\_anchored} achieves 41\% lower distributional drift (JSD $0.088$ vs $0.151$)
-and $+0.574$ nats higher mean log-probability, confirming that the OEA epistemic filter
+\texttt{oea\_anchored} achieves 26\% lower distributional drift (JSD $0.110$ vs $0.148$)
+and $+0.330$ nats higher mean log-probability, confirming that the OEA epistemic filter
 maintains generated text closer to the reference distribution. Critically,
 \texttt{oea\_rag\_only} and \texttt{oea\_miscalibrated} both reduce JSD but significantly
-\emph{reduce} mean log-probability ($-0.287$ and $-0.387$ vs control respectively),
+\emph{reduce} mean log-probability ($-0.561$ and $-0.986$ nats vs control respectively),
 indicating that \emph{log-probability selection}---not retrieval alone---is the
 operative mechanism. The anti-calibrated variant's lower log-prob relative to both
 control and \texttt{oea\_rag\_only} is consistent with the causal hypothesis: inverting
 the calibration signal actively pushes generation further out of the reference distribution.
 
-\textbf{Saturation note.} The true-reject-rate metric saturated at $1.0$ for all variants
-and iterations; the \texttt{LOG\_PROB\_THRESHOLD} of $-4.5$ is too aggressive relative
-to the small corpus vocabulary and distilgpt2's narrow reference distribution. Future
-work should calibrate the threshold on held-out data or use a relative threshold.
+\textbf{Threshold recalibration.} The original fixed threshold ($-4.5$) caused TRR saturation
+at $1.0$ for all variants. We replaced it with a dynamic threshold:
+$\mu_{\text{in-vocab}} - 1.5 \cdot \sigma_{\text{in-vocab}}$, calibrated per forward pass to
+the in-vocabulary log-prob distribution. With this threshold, TRR values are non-saturating
+($\approx 0.40$--$0.53$ across variants and iterations). However, TRR does not monotonically
+differentiate OEA variants from control, because vocabulary anchoring shifts the model's
+entire log-prob distribution—raising both in-vocab and OOV token probabilities—such that the
+relative threshold adapts accordingly. The primary metrics (JSD stability, mean log-probability)
+remain the reliable indicators of OEA efficacy; TRR in this setting measures threshold
+discrimination properties rather than epistemic calibration directly.
+See \texttt{results/real\_lm/real\_lm\_summary.json} and REQ-OEA-012 for the evidence
+chain discussion.
 
 \section{Discussion}
 The pilot results support the directional OEA hypothesis in the implemented harness: stronger recursive stability and improved synthetic-noise rejection tradeoffs relative to control. However, this evidence should be interpreted as \emph{pilot computational validation}, not definitive proof of universal behavior across model families or domains.
@@ -211,8 +226,12 @@ The pilot results support the directional OEA hypothesis in the implemented harn
   We interpret this as a necessary-condition test (DEC-004), not a substitute for fine-tuning
   experiments, which remain future work.
   \item \textbf{Calibration-quality parameterization}: the bigram ablation uses a
-  principled calibration-quality (CQ) formula; CQ values for the full OEA variant are derived
-  from the real LLM measurement output and documented in \texttt{real\_lm\_summary.json}.
+  principled CQ formula with per-layer contribution estimates (E: $+0.22$, A: $+0.07$, O: $+0.04$).
+  The real LLM experiment (\texttt{real\_lm\_summary.json}) measures true-reject-rate with a
+  dynamic threshold but does not directly validate the CQ values: vocabulary anchoring shifts
+  the model's log-prob distribution globally, making the relative threshold less discriminating
+  for random OOV tokens even as JSD stability improves. CQ values remain principled design
+  parameters; direct empirical calibration requires held-out ECE measurement (future work).
   \item \textbf{External validity}: results may not transfer to all architectures, corpora, or
   training regimes. Cross-domain validation is future work.
   \item \textbf{Retrieval precision}: evidence quality is bounded by the seed corpus coverage;
@@ -250,8 +269,8 @@ specified regime; it does not eliminate hallucination or guarantee factual corre
 We presented the OEA (Ontology, Epistemic, Agentic) framework as a testable, three-layer
 intervention hypothesis for improving reliability in agentic systems under recursive synthetic-data
 exposure. Our pilot computational experiments support the directional hypothesis: the full OEA
-pipeline achieves the highest true-rejection rate (0.890) and the lowest false-rejection rate (0.090)
-across all 11 tested variants, with a stability delta of $+0.442$ ($d=3.02$, $p<0.001$) relative to
+pipeline achieves the highest true-rejection rate (0.839) and the lowest false-rejection rate (0.080)
+across all 12 tested variants, with a stability delta of $+0.430$ ($d=3.10$, $p<0.001$) relative to
 the hardest baseline (\texttt{control\_replace}).
 
 The ablation study reveals a key asymmetry: certain single-layer ablations

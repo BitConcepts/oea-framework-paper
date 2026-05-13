@@ -88,7 +88,13 @@ RAG_PASSAGE_TOKENS = 64   # max tokens prepended from retrieval
 GEN_MAX_TOKENS = 60       # new tokens generated per recursive step
 TOP_P = 0.92              # nucleus sampling
 TEMPERATURE = 0.9
-LOG_PROB_THRESHOLD = -4.5  # tokens below this are "suspicious" (out-of-distribution)
+# Dynamic rejection threshold (replaces the fixed -4.5 absolute value that caused TRR=1.0
+# saturation for distilgpt2 on a small corpus).
+# Threshold = mean(in-vocab log-probs) - LOG_PROB_SIGMA * std(in-vocab log-probs)
+# At LOG_PROB_SIGMA=1.5 this flags ~7% of in-vocab tokens (FRR baseline) and a much
+# larger fraction of OOV tokens, providing meaningful discrimination. See REQ-OEA-012.
+LOG_PROB_SIGMA = 1.5      # std-dev multiplier for dynamic threshold
+LOG_PROB_THRESHOLD_FALLBACK = -4.5  # used only when ref_vocab is too small (<4 tokens)
 N_EVAL_TOKENS = 80        # tokens sampled for true/false reject measurement
 
 # oea_rag_only isolates the retrieval contribution from the epistemic filter
@@ -291,8 +297,13 @@ def run_real_lm_experiment() -> list[dict]:
         context_ids: list[int], ref_vocab: set[int]
     ) -> tuple[float, float]:
         """
-        Measures calibration: does log-prob < LOG_PROB_THRESHOLD correctly identify
-        out-of-distribution tokens?
+        Measures calibration: does a dynamic log-prob threshold correctly identify
+        out-of-distribution (OOV) tokens vs in-vocabulary tokens?
+
+        Threshold is computed as:
+            mean(in-vocab log-probs) - LOG_PROB_SIGMA * std(in-vocab log-probs)
+        This self-calibrates to the model's distribution, avoiding the saturation
+        (TRR=1.0) caused by the previous fixed threshold (-4.5) on small corpora.
 
         Returns (true_reject_rate, false_reject_rate).
         true_reject_rate: fraction of OOV tokens correctly flagged (↑ = good)
@@ -305,6 +316,13 @@ def run_real_lm_experiment() -> list[dict]:
         rng = np.random.default_rng(99)
         vocab_size = tokenizer.vocab_size
 
+        # Dynamic threshold calibrated to the in-vocab log-prob distribution
+        inv_lps_all = np.array([lp[t] for t in ref_vocab if 0 <= t < vocab_size])
+        if len(inv_lps_all) >= 4:
+            threshold = float(inv_lps_all.mean() - LOG_PROB_SIGMA * inv_lps_all.std())
+        else:
+            threshold = LOG_PROB_THRESHOLD_FALLBACK  # degenerate corpus fallback
+
         # OOV = tokens NOT in reference vocab (synthetic falsehoods proxy)
         oov_pool = [t for t in rng.integers(0, vocab_size, 500) if t not in ref_vocab]
         oov_sample = oov_pool[:N_EVAL_TOKENS] if len(oov_pool) >= N_EVAL_TOKENS else oov_pool
@@ -312,14 +330,19 @@ def run_real_lm_experiment() -> list[dict]:
         # In-vocab = tokens from the reference distribution (true claims proxy)
         inv_sample = rng.choice(list(ref_vocab), size=N_EVAL_TOKENS, replace=True).tolist()
 
-        trr = sum(1 for t in oov_sample if lp[t] < LOG_PROB_THRESHOLD) / max(len(oov_sample), 1)
-        frr = sum(1 for t in inv_sample if lp[t] < LOG_PROB_THRESHOLD) / max(len(inv_sample), 1)
+        trr = sum(1 for t in oov_sample if lp[t] < threshold) / max(len(oov_sample), 1)
+        frr = sum(1 for t in inv_sample if lp[t] < threshold) / max(len(inv_sample), 1)
         return trr, frr
 
     @torch.no_grad()
     def _generate(prompt_ids: list[int], gen_seed: int) -> list[int]:
-        """Generate GEN_MAX_TOKENS new tokens from prompt."""
+        """Generate GEN_MAX_TOKENS new tokens from prompt.
+
+        gen_seed is used to set the global torch RNG before each generation call,
+        making results fully reproducible across runs on the same platform.
+        """
         import torch
+        torch.manual_seed(gen_seed)  # fix: seed was computed but never applied
         t = torch.tensor([prompt_ids[-128:]])
         out = model.generate(
             t,

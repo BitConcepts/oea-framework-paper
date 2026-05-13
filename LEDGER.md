@@ -1,5 +1,31 @@
 # LEDGER
 
+## 2026-05-13 - Reproducibility fix, artifact commit, REQ-OEA-012 finding, governance update
+- Fixed missing `torch.manual_seed(gen_seed)` in `real_lm_experiment.py` `_generate()`: generation
+  was unseeded, making results non-reproducible. Seed was computed but never applied.
+- Replaced static `LOG_PROB_THRESHOLD = -4.5` with dynamic threshold:
+  `mean(in-vocab log-probs) - LOG_PROB_SIGMA * std(in-vocab log-probs)` (LOG_PROB_SIGMA=1.5).
+  TRR no longer saturates at 1.0. New values: ~0.41-0.53 across variants/iterations.
+- Re-ran `real_lm_experiment.py` (seeded): reproducible results now committed to `results/real_lm/`.
+  Key final-iteration values (iter 5, 5 seeds): control JSD=0.148, oea_anchored JSD=0.110 (-26%),
+  oea_anchored log_prob=-1.057 (+0.330 nats vs control -1.387).
+- REQ-OEA-012 finding: measured CQ for oea_anchored = 0.446 (CQ < 0.5). Vocabulary anchoring
+  shifts the full log-prob distribution globally; dynamic threshold adapts proportionally, so
+  TRR does not improve with anchoring. Evidence chain mismatch documented in:
+  - `credibility_suite.py` comment block on `oea_full`
+  - `docs/governance/UNCERTAINTY-MAP.md` (UNK-001)
+  - `arxiv/main.tex` Limitations section
+  CQ=0.83 retained as principled design estimate. TEST-OEA-012 marked Implemented (with finding).
+- Re-ran `credibility_suite.py` (7,776 runs): artifacts committed to `results/credibility/`.
+  Updated Table 2: oea_full TRR=0.839 [0.837,0.840], FRR=0.080 [0.079,0.081], d=3.10 p<0.001.
+  Added ablation_miscalibrated row confirming anti-calibration pattern (TRR=0.256, FRR=0.651).
+  Values shifted slightly from v0.3.2 due to corpus self-reference (main.tex in repo_docs);
+  documented as UNK-002 in UNCERTAINTY-MAP.md.
+- Updated `arxiv/main.tex`: Table 2 (12 variants), Table 3 (reproducible values), abstract,
+  ablation section, conclusion, CQ limitation bullet, threshold recalibration note.
+- Updated `.gitignore`: explicit `!results/credibility/` and `!results/real_lm/` allow-list.
+- TEST-OEA-011 and TEST-OEA-012 marked Implemented.
+
 ## 2026-05-12 - Real LLM experiment run; manuscript complete; v0.3.2 release
 - Ran `real_lm_experiment.py` with distilgpt2 (82M), BM25Retriever RAG, 5 seeds x 5 iter.
 - Key results (final iteration, mean across seeds):

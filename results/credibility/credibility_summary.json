@@ -1,0 +1,181 @@
+{
+  "study": "oea_credibility_suite_v1",
+  "config": {
+    "study_name": "oea_credibility_suite_v1",
+    "description": "Real-text recursive training credibility suite with baselines, ablations, robustness checks, and statistical reporting.",
+    "corpora": [
+      "repo_docs",
+      "public_domain_snippets"
+    ],
+    "variants": [
+      "control_replace",
+      "control_accumulate",
+      "baseline_rag_only",
+      "baseline_calibration_only",
+      "ablation_O",
+      "ablation_E",
+      "ablation_A",
+      "ablation_OE",
+      "ablation_EA",
+      "ablation_OA",
+      "oea_full",
+      "ablation_miscalibrated"
+    ],
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "recursion_depths": [
+      5,
+      10,
+      15
+    ],
+    "synthetic_ratios": [
+      0.25,
+      0.5,
+      0.75
+    ],
+    "noise_levels": [
+      0.1,
+      0.2,
+      0.3
+    ],
+    "primary_endpoints": [
+      "stability_score",
+      "heldout_perplexity",
+      "true_reject_rate",
+      "false_reject_rate"
+    ]
+  },
+  "headline_stats": {
+    "oea_vs_control_replace": {
+      "stability_delta": 0.43040459631302974,
+      "stability_cohen_d": 3.1020477136922446,
+      "stability_pvalue_perm": 0.0004997501249375312,
+      "perplexity_delta": 6.017945610196705,
+      "perplexity_cohen_d": 0.021596540418495996,
+      "perplexity_pvalue_perm": 0.6996501749125438,
+      "true_reject_delta": 0.2552777777777778,
+      "false_reject_delta": -0.16008744855967078
+    },
+    "oea_vs_control_accumulate": {
+      "stability_delta": -0.024687673821366607,
+      "stability_cohen_d": -1.1503338473930815,
+      "stability_pvalue_perm": 0.0004997501249375312,
+      "perplexity_delta": -267.53482211824365,
+      "perplexity_cohen_d": -0.9131715568901374,
+      "perplexity_pvalue_perm": 0.0004997501249375312,
+      "true_reject_delta": 0.2552777777777778,
+      "false_reject_delta": -0.16008744855967078
+    }
+  },
+  "best_by_stability": [
+    {
+      "variant": "ablation_A",
+      "stability_mean": 0.9603932030634345,
+      "stability_ci95_low": 0.9594308874125371,
+      "stability_ci95_high": 0.9613555187143318,
+      "perplexity_mean": 541.6766412489845,
+      "perplexity_ci95_low": 515.189180424482,
+      "perplexity_ci95_high": 568.1641020734871,
+      "true_reject_mean": 0.6377880658436214,
+      "true_reject_ci95_low": 0.6356346721182848,
+      "true_reject_ci95_high": 0.6399414595689579,
+      "false_reject_mean": 0.20658950617283953,
+      "false_reject_ci95_low": 0.20484177351556793,
+      "false_reject_ci95_high": 0.20833723883011113,
+      "tail_loss_mean": 0,
+      "novel_noise_tokens_mean": 359.0138888888889,
+      "n_runs": 648
+    },
+    {
+      "variant": "ablation_EA",
+      "stability_mean": 0.955665405208886,
+      "stability_ci95_low": 0.9544821853542992,
+      "stability_ci95_high": 0.9568486250634728,
+      "perplexity_mean": 346.29722434943113,
+      "perplexity_ci95_low": 329.9153999354155,
+      "perplexity_ci95_high": 362.67904876344676,
+      "true_reject_mean": 0.8075668724279834,
+      "true_reject_ci95_low": 0.8058442792990319,
+      "true_reject_ci95_high": 0.8092894655569349,
+      "false_reject_mean": 0.09935185185185184,
+      "false_reject_ci95_low": 0.09801486692237936,
+      "false_reject_ci95_high": 0.10068883678132433,
+      "tail_loss_mean": 0,
+      "novel_noise_tokens_mean": 0,
+      "n_runs": 648
+    },
+    {
+      "variant": "ablation_OE",
+      "stability_mean": 0.9507975650466169,
+      "stability_ci95_low": 0.9500670088356592,
+      "stability_ci95_high": 0.9515281212575747,
+      "perplexity_mean": 375.875784584143,
+      "perplexity_ci95_low": 359.11598271337823,
+      "perplexity_ci95_high": 392.63558645490775,
+      "true_reject_mean": 0.7766100823045267,
+      "true_reject_ci95_low": 0.7747519480795526,
+      "true_reject_ci95_high": 0.7784682165295007,
+      "false_reject_mean": 0.11974279835390947,
+      "false_reject_ci95_low": 0.11827053855965868,
+      "false_reject_ci95_high": 0.12121505814816026,
+      "tail_loss_mean": 0,
+      "novel_noise_tokens_mean": 0,
+      "n_runs": 648
+    },
+    {
+      "variant": "ablation_miscalibrated",
+      "stability_mean": 0.9507811286320189,
+      "stability_ci95_low": 0.9494907146296443,
+      "stability_ci95_high": 0.9520715426343935,
+      "perplexity_mean": 625.8246263903684,
+      "perplexity_ci95_low": 598.4193646251409,
+      "perplexity_ci95_high": 653.2298881555959,
+      "true_reject_mean": 0.25614711934156376,
+      "true_reject_ci95_low": 0.25421663222436935,
+      "true_reject_ci95_high": 0.25807760645875816,
+      "false_reject_mean": 0.6511882716049383,
+      "false_reject_ci95_low": 0.6490009159868562,
+      "false_reject_ci95_high": 0.6533756272230204,
+      "tail_loss_mean": 0,
+      "novel_noise_tokens_mean": 482.3024691358025,
+      "n_runs": 648
+    },
+    {
+      "variant": "control_accumulate",
+      "stability_mean": 0.9507811286320189,
+      "stability_ci95_low": 0.9494907146296443,
+      "stability_ci95_high": 0.9520715426343935,
+      "perplexity_mean": 625.8246263903684,
+      "perplexity_ci95_low": 598.4193646251409,
+      "perplexity_ci95_high": 653.2298881555959,
+      "true_reject_mean": 0.5832510288065843,
+      "true_reject_ci95_low": 0.5811273193545343,
+      "true_reject_ci95_high": 0.5853747382586343,
+      "false_reject_mean": 0.2403343621399177,
+      "false_reject_ci95_low": 0.23846650957245155,
+      "false_reject_ci95_high": 0.24220221470738387,
+      "tail_loss_mean": 0,
+      "novel_noise_tokens_mean": 482.3024691358025,
+      "n_runs": 648
+    }
+  ],
+  "artifact_files": {
+    "raw_runs_csv": "credibility_raw_runs.csv",
+    "aggregate_csv": "credibility_aggregate_metrics.csv",
+    "summary_json": "credibility_summary.json",
+    "insights_txt": "credibility_insights.txt",
+    "taxonomy_csv": "error_taxonomy_summary.csv"
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "variants": {
+    "control": {
+      "by_iteration": {
+        "0": {
+          "stability_jsd_mean": 0.0,
+          "mean_log_prob_mean": -3.9376,
+          "true_reject_rate_mean": 0.525,
+          "false_reject_rate_mean": 0.1125,
+          "n": 5
+        },
+        "1": {
+          "stability_jsd_mean": 0.033675,
+          "mean_log_prob_mean": -3.5717,
+          "true_reject_rate_mean": 0.4675,
+          "false_reject_rate_mean": 0.0875,
+          "n": 5
+        },
+        "2": {
+          "stability_jsd_mean": 0.056364,
+          "mean_log_prob_mean": -3.191,
+          "true_reject_rate_mean": 0.5075,
+          "false_reject_rate_mean": 0.065,
+          "n": 5
+        },
+        "3": {
+          "stability_jsd_mean": 0.080055,
+          "mean_log_prob_mean": -2.5555,
+          "true_reject_rate_mean": 0.53,
+          "false_reject_rate_mean": 0.095,
+          "n": 5
+        },
+        "4": {
+          "stability_jsd_mean": 0.099703,
+          "mean_log_prob_mean": -1.8999,
+          "true_reject_rate_mean": 0.485,
+          "false_reject_rate_mean": 0.075,
+          "n": 5
+        },
+        "5": {
+          "stability_jsd_mean": 0.147901,
+          "mean_log_prob_mean": -1.3865,
+          "true_reject_rate_mean": 0.4925,
+          "false_reject_rate_mean": 0.08,
+          "n": 5
+        }
+      }
+    },
+    "oea_anchored": {
+      "by_iteration": {
+        "0": {
+          "stability_jsd_mean": 0.0,
+          "mean_log_prob_mean": -3.9376,
+          "true_reject_rate_mean": 0.525,
+          "false_reject_rate_mean": 0.1125,
+          "n": 5
+        },
+        "1": {
+          "stability_jsd_mean": 0.010611,
+          "mean_log_prob_mean": -3.3894,
+          "true_reject_rate_mean": 0.48,
+          "false_reject_rate_mean": 0.105,
+          "n": 5
+        },
+        "2": {
+          "stability_jsd_mean": 0.03211,
+          "mean_log_prob_mean": -2.587,
+          "true_reject_rate_mean": 0.41,
+          "false_reject_rate_mean": 0.0725,
+          "n": 5
+        },
+        "3": {
+          "stability_jsd_mean": 0.054614,
+          "mean_log_prob_mean": -1.7189,
+          "true_reject_rate_mean": 0.42,
+          "false_reject_rate_mean": 0.0525,
+          "n": 5
+        },
+        "4": {
+          "stability_jsd_mean": 0.073428,
+          "mean_log_prob_mean": -1.1941,
+          "true_reject_rate_mean": 0.535,
+          "false_reject_rate_mean": 0.0825,
+          "n": 5
+        },
+        "5": {
+          "stability_jsd_mean": 0.110171,
+          "mean_log_prob_mean": -1.0565,
+          "true_reject_rate_mean": 0.4375,
+          "false_reject_rate_mean": 0.0525,
+          "n": 5
+        }
+      }
+    },
+    "oea_miscalibrated": {
+      "by_iteration": {
+        "0": {
+          "stability_jsd_mean": 0.0,
+          "mean_log_prob_mean": -3.9376,
+          "true_reject_rate_mean": 0.525,
+          "false_reject_rate_mean": 0.1125,
+          "n": 5
+        },
+        "1": {
+          "stability_jsd_mean": 0.026903,
+          "mean_log_prob_mean": -3.5163,
+          "true_reject_rate_mean": 0.4825,
+          "false_reject_rate_mean": 0.0775,
+          "n": 5
+        },
+        "2": {
+          "stability_jsd_mean": 0.052065,
+          "mean_log_prob_mean": -3.1343,
+          "true_reject_rate_mean": 0.355,
+          "false_reject_rate_mean": 0.05,
+          "n": 5
+        },
+        "3": {
+          "stability_jsd_mean": 0.076485,
+          "mean_log_prob_mean": -2.6626,
+          "true_reject_rate_mean": 0.41,
+          "false_reject_rate_mean": 0.0575,
+          "n": 5
+        },
+        "4": {
+          "stability_jsd_mean": 0.095579,
+          "mean_log_prob_mean": -2.4927,
+          "true_reject_rate_mean": 0.4325,
+          "false_reject_rate_mean": 0.1,
+          "n": 5
+        },
+        "5": {
+          "stability_jsd_mean": 0.136619,
+          "mean_log_prob_mean": -2.3728,
+          "true_reject_rate_mean": 0.4825,
+          "false_reject_rate_mean": 0.11,
+          "n": 5
+        }
+      }
+    },
+    "oea_rag_only": {
+      "by_iteration": {
+        "0": {
+          "stability_jsd_mean": 0.0,
+          "mean_log_prob_mean": -3.9376,
+          "true_reject_rate_mean": 0.525,
+          "false_reject_rate_mean": 0.1125,
+          "n": 5
+        },
+        "1": {
+          "stability_jsd_mean": 0.016357,
+          "mean_log_prob_mean": -3.3784,
+          "true_reject_rate_mean": 0.555,
+          "false_reject_rate_mean": 0.1125,
+          "n": 5
+        },
+        "2": {
+          "stability_jsd_mean": 0.034103,
+          "mean_log_prob_mean": -2.6599,
+          "true_reject_rate_mean": 0.5,
+          "false_reject_rate_mean": 0.095,
+          "n": 5
+        },
+        "3": {
+          "stability_jsd_mean": 0.053634,
+          "mean_log_prob_mean": -1.8706,
+          "true_reject_rate_mean": 0.475,
+          "false_reject_rate_mean": 0.0775,
+          "n": 5
+        },
+        "4": {
+          "stability_jsd_mean": 0.07262,
+          "mean_log_prob_mean": -1.8777,
+          "true_reject_rate_mean": 0.5375,
+          "false_reject_rate_mean": 0.1075,
+          "n": 5
+        },
+        "5": {
+          "stability_jsd_mean": 0.121137,
+          "mean_log_prob_mean": -1.9483,
+          "true_reject_rate_mean": 0.4075,
+          "false_reject_rate_mean": 0.085,
+          "n": 5
+        }
+      }
+    }
+  },
+  "final_iteration_deltas_vs_control": {
+    "oea_anchored": {
+      "stability_jsd_delta": 0.03773,
+      "mean_log_prob_delta": 0.33,
+      "true_reject_rate_delta": -0.055
+    },
+    "oea_miscalibrated": {
+      "stability_jsd_delta": 0.011283,
+      "mean_log_prob_delta": -0.9863,
+      "true_reject_rate_delta": -0.01
+    },
+    "oea_rag_only": {
+      "stability_jsd_delta": 0.026765,
+      "mean_log_prob_delta": -0.5618,
+      "true_reject_rate_delta": -0.085
+    }
+  },
+  "cq_measurement": {
+    "oea_rag_only": {
+      "measured_true_reject_rate": 0.4075,
+      "suggested_cq": 0.416
+    },
+    "oea_anchored": {
+      "measured_true_reject_rate": 0.4375,
+      "suggested_cq": 0.446
+    },
+    "oea_miscalibrated": {
+      "measured_true_reject_rate": 0.4825,
+      "suggested_cq": 0.49
+    }
+  }
+}
