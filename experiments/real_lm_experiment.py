@@ -43,6 +43,10 @@ true_reject_rate    Fraction of OOV tokens flagged by log-prob threshold.
                     Measures epistemic calibration accuracy.
 false_reject_rate   Fraction of in-vocab tokens incorrectly flagged.
                     Measures specificity. Lower is better.
+rouge_l_recall      ROUGE-L recall of generated text against seed corpus.
+                    Fully independent of log-probability: measures how much
+                    seed-corpus content is preserved in the generated output.
+                    Breaks the selection-criterion/metric circularity.
 
 Frozen-weights scope note
 -------------------------
@@ -250,11 +254,23 @@ def run_real_lm_experiment() -> list[dict]:
     except ImportError:
         print(
             "ERROR: transformers and torch are required.\n"
-            "Install: pip install -r requirements-experiments.txt "
-            "--extra-index-url https://download.pytorch.org/whl/cpu",
+            "Install: pip install -r requirements-experiments.txt\n"
+            "For GPU: see requirements-experiments.txt for CUDA/ROCm/MPS install commands.",
             file=sys.stderr,
         )
         sys.exit(1)
+
+    try:
+        from rouge_score import rouge_scorer as _rs_module
+        _rouge_scorer_inst = _rs_module.RougeScorer(["rougeL"], use_stemmer=False)
+        _rouge_available = True
+    except ImportError:
+        _rouge_scorer_inst = None
+        _rouge_available = False
+        sys.stderr.write(
+            "NOTE: rouge-score not installed; rouge_l_recall will be 0.0.\n"
+            "Install: pip install rouge-score\n"
+        )
 
     sys.stderr.write(f"Loading {MODEL_NAME}...\n")
     sys.stderr.flush()
@@ -283,6 +299,21 @@ def run_real_lm_experiment() -> list[dict]:
     seed_ids: list[int] = tokenizer.encode(seed_text, truncation=True, max_length=256)
     seed_dist = _token_dist(seed_ids, tokenizer.vocab_size)
     ref_vocab: set[int] = set(seed_ids)  # ontological boundary (DEC-004)
+
+    def _rouge_l_recall(ids: list[int]) -> float:
+        """ROUGE-L recall: fraction of seed-corpus content preserved in generated text.
+
+        This metric is fully independent of log-probability — it measures content
+        preservation using n-gram overlap, not model scores.  It directly counters
+        the circularity concern: selecting by log-prob and then evaluating by
+        ROUGE-L against the seed corpus are completely orthogonal measurements.
+        Higher recall = more seed-domain content retained in the output.
+        """
+        if not _rouge_available or len(ids) < 4:
+            return 0.0
+        generated = tokenizer.decode(ids[-256:], skip_special_tokens=True)
+        scores = _rouge_scorer_inst.score(seed_text, generated)  # ref=seed, hyp=generated
+        return float(scores["rougeL"].recall)
 
     # Build RAG retriever from corpus passages (OEA Layer 1 — Ontological Anchoring)
     retriever = BM25Retriever.from_text(seed_text, tokenizer)
@@ -403,6 +434,7 @@ def run_real_lm_experiment() -> list[dict]:
                 jsd = _jsd(current_dist, seed_dist)
                 mlp = _mean_log_prob(current_ids)
                 trr, frr = _epistemic_accuracy(current_ids, ref_vocab)
+                rl = _rouge_l_recall(current_ids)
 
                 all_rows.append({
                     "seed": seed_idx,
@@ -412,6 +444,7 @@ def run_real_lm_experiment() -> list[dict]:
                     "mean_log_prob": round(mlp, 4),
                     "true_reject_rate": round(trr, 4),
                     "false_reject_rate": round(frr, 4),
+                    "rouge_l_recall": round(rl, 4),
                 })
                 progress.update(
                     label=f"{variant} | seed {seed_idx} | iter {iteration}/{N_ITERATIONS}"
@@ -484,6 +517,9 @@ def _aggregate(rows: list[dict]) -> dict:
                     "false_reject_rate_mean": round(
                         mean(r["false_reject_rate"] for r in irows), 4
                     ),
+                    "rouge_l_recall_mean": round(
+                        mean(r.get("rouge_l_recall", 0.0) for r in irows), 4
+                    ),
                     "n": len(irows),
                 }
                 for i, irows in by_iter.items()
@@ -506,6 +542,10 @@ def _aggregate(rows: list[dict]) -> dict:
             ),
             "true_reject_rate_delta": round(
                 _final_mean(v, "true_reject_rate") - _final_mean("control", "true_reject_rate"),
+                4,
+            ),
+            "rouge_l_recall_delta": round(
+                _final_mean(v, "rouge_l_recall") - _final_mean("control", "rouge_l_recall"),
                 4,
             ),
         }
@@ -535,7 +575,8 @@ def main() -> None:
             f"  {v:30s}  "
             f"jsd_delta={sign(d['stability_jsd_delta'])}{d['stability_jsd_delta']:.4f}  "
             f"log_prob_delta={sign(d['mean_log_prob_delta'])}{d['mean_log_prob_delta']:.4f}  "
-            f"true_reject_delta={sign(d['true_reject_rate_delta'])}{d['true_reject_rate_delta']:.4f}"
+            f"true_reject_delta={sign(d['true_reject_rate_delta'])}{d['true_reject_rate_delta']:.4f}  "
+            f"rouge_l_delta={sign(d.get('rouge_l_recall_delta', 0))}{d.get('rouge_l_recall_delta', 0):.4f}"
         )
     print(f"\nDone. Artifacts in {RESULTS_DIR}")
 
