@@ -337,6 +337,28 @@ rag\_only              & 0.143 & 0.590 & 0.227 & $+0.32$ \\
 
 OEA achieves the highest TRR ($0.746$ vs next-best entropy\_filter $0.630$). Stability differences are comparable across all variants in this harness, consistent with the stability/epistemic orthogonality finding. Pairwise differences do not reach significance at $N{=}20$ ($p > 0.3$); real LLM baseline comparisons are necessary for statistically conclusive results.
 
+\paragraph{Why generic constraints fail.}
+Table~\ref{tab:mechanism} explains the mechanistic distinction.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{2.4cm}p{4.0cm}p{5.5cm}}
+\toprule
+Method & Mechanism & Why It Differs from OEA \\
+\midrule
+Temperature red. & Global entropy suppression & Sharpens all tokens equally; no epistemic discrimination between in-domain and OOV tokens. \\
+Top-$k$ & Vocabulary truncation & Restricts to high-probability tokens but without reference-corpus anchoring or calibration direction. \\
+Entropy filter & Uncertainty-based gating & Rejects high-entropy candidates but does not select \emph{for} distributional fidelity; no directional signal. \\
+Repetition penalty & Recently-used token damping & Addresses surface-level repetition, not distributional drift or epistemic quality. \\
+RAG-only & Context injection & Grounds generation in corpus but introduces retrieval noise without quality-aware candidate selection. \\
+\textbf{OEA} & \textbf{Directional calibration + epistemic filter + anchoring} & \textbf{Selects candidates by reference-model log-prob (calibration direction) within a vocabulary-anchored domain boundary.} \\
+\bottomrule
+\end{tabular}
+\caption{Mechanistic comparison: why OEA is not reducible to generic decoding constraints. Each non-OEA method lacks at least one of: directional calibration, epistemic candidate selection, or vocabulary anchoring.}
+\label{tab:mechanism}
+\end{table}
+
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Visualizations}
 \label{sec:figures}

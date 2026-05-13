@@ -99,7 +99,8 @@ def _text_page(pdf: PdfPages, title: str, lines: list[str],
 
 
 def _table_page(pdf: PdfPages, title: str, headers: list[str],
-                rows: list[list[str]], subtitle: str = "") -> None:
+                rows: list[list[str]], subtitle: str = "",
+                col_widths: list[float] | None = None) -> None:
     fig, ax = plt.subplots(figsize=(8.5, 11))
     ax.axis("off")
     ax.text(0.5, 0.97, title, fontsize=14, fontweight="bold", ha="center",
@@ -109,7 +110,6 @@ def _table_page(pdf: PdfPages, title: str, headers: list[str],
                 color="#546e7a", style="italic", transform=ax.transAxes)
 
     n_cols = len(headers)
-    col_widths = [1.0 / n_cols] * n_cols
     table = ax.table(
         cellText=rows,
         colLabels=headers,
@@ -119,6 +119,10 @@ def _table_page(pdf: PdfPages, title: str, headers: list[str],
     )
     table.auto_set_font_size(False)
     table.set_fontsize(8)
+    # Apply custom column widths if provided
+    if col_widths:
+        for (r, c), cell in table.get_celld().items():
+            cell.set_width(col_widths[c])
     for (r, c), cell in table.get_celld().items():
         if r == 0:
             cell.set_facecolor("#1a237e")
@@ -126,6 +130,10 @@ def _table_page(pdf: PdfPages, title: str, headers: list[str],
         elif r % 2 == 0:
             cell.set_facecolor("#f5f5f5")
         cell.set_edgecolor("#e0e0e0")
+        # Left-align first column (variant names)
+        if c == 0:
+            cell.set_text_props(ha="left")
+            cell.PAD = 0.05
     pdf.savefig(fig)
     plt.close(fig)
 
@@ -221,7 +229,8 @@ def page_credibility_table(pdf: PdfPages) -> None:
             r.get("n_runs", ""),
         ])
     _table_page(pdf, "Credibility Suite — Aggregate Metrics", headers, rows,
-                "648 runs per variant across 2 domain corpora")
+                "648 runs per variant across 2 domain corpora",
+                col_widths=[0.28, 0.14, 0.14, 0.14, 0.16, 0.10])
 
 
 def page_real_lm(pdf: PdfPages) -> None:
@@ -391,7 +400,8 @@ def page_error_taxonomy(pdf: PdfPages) -> None:
             f"{float(r.get('false_reject_count_mean', 0)):.1f}",
         ])
     _table_page(pdf, "6. Error Taxonomy", headers, rows,
-                "Mean error counts per variant (648 runs each)")
+                "Mean error counts per variant (648 runs each)",
+                col_widths=[0.28, 0.16, 0.18, 0.20, 0.18])
 
 
 def page_cq_summary(pdf: PdfPages) -> None:
