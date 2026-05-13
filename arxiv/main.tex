@@ -97,6 +97,8 @@ $\mathrm{TRR}$ & True rejection rate (higher = better discrimination) \\
 $\mathrm{FRR}$ & False rejection rate (lower = better specificity) \\
 $\mathrm{JSD}(p, q)$ & Jensen-Shannon divergence \\
 $\mathcal{V}_{\mathrm{ref}}$ & Reference vocabulary (token IDs from seed corpus) \\
+$R_t$ & Retrieval context at step $t$ (BM25 passage) \\
+$S_t$ & Recursive stability: $1 - \mathrm{JSD}(p_{x_t}, p_{x_0})$ \\
 $\tau$ & Dynamic log-prob threshold ($= \mu_{\mathrm{in-vocab}} - 1.5\,\sigma_{\mathrm{in-vocab}}$) \\
 \bottomrule
 \end{tabular}
@@ -104,8 +106,15 @@ $\tau$ & Dynamic log-prob threshold ($= \mu_{\mathrm{in-vocab}} - 1.5\,\sigma_{\
 
 \noindent\textbf{Recursive generation:}
 \begin{equation}
-x_{t+1} \sim P_\theta\!\left(x \mid \mathcal{A}(x_t),\; \mathcal{E}(x_t)\right)
+x_{t+1} \sim P_\theta\!\left(x \mid \mathcal{A}(x_t),\; \mathcal{E}(x_t),\; R_t\right)
 \end{equation}
+where $R_t$ is the retrieval context at step $t$ (BM25 passage prepended to prompt).
+
+\noindent\textbf{Recursive stability:}
+\begin{equation}
+S_t = 1 - \mathrm{JSD}(p_{x_t},\; p_{x_0})
+\end{equation}
+Higher $S_t$ indicates the generated distribution at step $t$ remains closer to the seed distribution. $S_0 = 1$ by construction.
 
 \noindent\textbf{Anchoring operator} (Layer 1):
 \begin{equation}
@@ -168,7 +177,19 @@ Epistemic Filtering
 Agentic Closure
   & Recursive persistence dynamics (\emph{not} autonomous agency)
   & Output of step $t$ conditions step $t{+}1$ via context accumulation
-  & Stability retention over $T$ iterations \\
+  & Stability retention over $T$ iterations \\[4pt]
+Calibration
+  & Directional shaping of candidate distributions
+  & Selection by $\log G_0$ score; CQ parameterizes direction
+  & Correct direction improves TRR; reversed direction degrades \\[4pt]
+Miscalibration
+  & Anti-aligned shaping (lowest log-prob selection)
+  & $\argmin$ replaces $\argmax$ in epistemic filter
+  & TRR falls below control; FRR rises (H2) \\[4pt]
+Recursive Drift
+  & Degradation across repeated generation cycles
+  & Measured by $1 - S_t$ (JSD from seed distribution)
+  & Higher drift indicates loss of distributional coherence \\
 \bottomrule
 \end{tabular}
 \caption{Operational definitions of the three OEA layers (REQ-OEA-013). Both ``Ontology'' and ``Agentic'' are used in their computational senses throughout this paper.}
