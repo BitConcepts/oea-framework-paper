@@ -31,7 +31,7 @@ python experiments/real_lm_experiment.py --model gpt2
 
 The real LLM experiment (`real_lm_experiment.py`) auto-detects the best available device at startup:
 
-```
+```text
 Device: cuda (NVIDIA GeForce RTX 4070 SUPER)   # NVIDIA via CUDA
 Device: mps (Apple Metal)                       # Apple Silicon
 Device: cpu  [NOTE: no GPU detected — ...]      # CPU fallback with install hint

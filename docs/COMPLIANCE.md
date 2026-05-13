@@ -98,7 +98,7 @@
 - `f8fd878 feat!: v0.3.0 - real LLM experiment, calibration-quality formula, semver/CHANGELOG`
 
 **Contributors:**
-- 25	Tristen Pierson
+- 25 Tristen Pierson
 
 ## Governance File Inventory
 
