@@ -1,5 +1,46 @@
 # LEDGER
 
+## 2026-05-13 - Paper 1 hardening complete: modern-model replication + systems implications (v0.6.0)
+- **Modern model replication (WEAKNESS 3 closed)**: Ran `real_lm_experiment.py --model Qwen/Qwen2.5-1.5B`
+  (1.5B params, Sep 2024 architecture: RoPE + GQA + SwiGLU). 10 seeds, 10 iter, 60 tokens.
+  RTX 4070 SUPER, ~27 min. All hypotheses confirmed on 4th model, 3rd architecture family:
+  - H1: oea_anchored +0.88 nats (log-prob improvement)
+  - H2: oea_miscalibrated -0.62 nats (degradation below control)
+  - H3: oea_rag_only -0.07 nats (RAG-only degrades)
+  This is the highest-value addition: Qwen2.5 is 10× larger than prior models and uses a
+  completely different architecture, directly addressing the "small-model artifact" concern.
+- **Systems implications section added (WEAKNESS 5 closed)**: New §13 between Discussion and
+  Failure Modes. Carefully scoped: recursive planning drift, hallucinated refinement,
+  synthetic contamination, spec degradation. Explicitly states connections are "suggestive,
+  not demonstrated" and does not claim autonomous reasoning or planning competence.
+- **BFloat16 fix**: Added `.float()` before `.numpy()` in `_mean_log_prob` and `_epistemic_accuracy`
+  for compatibility with modern bf16 models (Qwen, Llama, etc.).
+- **Table 3 expanded**: Now 4 models × 3 architecture families with compressed column headers.
+- **Figures regenerated**: 4-panel calibration trajectory and metric dissociation plots.
+- **REPRODUCE.md updated**: Qwen added to step 5, expected outputs, compute budget.
+- **manifest.json updated**: Qwen artifact SHA-256 hashes added.
+- **Paper 1 unlock conditions**: 10/11 complete. Only arXiv submission remains.
+  All 8 weaknesses from strategic document addressed. Ready for submission.
+- 12 tests passing.
+
+## 2026-05-13 - GPT-Neo-125M full GPU validation
+- Ran `real_lm_experiment.py --model EleutherAI/gpt-neo-125M` (10 seeds, 10 iter, 60 tokens)
+  on RTX 4070 SUPER (CUDA 12.1, torch 2.5.1). Completed in ~9 minutes.
+- Key final-iteration (iter 10) results:
+  - control: log_prob=-1.055, JSD=0.408, ROUGE-L=0.049
+  - oea_anchored: log_prob=-0.239 [+0.82 nats], JSD=0.442, ROUGE-L=0.037
+  - oea_miscalibrated: log_prob=-2.422 [-1.37 nats], JSD=0.347, ROUGE-L=0.054
+  - oea_rag_only: log_prob=-1.484 [-0.43 nats], JSD=0.398, ROUGE-L=0.047
+- All four hypotheses supported on GPT-Neo (non-GPT2 architecture):
+  H1 (+0.82 nats), H2 (-1.37 nats), H3 (-0.43 nats), ROUGE-L dissociation confirmed.
+- CQ measurement: oea_anchored CQ=0.438, oea_rag_only CQ=0.493.
+- Artifacts committed: results/real_lm/EleutherAI/gpt-neo-125M/.
+- manifest.json updated with SHA-256 hashes for new artifacts.
+- Manuscript updated: Table 3 now 3-model, abstract/conclusion/discussion updated.
+- Figures regenerated with 3-panel layout including GPT-Neo.
+- Reproducibility fixes: numpy pin (1.26.4), verify_manifest.py, run_all_experiments.sh,
+  Dockerfile CMD fixed.
+
 ## 2026-05-13 - GPT-Neo setup + CPU validation (partial; to resume on GPU desktop)
 - Installed neural LLM dependencies: `torch==2.3.1+cu121`, `transformers==4.41.0`,
   `rouge-score==0.1.2`. Fixed NumPy 2.x / torch 2.3.1 ABI mismatch by pinning

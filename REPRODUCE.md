@@ -70,11 +70,13 @@ bash scripts/setup.sh --experiments
 python experiments/real_lm_experiment.py --model distilgpt2
 python experiments/real_lm_experiment.py --model gpt2
 python experiments/real_lm_experiment.py --model EleutherAI/gpt-neo-125M
+python experiments/real_lm_experiment.py --model Qwen/Qwen2.5-1.5B
 
 # CPU (reduced config, ~15-25 min per model):
 python experiments/real_lm_experiment.py --model distilgpt2 --n-seeds 3 --n-iterations 5 --gen-tokens 40
 python experiments/real_lm_experiment.py --model gpt2 --n-seeds 3 --n-iterations 5 --gen-tokens 40
 python experiments/real_lm_experiment.py --model EleutherAI/gpt-neo-125M --n-seeds 3 --n-iterations 5 --gen-tokens 40
+python experiments/real_lm_experiment.py --model Qwen/Qwen2.5-1.5B --n-seeds 3 --n-iterations 5 --gen-tokens 40
 ```
 
 > CPU results (reduced config) are valid for mechanism verification but have
@@ -114,6 +116,7 @@ docker run --rm -v $(pwd)/results:/app/results oea-framework
 | Real LLM (distilgpt2, GPU) | ~20 min | `results/real_lm/distilgpt2/` |
 | Real LLM (gpt2, GPU) | ~25 min | `results/real_lm/gpt2/` |
 | Real LLM (gpt-neo-125M, GPU) | ~25 min | `results/real_lm/EleutherAI/gpt-neo-125M/` |
+| Real LLM (Qwen2.5-1.5B, GPU) | ~27 min | `results/real_lm/Qwen/Qwen2.5-1.5B/` |
 | Real LLM (any model, CPU reduced) | ~15-25 min | same paths, `n_seeds=3 n_iter=5` |
 
 ## Seed policy
@@ -141,4 +144,5 @@ The `--experiments` setup flag handles this automatically.
 | distilgpt2 (82M) | ~0.3 | ~0.4 |
 | gpt2 (124M) | ~0.4 | ~0.5 |
 | gpt-neo-125M (non-GPT2) | ~0.4 | ~0.5 |
+| Qwen2.5-1.5B (modern 2024) | ~0.45 | ~0.6 |
 | All bigram experiments | 0.0 (CPU) | 0.0 (CPU) |

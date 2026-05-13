@@ -35,6 +35,12 @@ venv/
 results/
 !results/credibility/
 !results/real_lm/
+!results/memory_drift/
+!results/baseline_competition/
+!results/oea_insights_report.pdf
+!results/summary_metrics.json
+!results/recursive_stability_runs.csv
+!results/epistemic_friction_runs.csv
 artifacts/
 
 # Local env

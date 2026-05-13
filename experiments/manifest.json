@@ -15,6 +15,10 @@
   "results/real_lm/distilgpt2/real_lm_summary.json": "5c35bd9c756a0fd30a38c11b36c944dbec46dc181ea5fa756da9abcddc25d7fb",
   "results/real_lm/gpt2/real_lm_runs.csv": "5622fcf035537a6fbbecf802b061f64a60a567eb9c1b3322c921a59daaf10a50",
   "results/real_lm/gpt2/real_lm_summary.json": "d68f9bd524a7ca28c9bff8e2137a61f88392572471618c135b20e00165bbe153",
+  "results/real_lm/EleutherAI/gpt-neo-125M/real_lm_runs.csv": "1aff29bf8483b3ba43c1241f3e43b7705d263c21346dd27daac0989f7268d74d",
+  "results/real_lm/EleutherAI/gpt-neo-125M/real_lm_summary.json": "1abb1c6a64b1a6ddab6aab6c5b877669f463923e29b5e5cd60960011693902bc",
+  "results/real_lm/Qwen/Qwen2.5-1.5B/real_lm_runs.csv": "c9a4b2fc17d8f81387ec1faeb1c28dd81c3a18e5e8c6f7bb54be6585d08969a5",
+  "results/real_lm/Qwen/Qwen2.5-1.5B/real_lm_summary.json": "c298f1e99a4d4aa2c8bd652da61b24a85ad854cc40715d24fa0b17fddbd82b94",
   "results/recursive_stability_runs.csv": "95b363892b853940f06ceb3d0c86844996dd08e1226b06c1e70f1c030acceabc",
   "results/summary_metrics.json": "17a94b3f86167099b6259d91edfc441d542e3862b14025dbf77788b6031605cd"
 }

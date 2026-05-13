@@ -394,7 +394,7 @@ def run_real_lm_experiment() -> list[dict]:
             return -100.0
         t = torch.tensor([ids[-256:]]).to(device)  # use last 256 tokens as context
         out = model(t)
-        lp = torch.nn.functional.log_softmax(out.logits[:, :-1, :], dim=-1)
+        lp = torch.nn.functional.log_softmax(out.logits[:, :-1, :].float(), dim=-1)
         per_tok = lp.gather(2, t[:, 1:].unsqueeze(-1)).squeeze(-1)
         return float(per_tok.mean())
 
@@ -423,7 +423,7 @@ def run_real_lm_experiment() -> list[dict]:
         """
         ctx = torch.tensor([context_ids[-64:]]).to(device)
         out = model(ctx)
-        lp = torch.nn.functional.log_softmax(out.logits[0, -1, :], dim=-1).cpu().numpy()
+        lp = torch.nn.functional.log_softmax(out.logits[0, -1, :].float(), dim=-1).cpu().numpy()
 
         rng = np.random.default_rng(99)
         vocab_size = tokenizer.vocab_size

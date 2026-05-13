@@ -26,11 +26,12 @@ WORKDIR /app
 COPY . .
 
 # Core experiment dependencies (no GPU)
+# numpy==1.26.4 required for torch 2.3.1 ABI compatibility (numpy 2.x breaks torch)
 RUN pip install --no-cache-dir \
-    "numpy==2.4.4" \
-    "matplotlib==3.10.9" \
-    "scipy==1.17.1" \
-    "pytest==9.0.3"
+    "numpy==1.26.4" \
+    "matplotlib==3.9.2" \
+    "scipy==1.14.1" \
+    "pytest==8.3.5"
 
 # Neural LLM dependencies (CPU-only torch for portability)
 # For GPU: replace with appropriate CUDA wheel URL
@@ -44,8 +45,4 @@ RUN pip install --no-cache-dir \
 RUN python -c "import numpy, matplotlib, torch, transformers; print('Environment OK')"
 
 # Default: run all CPU experiments
-CMD ["bash", "-c", \
-    "python experiments/recursive_memory_drift.py && \
-     python experiments/baseline_competition.py && \
-     python experiments/generate_figures.py && \
-     echo 'Bigram experiments complete. For real LLM: python experiments/real_lm_experiment.py --model distilgpt2'"]
+CMD ["bash", "scripts/run_all_experiments.sh"]

@@ -1,0 +1,56 @@
+{
+  "n_seeds": 20,
+  "n_steps": 30,
+  "variants": {
+    "uncontrolled": {
+      "entity_retention": {
+        "mean": 0.157143,
+        "ci95_low": 0.155042,
+        "ci95_high": 0.159244
+      },
+      "semantic_drift": {
+        "mean": 0.493684,
+        "ci95_low": 0.482273,
+        "ci95_high": 0.505096
+      },
+      "hallucination_proxy": {
+        "mean": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "vocab_collapse": {
+        "mean": 0.92125,
+        "ci95_low": 0.908935,
+        "ci95_high": 0.933565
+      }
+    },
+    "oea_controlled": {
+      "entity_retention": {
+        "mean": 0.156077,
+        "ci95_low": 0.153495,
+        "ci95_high": 0.158659
+      },
+      "semantic_drift": {
+        "mean": 0.487273,
+        "ci95_low": 0.478714,
+        "ci95_high": 0.495831
+      },
+      "hallucination_proxy": {
+        "mean": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "vocab_collapse": {
+        "mean": 0.915,
+        "ci95_low": 0.899863,
+        "ci95_high": 0.930137
+      }
+    }
+  },
+  "oea_vs_uncontrolled_delta": {
+    "entity_retention": -0.001066,
+    "semantic_drift": -0.006411,
+    "hallucination_proxy": 0.0,
+    "vocab_collapse": -0.00625
+  }
+}

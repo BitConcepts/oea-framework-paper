@@ -2,10 +2,11 @@
 # Generated: 2026-05-13 on Python 3.11 (Windows/Linux/macOS compatible)
 #
 # Core experiment dependencies (no GPU required):
-numpy==2.4.4
-matplotlib==3.10.9
-scipy==1.17.1
-pytest==9.0.3
+# NOTE: numpy==1.26.4 is required for torch 2.3.1 ABI compatibility (numpy 2.x breaks torch).
+numpy==1.26.4
+matplotlib==3.9.2
+scipy==1.14.1
+pytest==8.3.5
 specsmith==0.10.1
 
 # Neural LLM experiment dependencies (required for real_lm_experiment.py):

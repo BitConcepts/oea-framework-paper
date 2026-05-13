@@ -10,7 +10,8 @@ Figure 1 — OEA Pipeline Diagram
 
 Figure 2 — Calibration Trajectory
     Log-probability over 10 recursive iterations for all four variants
-    (mean ± 95% CI across 10 seeds), for distilgpt2 (82M) and gpt2 (124M).
+    (mean ± 95% CI across 10 seeds), for distilgpt2 (82M), gpt2 (124M),
+    and gpt-neo-125M (125M).
     Shows that oea_anchored maintains higher log-prob while oea_miscalibrated
     degrades fastest.
 
@@ -64,8 +65,13 @@ MARKERS = {
     "oea_miscalibrated":"v",
 }
 VARIANTS = ["control", "oea_rag_only", "oea_anchored", "oea_miscalibrated"]
-MODELS = ["distilgpt2", "gpt2"]
-MODEL_LABELS = {"distilgpt2": "distilgpt2 (82M)", "gpt2": "gpt2 (124M)"}
+MODELS = ["distilgpt2", "gpt2", "EleutherAI/gpt-neo-125M", "Qwen/Qwen2.5-1.5B"]
+MODEL_LABELS = {
+    "distilgpt2": "distilgpt2 (82M)",
+    "gpt2": "gpt2 (124M)",
+    "EleutherAI/gpt-neo-125M": "gpt-neo-125M (125M)",
+    "Qwen/Qwen2.5-1.5B": "Qwen2.5 (1.5B)",
+}
 
 plt.rcParams.update({
     "font.family": "serif",
@@ -175,7 +181,10 @@ def fig_pipeline() -> Path:
 # ── Figure 2: Calibration Trajectory ─────────────────────────────────────────
 
 def fig_calibration() -> Path:
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.8), sharey=False)
+    n_models = len(MODELS)
+    fig, axes = plt.subplots(1, n_models, figsize=(3.5 * n_models, 2.8), sharey=False)
+    if n_models == 1:
+        axes = [axes]
 
     for ax, model in zip(axes, MODELS):
         data = _load_runs(model)
@@ -224,7 +233,10 @@ def fig_calibration() -> Path:
 # ── Figure 3: Metric Dissociation ────────────────────────────────────────────
 
 def fig_metric_dissociation() -> Path:
-    fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.8), sharey=False)
+    n_models = len(MODELS)
+    fig, axes = plt.subplots(1, n_models, figsize=(3.5 * n_models, 2.8), sharey=False)
+    if n_models == 1:
+        axes = [axes]
     final_iter = 10
 
     for ax, model in zip(axes, MODELS):

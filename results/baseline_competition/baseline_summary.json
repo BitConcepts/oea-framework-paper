@@ -1,0 +1,156 @@
+{
+  "n_seeds": 20,
+  "n_iterations": 10,
+  "variants": {
+    "oea_full": {
+      "stability": {
+        "mean": 0.154976,
+        "ci95_low": 0.139502,
+        "ci95_high": 0.17045
+      },
+      "mean_log_prob": {
+        "mean": -6.01149,
+        "ci95_low": -6.040408,
+        "ci95_high": -5.982571
+      },
+      "true_reject_rate": {
+        "mean": 0.74632,
+        "ci95_low": 0.74632,
+        "ci95_high": 0.74632
+      },
+      "false_reject_rate": {
+        "mean": 0.14496,
+        "ci95_low": 0.14496,
+        "ci95_high": 0.14496
+      },
+      "cohens_d_stability_vs_oea": 0.0,
+      "cohens_d_trr_vs_oea": 0.0,
+      "pvalue_stability_vs_oea": 1.0
+    },
+    "temperature_low": {
+      "stability": {
+        "mean": 0.160109,
+        "ci95_low": 0.140281,
+        "ci95_high": 0.179937
+      },
+      "mean_log_prob": {
+        "mean": -5.278643,
+        "ci95_low": -5.369587,
+        "ci95_high": -5.187699
+      },
+      "true_reject_rate": {
+        "mean": 0.6052,
+        "ci95_low": 0.6052,
+        "ci95_high": 0.6052
+      },
+      "false_reject_rate": {
+        "mean": 0.2256,
+        "ci95_low": 0.2256,
+        "ci95_high": 0.2256
+      },
+      "cohens_d_stability_vs_oea": -0.1351,
+      "cohens_d_trr_vs_oea": 1752084866508449.2,
+      "pvalue_stability_vs_oea": 0.6677
+    },
+    "top_k": {
+      "stability": {
+        "mean": 0.165582,
+        "ci95_low": 0.149271,
+        "ci95_high": 0.181893
+      },
+      "mean_log_prob": {
+        "mean": -6.038162,
+        "ci95_low": -6.069997,
+        "ci95_high": -6.006327
+      },
+      "true_reject_rate": {
+        "mean": 0.6052,
+        "ci95_low": 0.6052,
+        "ci95_high": 0.6052
+      },
+      "false_reject_rate": {
+        "mean": 0.2256,
+        "ci95_low": 0.2256,
+        "ci95_high": 0.2256
+      },
+      "cohens_d_stability_vs_oea": -0.3122,
+      "cohens_d_trr_vs_oea": 1752084866508449.2,
+      "pvalue_stability_vs_oea": 0.3073
+    },
+    "entropy_filter": {
+      "stability": {
+        "mean": 0.154976,
+        "ci95_low": 0.139502,
+        "ci95_high": 0.17045
+      },
+      "mean_log_prob": {
+        "mean": -6.01149,
+        "ci95_low": -6.040408,
+        "ci95_high": -5.982571
+      },
+      "true_reject_rate": {
+        "mean": 0.6304,
+        "ci95_low": 0.6304,
+        "ci95_high": 0.6304
+      },
+      "false_reject_rate": {
+        "mean": 0.2112,
+        "ci95_low": 0.2112,
+        "ci95_high": 0.2112
+      },
+      "cohens_d_stability_vs_oea": 0.0,
+      "cohens_d_trr_vs_oea": 1439212568917655.0,
+      "pvalue_stability_vs_oea": 1.0
+    },
+    "repetition_penalty": {
+      "stability": {
+        "mean": 0.159715,
+        "ci95_low": 0.140427,
+        "ci95_high": 0.179002
+      },
+      "mean_log_prob": {
+        "mean": -6.102579,
+        "ci95_low": -6.131458,
+        "ci95_high": -6.0737
+      },
+      "true_reject_rate": {
+        "mean": 0.6052,
+        "ci95_low": 0.6052,
+        "ci95_high": 0.6052
+      },
+      "false_reject_rate": {
+        "mean": 0.2256,
+        "ci95_low": 0.2256,
+        "ci95_high": 0.2256
+      },
+      "cohens_d_stability_vs_oea": -0.1268,
+      "cohens_d_trr_vs_oea": 1752084866508449.2,
+      "pvalue_stability_vs_oea": 0.6987
+    },
+    "rag_only": {
+      "stability": {
+        "mean": 0.142538,
+        "ci95_low": 0.121637,
+        "ci95_high": 0.163438
+      },
+      "mean_log_prob": {
+        "mean": -4.96514,
+        "ci95_low": -4.984029,
+        "ci95_high": -4.946252
+      },
+      "true_reject_rate": {
+        "mean": 0.59008,
+        "ci95_low": 0.59008,
+        "ci95_high": 0.59008
+      },
+      "false_reject_rate": {
+        "mean": 0.23424,
+        "ci95_low": 0.23424,
+        "ci95_high": 0.23424
+      },
+      "cohens_d_stability_vs_oea": 0.3166,
+      "cohens_d_trr_vs_oea": 1371651564285569.2,
+      "pvalue_stability_vs_oea": 0.3278
+    }
+  }
+}
