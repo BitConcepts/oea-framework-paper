@@ -1,27 +1,24 @@
 cff-version: 1.2.0
 message: "If you use this work, please cite it using the metadata below."
-title: "Beyond Stochasticism: An Ontological Framework for Agentic Stability"
+title: "OEA: Structured Recursive Calibration for Generative Stability"
 authors:
-  - family-names: "Research"
-    given-names: "BitConcepts"
+  - family-names: "Pierson"
+    given-names: "Tristen"
 repository-code: "https://github.com/BitConcepts/oea-framework-paper"
 license: MIT
-version: "0.4.0"
-date-released: 2026-05-13
+version: "1.0.0"
+date-released: 2026-05-14
 abstract: >
-  The OEA (Ontology, Epistemic, Agentic) framework specifies a hypothesis-driven,
-  falsification-oriented protocol for improving reliability in recursive agentic systems
-  under recursive synthetic-data exposure. A bigram-proxy ablation study (12 variants,
-  648 runs per variant, two domain corpora) and a two-model real LLM validation
-  (distilgpt2 82M and gpt2 124M, 10 seeds x 10 iterations) demonstrate that OEA
-  epistemic filtering improves mean log-probability by +1.14 to +1.61 nats, with
-  an anti-calibrated control consistently degrading it by -0.80 to -0.82 nats across
-  both models, confirming calibration direction as the causal mechanism.
+  Empirical study of the OEA (Ontology, Epistemic, Agentic) framework as a three-layer
+  protocol for improving reliability in recursive generative systems under synthetic-data
+  exposure. Four-model validation (82M-1.5B, 3 architecture families) provides ablation
+  evidence that directional calibration and epistemic filtering improve recursive
+  distributional fidelity. Anti-calibrated controls degrade log-probability by -0.55 to
+  -1.37 nats; full OEA improves it by +0.62 to +1.63 nats.
 keywords:
-  - agentic ai
-  - ontology
-  - epistemology
+  - recursive calibration
+  - epistemic filtering
   - model collapse
   - retrieval augmented generation
-  - calibration
-  - epistemic uncertainty
+  - distributional stability
+  - language models

@@ -1,90 +1,88 @@
-# Beyond Stochasticism: The OEA Framework
+# OEA: Structured Recursive Calibration for Generative Stability
 
-Research design, experimental protocol, and publication package for:
-**"Beyond Stochasticism: An Ontological Framework for Agentic Stability."**
+Research code, experiments, and publication package for the OEA framework paper.
 
-Version: v0.4.0 | Status: Submission-ready (Gates A–D closed) | CI: ![CI](https://github.com/BitConcepts/oea-framework-paper/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/BitConcepts/oea-framework-paper/actions/workflows/ci.yml/badge.svg)](https://github.com/BitConcepts/oea-framework-paper/actions/workflows/ci.yml)
 
-## Project Goal
+Version: v1.0.0 | Code: MIT | Paper: CC BY 4.0
 
-Empirically validate the OEA (Ontology, Epistemic, Agentic) framework as a measurable guardrail against recursive distributional drift in generative pipelines.
-Target venues: arXiv cs.AI + cs.CL (primary), PhilSci-Archive.
+## Paper
+
+**OEA: Structured Recursive Calibration for Generative Stability**
+
+Investigates whether recursive generative stability depends more strongly on directional
+calibration and epistemic filtering than on unconstrained retrieval augmentation or
+generic decoding constraints.
+
+Four experiments: bigram-proxy ablation (12 variants, 7,776 runs), four-model real LLM
+validation (distilgpt2, gpt2, gpt-neo-125M, Qwen2.5-1.5B), 30-step recursive memory
+drift benchmark, and baseline competition against 5 non-OEA controls.
+
+Manuscript: `arxiv/main.tex` | Build PDF: `scripts\build_pdf.cmd`
 
 ## Quick Start
 
 ```bash
-# 1. Bootstrap environment (auto-detects NVIDIA GPU via nvidia-smi)
+# 1. Setup environment
 bash scripts/setup.sh --experiments      # Linux/macOS
 scripts\setup.cmd --experiments           # Windows
 
-# 2. Run bigram credibility suite (~2 min)
-python experiments/credibility_suite.py
+# 2. Run all CPU experiments (~2 min)
+bash scripts/run_all_experiments.sh
 
 # 3. Run real LLM experiments (GPU recommended)
 python experiments/real_lm_experiment.py --model distilgpt2
 python experiments/real_lm_experiment.py --model gpt2
+python experiments/real_lm_experiment.py --model EleutherAI/gpt-neo-125M
+python experiments/real_lm_experiment.py --model Qwen/Qwen2.5-1.5B
 
-# Results written to results/credibility/ and results/real_lm/{model}/
+# 4. Build manuscript PDF
+scripts\build_pdf.cmd
 ```
 
 ## GPU Support
 
-The real LLM experiment (`real_lm_experiment.py`) auto-detects the best available device at startup:
+The experiment harness auto-detects CUDA, MPS, or CPU:
 
 ```text
-Device: cuda (NVIDIA GeForce RTX 4070 SUPER)   # NVIDIA via CUDA
-Device: mps (Apple Metal)                       # Apple Silicon
-Device: cpu  [NOTE: no GPU detected — ...]      # CPU fallback with install hint
+Device: cuda (NVIDIA GeForce RTX 4070 SUPER)
+Device: mps (Apple Metal)
+Device: cpu  [NOTE: no GPU detected]
 ```
-
-Install PyTorch for your hardware (pick one):
 
 | Hardware | Install command |
 |---|---|
-| NVIDIA RTX 4070 SUPER / 3000–5000 series (CUDA 12.1) | `pip install torch --index-url https://download.pytorch.org/whl/cu121` |
-| NVIDIA older cards (CUDA 11.8) | `pip install torch --index-url https://download.pytorch.org/whl/cu118` |
-| AMD GPU (ROCm 6.x) | `pip install torch --index-url https://download.pytorch.org/whl/rocm6.1` |
-| Apple Silicon (MPS) | `pip install torch` (standard PyPI) |
+| NVIDIA (CUDA 12.1) | `pip install torch --index-url https://download.pytorch.org/whl/cu121` |
+| Apple Silicon (MPS) | `pip install torch` |
 | CPU only | `pip install torch --index-url https://download.pytorch.org/whl/cpu` |
-
-The setup scripts (`setup.sh --experiments`, `setup.cmd --experiments`) auto-select the CUDA 12.1
-wheel when `nvidia-smi` is detected, and fall back to CPU otherwise.
 
 ## Repository Structure
 
-- `arxiv/main.tex` — LaTeX manuscript (compiles via CI, arXiv-ready)
-- `arxiv/references.bib` — 13/13 citations verified
-- `experiments/real_lm_experiment.py` — Two-model real LLM validation (GPU-accelerated)
-- `experiments/credibility_suite.py` — Bigram-proxy ablation harness (12 variants)
-- `experiments/config/credibility_plan.json` — Reproducible experiment plan
-- `experiments/data/` — Public-domain corpora (literary + scientific)
-- `results/real_lm/` — Committed experiment artifacts (distilgpt2, gpt2)
-- `results/credibility/` — Committed bigram suite artifacts
-- `docs/` — Architecture, requirements, tests, governance
-- `LEDGER.md` — Change log (every session logged)
-- `AGENTS.md` — Agent governance hub
+- `arxiv/main.tex` — LaTeX manuscript (arXiv-ready)
+- `arxiv/references.bib` — bibliography (13 verified citations)
+- `arxiv/figures/` — 3 publication figures (pipeline, calibration, dissociation)
+- `experiments/` — all experiment scripts
+- `experiments/manifest.json` — SHA-256 hashes for result artifacts
+- `results/` — committed experiment artifacts
+- `REPRODUCE.md` — full reproduction guide
+- `Dockerfile` — containerized reproducible environment
+- `docs/` — architecture, requirements, tests, governance
+- `LEDGER.md` — session-by-session change log
 
 ## Experiment Metrics
 
-The real LLM experiment measures per-iteration:
-- **Log-probability** — mean per-token log-prob under original frozen model (primary quality metric)
-- **ROUGE-L recall** — fraction of seed-corpus content preserved; *independent* of log-prob selection
-  criterion (addresses metric-circularity concerns)
-- **JSD** — JS divergence from seed token distribution (diversity proxy, not quality metric)
+Per-iteration measurements across 4 models (82M–1.5B, 3 architecture families):
+
+- **Log-probability** — mean per-token log-prob under frozen reference model (primary)
+- **ROUGE-L recall** — seed-corpus content preservation (independent of log-prob)
+- **JSD** — Jensen-Shannon divergence from seed distribution
 - **TRR / FRR** — true/false rejection rates for OOV token detection
 
-## Core References
+## Reproducibility
 
-- Shumailov et al., 2024 — model collapse empirical evidence
-- Fu et al., 2025 — theoretical collapse framing
-- Gerstgrasser et al., 2024 — mitigation regimes
-- Lewis et al., 2020 — RAG architecture
-- Drayson et al., 2025 — detection-based collapse prevention
-- Abbasi Yadkori et al., 2024 — epistemic vs aleatoric UQ in LLMs
-- Full citation list: `arxiv/references.bib` (13/13 verified)
+All experiments are seeded and reproducible. See `REPRODUCE.md` for exact commands.
+Artifact integrity: `python experiments/verify_manifest.py`
 
-## Governance
+## License
 
-This project uses specsmith 0.10.1 (`aee-research` type). All agent sessions are logged
-in `LEDGER.md`. No claim enters the manuscript without an evidence lock and experiment
-artifact backing it (see `AGENTS.md` for protocol rules).
+Code: MIT | Paper: CC BY 4.0

@@ -8,8 +8,7 @@ platforms:
 language: python
 spec_version: 0.10.1
 aee_phase: release
-description: 'This repository contains the research design, experimental protocol,
-  and publication package for: "Beyond Stochasticism:'
+description: 'OEA: Structured Recursive Calibration for Generative Stability'
 services: false
 shell_wrappers: false
 exec_shims: true

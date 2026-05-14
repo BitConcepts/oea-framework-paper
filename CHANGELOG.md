@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-05-14
+
+### Added
+- Qwen/Qwen2.5-1.5B (1.5B, 2024 architecture) real LLM validation: H1/H2/H3 all confirmed
+- EleutherAI/gpt-neo-125M real LLM validation: cross-architecture consistency confirmed
+- Systems Implications section (§13): recursive planning drift, hallucinated refinement,
+  synthetic contamination, spec degradation — carefully scoped as suggestive
+- Mechanistic baseline comparison table (Table 6): why OEA differs from generic constraints
+- Formal stability metric S_t = 1 - JSD(p_{x_t}, p_{x_0}) and R_t retrieval context
+- Operational definitions expanded: Calibration, Miscalibration, Recursive Drift rows
+- Non-claims paragraph: explicit disclaimer on consciousness, cognition, AGI
+- Related work positioning paragraph: RAG vs OEA vs generic constraints vs agent-system work
+- `experiments/verify_manifest.py` — SHA-256 artifact integrity checker
+- `experiments/generate_insights_pdf.py` — 10-page experiment insights report
+- `scripts/run_all_experiments.sh` — runs all CPU experiments
+- `scripts/build_pdf.cmd` — LaTeX manuscript build script
+- BFloat16 compatibility fix for modern models (Qwen, Llama, etc.)
+
+### Changed
+- Title: "OEA: Structured Recursive Calibration for Generative Stability" (narrowed)
+- "Agentic Closure" → "Recursive Feedback" throughout manuscript and figures
+- "agentic systems" → "recursive generative systems" in abstract/conclusion
+- Claim discipline: "confirms" → "supports"/"is consistent with" throughout
+- Figure captions: tightened with explicit what-to-notice guidance
+- Table 3: expanded to 4 models × 3 architecture families (12-column)
+- Figures: 4-panel calibration trajectory and metric dissociation plots
+- Pipeline figure label: "Recursive Feedback Loop (Layer 3)"
+- requirements-lock.txt: numpy==1.26.4 (torch 2.3.1 ABI compatibility)
+- Dockerfile: fixed numpy pin, CMD uses run_all_experiments.sh
+- .gitignore: added LaTeX build artifacts, result allow-list expanded
+
+### Fixed
+- LaTeX: \DeclareMathOperator for \argmax/\argmin (undefined control sequence)
+- Markdown lint: MD010/MD040/MD060 violations resolved
+- Dependabot: all 5 GitHub Actions PRs merged (checkout v6, setup-python v6, etc.)
+
 ## [0.4.0] - 2026-05-13
 
 ### Added
@@ -149,7 +185,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `results/summary_metrics.json` — pilot: stability delta +0.121, true-reject delta +0.232
 - Trace vault: SEAL-0001 (architecture), SEAL-0002 (verification), SEAL-0003 (v0.1.0 release)
 - Community files: `CODE_OF_CONDUCT.md`, `.github/ISSUE_TEMPLATE/`, `.editorconfig`
-[Unreleased]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/BitConcepts/oea-framework-paper/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.4.0...v1.0.0
 [0.4.0]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.2...v0.4.0
 [0.3.2]: https://github.com/BitConcepts/oea-framework-paper/compare/v0.3.1...v0.3.2
 [0.3.1]:

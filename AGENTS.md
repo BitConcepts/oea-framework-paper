@@ -1,6 +1,6 @@
 # oea-framework-paper — Agent Governance
 
-**Project**: Beyond Stochasticism: An Ontological Framework for Agentic Stability
+**Project**: OEA: Structured Recursive Calibration for Generative Stability
 **Phase**: See `scaffold.yml` — advance with `specsmith phase next`
 **Spec**: specsmith 0.10.1 / aee-research
 
