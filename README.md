@@ -8,8 +8,6 @@ Version: v1.0.0 | Code: MIT | Paper: CC BY 4.0
 
 ## Paper
 
-**OEA: Structured Recursive Calibration for Generative Stability**
-
 Investigates whether recursive generative stability depends more strongly on directional
 calibration and epistemic filtering than on unconstrained retrieval augmentation or
 generic decoding constraints.
