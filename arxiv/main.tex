@@ -54,6 +54,8 @@ This work makes the following explicit \textbf{non-claims}:
 \end{itemize}
 All results are scope-bounded to the implemented harness. Transfer to production systems or training-time dynamics remains future work.
 
+This work does not claim to provide a theory of consciousness, autonomous cognition, symbolic ontology, or general intelligence. The terms ``ontological,'' ``epistemic,'' and ``agentic'' are used operationally: ontological refers to distributional anchoring, epistemic refers to candidate-quality filtering, and agentic refers to recursive persistence dynamics. The contribution of this paper is limited to substrate-level mechanisms for recursive generative stability under synthetic exposure.
+
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Core Hypotheses and Falsifiability}
 \label{sec:hypotheses}
@@ -152,6 +154,8 @@ RAG methods improve grounding \cite{lewis2020rag} but retrieval alone does not e
 \subsection{Position Against Related Frameworks}
 
 OEA differs from constitutional AI (output-time rule constraints), self-refinement (critic-model iteration), self-consistency (ensemble voting), and recursive self-improvement (weight updates) by operating as a \emph{generation-time, frozen-weights, calibration-directed} protocol. Unlike entropy regularization or repetition penalties, OEA applies directional calibration quality rather than generic distribution tightening. Section~\ref{sec:baseline} directly tests this distinction.
+
+Unlike RAG-only methods, OEA studies the interaction between retrieval, directional calibration, and recursive filtering. Unlike generic decoding constraints (temperature, top-$k$, repetition penalty), it evaluates whether directionally aligned calibration improves epistemic discrimination under recursive exposure. Unlike full agent-system work, this paper studies substrate-level recursive dynamics rather than autonomous behavior.
 
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Operational Definition of OEA Layers}
@@ -266,7 +270,7 @@ ablation\_miscalibrated & 0.943 [0.942,\,0.944] & 0.257 [0.255,\,0.259] & 0.651 
 \textbf{oea\_full}    & \textbf{0.937 [0.935,\,0.938]} & \textbf{0.836 [0.834,\,0.837]} & \textbf{0.081 [0.080,\,0.082]} \\
 \bottomrule
 \end{tabular}
-\caption{Full ablation results (648 runs each, two domain corpora). \texttt{oea\_full} achieves best TRR/FRR ($d=4.56$ vs \texttt{control\_replace}, $p<0.001$, permutation test $n_{\mathrm{perm}}=2000$). \texttt{ablation\_miscalibrated} confirms H2: reversed discrimination (TRR\,=\,0.257, FRR\,=\,0.651). Stability and epistemic filtering are partially orthogonal: \texttt{ablation\_A} and \texttt{ablation\_EA} achieve high stability with weaker epistemic filtering. Source: \texttt{results/credibility/}.}
+\caption{Full ablation results (648 runs each, two domain corpora). \texttt{oea\_full} achieves best TRR/FRR ($d=4.56$ vs \texttt{control\_replace}, $p<0.001$, permutation test $n_{\mathrm{perm}}=2000$). \texttt{ablation\_miscalibrated} supports H2: reversed discrimination (TRR\,=\,0.257, FRR\,=\,0.651). Stability and epistemic filtering are partially orthogonal: \texttt{ablation\_A} and \texttt{ablation\_EA} achieve high stability with weaker epistemic filtering. Source: \texttt{results/credibility/}.}
 \label{tab:ablation}
 \end{table}
 
@@ -387,14 +391,14 @@ Figures~\ref{fig:pipeline}--\ref{fig:dissociation} are generated from committed 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.90\textwidth]{figures/fig_pipeline.pdf}
-\caption{OEA three-layer generation pipeline. Input passes through BM25 retrieval (Layer 1), epistemic filtering (Layer 2), and vocabulary anchoring; the accepted output re-enters the recursive feedback loop (Layer 3). This is an operational pipeline, not a claim of autonomous agency.}
+\caption{Operational OEA generation pipeline. Retrieval supplies context, the epistemic filter rejects low-quality candidates, anchoring constrains recursive propagation, and the recursive feedback loop conditions the next iteration. The diagram describes substrate-level recursive control, not autonomous agency.}
 \label{fig:pipeline}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.90\textwidth]{figures/fig_calibration.pdf}
-\caption{Calibration trajectory: mean log-probability over 10 recursive iterations (shaded: 95\% CI, 10 seeds) across four models including Qwen2.5-1.5B (modern 2024 architecture). \texttt{oea\_anchored} maintains higher log-probability; \texttt{oea\_miscalibrated} degrades fastest, consistent with H1 and H2.}
+\caption{Calibration trajectories across four language models (82M--1.5B). Higher mean log-probability indicates greater distributional fidelity under the frozen evaluator. OEA anchoring improves final-iteration log-probability across all tested models, while the anti-calibrated condition consistently degrades, providing directional ablation evidence for calibration direction. Qwen2.5-1.5B (2024 architecture) extends the validation beyond GPT-2-family models.}
 \label{fig:calibration}
 \end{figure}
 
