@@ -27,6 +27,8 @@ venv/
 *.run.xml
 *.synctex.gz
 *.toc
+*.pk
+arxiv/main.pdf
 
 # Research outputs — exclude generated run artifacts but keep committed experiment results
 # The primary results (pilot CSVs + summary_metrics.json) are committed directly.

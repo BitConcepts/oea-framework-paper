@@ -39,7 +39,7 @@ This work argues that recursive generative stability depends more strongly on \e
 
 Model collapse has become a central concern in recursive synthetic training pipelines, with evidence of degradation under specific feedback-loop assumptions \cite{shumailov2024modelcollapse,fu2025theoretical}. Subsequent studies show collapse behavior depends strongly on data-mixing assumptions, curation policy, and accumulation dynamics \cite{gerstgrasser2024inevitable,schaeffer2025position}. This motivates a controlled framework that separates what is known, what is hypothesized, and what is empirically testable.
 
-The OEA framework provides such a structure. \textbf{Ontological Anchoring} defines boundary conditions on the distributional vocabulary---\emph{not} formal symbolic ontology. \textbf{Epistemic Filtering} introduces explicit falsification and calibration checks for generated claims. \textbf{Agentic Closure} operationalizes interventions in measurable recursive loops---\emph{not} autonomous agency. This aligns with a Popperian criterion: claims must be framed so they can fail under evidence \cite{popper1959logic}.
+The OEA framework provides such a structure. \textbf{Ontological Anchoring} defines boundary conditions on the distributional vocabulary---\emph{not} formal symbolic ontology. \textbf{Epistemic Filtering} introduces explicit falsification and calibration checks for generated claims. \textbf{Recursive Feedback} operationalizes interventions in measurable recursive loops---\emph{not} autonomous agency. This aligns with a Popperian criterion: claims must be framed so they can fail under evidence \cite{popper1959logic}.
 
 \subsection{Scope and Non-Claims}
 \label{sec:nonclaims}
@@ -176,7 +176,7 @@ Epistemic Filtering
   & Candidate quality discrimination
   & $K{=}3$ candidates scored by $\log G_0(c \mid x)$; highest kept
   & Improved TRR; reduced FRR \\[4pt]
-Agentic Closure
+Recursive Feedback
   & Recursive persistence dynamics (\emph{not} autonomous agency)
   & Output of step $t$ conditions step $t{+}1$ via context accumulation
   & Stability retention over $T$ iterations \\[4pt]
@@ -204,12 +204,12 @@ Recursive Drift
 
 \subsection{OEA Tri-Layer Protocol}
 
-\noindent\textbf{Agentic loop model.} Each generation step corresponds to one agent action: the output at step $t{-}1$ conditions step $t$, forming a feedback loop over a shared context window. Our recursive loop directly models this pattern. Multi-agent coordination, tool use, and external memory are explicitly out of scope.
+\noindent\textbf{Recursive loop model.} Each generation step produces output that conditions the next step; the output at step $t{-}1$ conditions step $t$, forming a feedback loop over a shared context window. Our recursive loop directly models this pattern. Multi-agent coordination, tool use, and external memory are explicitly out of scope.
 
 \begin{enumerate}[leftmargin=1.5em]
   \item \textbf{Ontological Anchoring}: domain constraints and invalid-output criteria. BM25 retrieval + vocabulary projection.
   \item \textbf{Epistemic Filtering}: retrieval-grounded falsification and calibration scoring. $K{=}3$ candidate scoring under the frozen reference model.
-  \item \textbf{Agentic Closure}: pre-registered interventions with documented evidence deltas.
+  \item \textbf{Recursive Feedback}: output of step $ conditions step {+}1$ via context accumulation.
 \end{enumerate}
 
 \subsection{Pilot Experiment Design}
