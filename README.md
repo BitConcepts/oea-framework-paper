@@ -16,7 +16,7 @@ Four experiments: bigram-proxy ablation (12 variants, 7,776 runs), four-model re
 validation (distilgpt2, gpt2, gpt-neo-125M, Qwen2.5-1.5B), 30-step recursive memory
 drift benchmark, and baseline competition against 5 non-OEA controls.
 
-Manuscript: `arxiv/main.tex` | Build PDF: `scripts\build_pdf.cmd`
+Manuscript: `arxiv/main.tex` | Build PDF: `scripts\build_pdf.cmd` | [Read on Academia.edu](https://www.academia.edu/167119567/OEA_Structured_Recursive_Calibration_for_Generative_Stability)
 
 ## Quick Start
 

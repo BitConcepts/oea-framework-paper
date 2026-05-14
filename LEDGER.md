@@ -1,5 +1,13 @@
 # LEDGER
 
+## 2026-05-14 - Paper 1 published on Academia.edu (v1.0.0)
+- Published: https://www.academia.edu/167119567/OEA_Structured_Recursive_Calibration_for_Generative_Stability
+- Author: Tristen Pierson, BitConcepts Research
+- arXiv submission pending endorsement (code: EZ6O4Z, category: cs.CL)
+- GitHub Release: https://github.com/BitConcepts/oea-framework-paper/releases/tag/v1.0.0
+- All docs updated to v1.0.0, title narrowed, "Agentic Closure" -> "Recursive Feedback"
+- CI green. 12 tests passing. Manuscript compiles cleanly (14 pages).
+
 ## 2026-05-13 - Paper 1 hardening complete: modern-model replication + systems implications (v0.6.0)
 - **Modern model replication (WEAKNESS 3 closed)**: Ran `real_lm_experiment.py --model Qwen/Qwen2.5-1.5B`
   (1.5B params, Sep 2024 architecture: RoPE + GQA + SwiGLU). 10 seeds, 10 iter, 60 tokens.
