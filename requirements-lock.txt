@@ -7,7 +7,6 @@ numpy==1.26.4
 matplotlib==3.9.2
 scipy==1.14.1
 pytest==8.3.5
-specsmith==0.10.1
 
 # Neural LLM experiment dependencies (required for real_lm_experiment.py):
 # Install separately — platform-dependent.

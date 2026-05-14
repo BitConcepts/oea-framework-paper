@@ -121,10 +121,9 @@ docker run --rm -v $(pwd)/results:/app/results oea-framework
 
 ## Seed policy
 
-All experiments use fixed random seeds documented in `scaffold.yml`
-(`epistemic_threshold: 0.7`) and per-experiment seed parameters.
+All experiments use fixed random seeds. Per-experiment seed parameters:
 Bigram experiments: `random.Random(seed_idx)` and `numpy.random.default_rng(seed)`.
-Real LLM: `torch.manual_seed(gen_seed)` per generation call.
+Real LLM: `torch.manual_seed(gen_seed)`, where `gen_seed = seed_idx * 1000 + iteration * 10`.
 
 ## Hardware notes
 
