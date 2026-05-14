@@ -33,7 +33,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Confidence**: medium
 - **Boundary**: Protocol applies to simulation harness; production LLM integration is future work
 - **Description**: The experiment harness must implement all three OEA layers in correct order:
-  Ontological Anchoring → Epistemic Filtering → Agentic Closure, as specified in
+  Ontological Anchoring → Epistemic Filtering → Recursive Feedback, as specified in
   `docs/methodology.md` and `docs/research-agent-spec.md`.
 - **Evidence**: `experiments/credibility_suite.py` — variant logic encodes O, E, A independently
 

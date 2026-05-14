@@ -17,7 +17,7 @@ This project distinguishes between:
 - Quantify confidence-quality alignment using calibration diagnostics (e.g., ECE).
 - Preserve only evidence-grounded statements in final outputs.
 
-### Phase 3: Agentic Closure
+### Phase 3: Recursive Feedback
 - Convert claims into testable hypotheses in a digital experiment harness.
 - Execute interventions with fixed seeds/config snapshots.
 - Feed empirical outcomes back into subsequent hypothesis design.

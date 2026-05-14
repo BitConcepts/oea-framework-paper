@@ -20,7 +20,7 @@ confidence-quality alignment (ECE), and discards unsupported statements.
   evidence to generation prompt; K=3 candidates scored by `log G_0(y|x)` under frozen model
 - **Metric**: Expected Calibration Error (ECE) + true/false reject rates
 
-### Layer 3: Agentic Closure
+### Layer 3: Recursive Feedback
 Converts accepted claims into testable hypotheses, executes them in a reproducible harness,
 and feeds empirical outcomes back into subsequent hypothesis design.
 - **Decision DEC-003**: Python simulation harness with fixed seeds for reproducibility (accepted)

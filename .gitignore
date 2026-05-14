@@ -45,6 +45,10 @@ results/
 !results/epistemic_friction_runs.csv
 artifacts/
 
+# Submission artifacts (local only)
+oea-arxiv-submission.zip
+_audit.py
+
 # Local env
 .env
 .env.*

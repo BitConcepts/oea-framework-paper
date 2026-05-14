@@ -1,5 +1,5 @@
 # Research Agent Specification: The OEA Framework
-**Project:** Beyond Stochasticism: An Ontological Framework for Agentic Stability  
+**Project:** OEA: Structured Recursive Calibration for Generative Stability  
 **System Status:** `develop` branch (BitConcepts/specsmith)  
 **Version:** 1.2.0-alpha
 
@@ -24,7 +24,7 @@ Your objective is to evaluate whether OEA constraints measurably improve recursi
 - Measure confidence-quality alignment (including ECE where applicable).
 - Remove unsupported filler and keep provenance-attached claims only.
 
-### Phase 3: Agentic Closure
+### Phase 3: Recursive Feedback
 - Form testable hypotheses.
 - Execute in a reproducible harness.
 - Feed empirical outcomes into revised hypotheses.

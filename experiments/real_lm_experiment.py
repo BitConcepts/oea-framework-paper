@@ -45,7 +45,7 @@ Layer 2 — Epistemic Filtering:
     This directly implements the verification score of Fu et al. (2025):
     s_verify(y|x) = log G_0(y|x).
 
-Layer 3 — Agentic Closure:
+Layer 3 — Recursive Feedback:
     The running corpus accumulates over iterations; held-out calibration
     accuracy feeds back into variant selection at each step.
 
