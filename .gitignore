@@ -28,7 +28,9 @@ venv/
 *.synctex.gz
 *.toc
 *.pk
-arxiv/main.pdf
+# arxiv/main.pdf and figures are committed as release artifacts
+!arxiv/main.pdf
+!arxiv/figures/
 
 # Research outputs — exclude generated run artifacts but keep committed experiment results
 # The primary results (pilot CSVs + summary_metrics.json) are committed directly.
