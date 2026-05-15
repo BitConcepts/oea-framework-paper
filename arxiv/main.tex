@@ -20,11 +20,11 @@
 \maketitle
 
 \begin{abstract}
-We present an empirical study of the OEA (Ontology, Epistemic, Agentic) framework as a three-layer protocol for improving reliability in recursive generative systems under synthetic-data exposure.
+This paper presents an empirical study of the OEA (Ontology, Epistemic, Agentic) framework as a three-layer protocol for improving reliability in recursive generative systems under synthetic-data exposure.
 The central thesis is: \emph{recursive generative stability depends more strongly on calibration direction and epistemic filtering than on unconstrained retrieval augmentation.}
 ``Ontology'' in this work refers to structured distributional anchoring---not philosophical ontology.
 ``Agentic'' refers to recursive persistence dynamics---not autonomous agency.
-We report four experiments: (1) a bigram-proxy ablation study across 12 variants with calibration-quality parameterization, (2) a four-model real LLM validation on \texttt{distilgpt2} (82M), \texttt{gpt2} (124M), \texttt{EleutherAI/gpt-neo-125M} (125M), and \texttt{Qwen/Qwen2.5-1.5B} (1.5B, modern 2024 architecture) with BM25 corpus-grounded retrieval, (3) a 30-step recursive memory drift benchmark measuring entity retention and semantic drift, and (4) a baseline competition comparing OEA against temperature reduction, top-$k$, entropy filtering, and repetition penalty.
+The study reports four experiments: (1) a bigram-proxy ablation study across 12 variants with calibration-quality parameterization, (2) a four-model real LLM validation on \texttt{distilgpt2} (82M), \texttt{gpt2} (124M), \texttt{EleutherAI/gpt-neo-125M} (125M), and \texttt{Qwen/Qwen2.5-1.5B} (1.5B, modern 2024 architecture) with BM25 corpus-grounded retrieval, (3) a 30-step recursive memory drift benchmark measuring entity retention and semantic drift, and (4) a baseline competition comparing OEA against temperature reduction, top-$k$, entropy filtering, and repetition penalty.
 The full OEA protocol achieves the highest true-rejection rate (TRR\,=\,0.836) and lowest false-rejection rate (FRR\,=\,0.081) across 648 robustness-sweep runs per variant ($d=4.56$, $p<0.001$).
 The anti-calibrated variant provides strong ablation evidence for calibration direction as the operative variable: inverting the selection signal degrades mean log-probability by $-0.55$--$-1.37$ nats, while full OEA improves it by $+0.62$--$+1.63$ nats across all four models and three architecture families.
 Results are fully reproducible (\texttt{torch.manual\_seed}, CUDA 12.1) and artifacts are committed to this repository.
@@ -204,7 +204,7 @@ Recursive Drift
 
 \subsection{OEA Tri-Layer Protocol}
 
-\noindent\textbf{Recursive loop model.} Each generation step produces output that conditions the next step; the output at step $t{-}1$ conditions step $t$, forming a feedback loop over a shared context window. Our recursive loop directly models this pattern. Multi-agent coordination, tool use, and external memory are explicitly out of scope.
+\noindent\textbf{Recursive loop model.} Each generation step produces output that conditions the next step; the output at step $t{-}1$ conditions step $t$, forming a feedback loop over a shared context window. The recursive loop directly models this pattern. Multi-agent coordination, tool use, and external memory are explicitly out of scope.
 
 \begin{enumerate}[leftmargin=1.5em]
   \item \textbf{Ontological Anchoring}: domain constraints and invalid-output criteria. BM25 retrieval + vocabulary projection.
@@ -423,7 +423,7 @@ The baseline competition supports the claim that OEA is not reducible to generic
 \section{Implications for Recursive Agent Systems}
 \label{sec:implications}
 
-The substrate-level mechanisms validated here---directional calibration and epistemic filtering under recursive synthetic exposure---are relevant to several failure modes observed in recursive agent architectures. We note these connections cautiously, as transfer from our frozen-weights harness to production systems remains unvalidated.
+The substrate-level mechanisms validated here---directional calibration and epistemic filtering under recursive synthetic exposure---are relevant to several failure modes observed in recursive agent architectures. These connections are noted cautiously, as transfer from the frozen-weights harness to production systems remains unvalidated.
 
 \begin{itemize}[noitemsep]
   \item \textbf{Recursive planning drift}: agents that iteratively refine plans accumulate distributional shift at each step; calibration-directed filtering may reduce plan degradation.
@@ -432,7 +432,7 @@ The substrate-level mechanisms validated here---directional calibration and epis
   \item \textbf{Specification degradation}: recursive specification refinement (e.g., iterative requirements generation) is vulnerable to semantic drift and contradiction accumulation.
 \end{itemize}
 
-These connections are \emph{suggestive, not demonstrated}. The experiments in this paper establish substrate-level mechanisms; whether they transfer to full agent architectures with tool use, multi-step planning, and external memory is the subject of future work. We explicitly do not claim improvements to autonomous reasoning, planning competence, or general intelligence.
+These connections are \emph{suggestive, not demonstrated}. The experiments in this paper establish substrate-level mechanisms; whether they transfer to full agent architectures with tool use, multi-step planning, and external memory is the subject of future work. This work explicitly does not claim improvements to autonomous reasoning, planning competence, or general intelligence.
 
 %% ─────────────────────────────────────────────────────────────────────────────
 \section{Failure Modes and Limitations}
@@ -447,7 +447,7 @@ These connections are \emph{suggestive, not demonstrated}. The experiments in th
   \item \textbf{Calibration-quality mismatch (UNK-001)}: the dynamic-threshold TRR metric does not directly validate bigram-suite CQ (measured CQ\,=\,0.446 vs design estimate 0.83). Direct ECE validation is future work.
   \item \textbf{Scale limitations}: results validated on models from 82M to 1.5B parameters across three architecture families; extrapolation to frontier-scale models ($>$10B) is not warranted.
   \item \textbf{Baseline comparison power}: $N{=}20$ seeds insufficient for statistically significant pairwise comparisons in baseline competition.
-  \item \textbf{Causal language}: all causal language is provisional. We use ``consistent with,'' ``associated with,'' and ``provides ablation evidence for'' throughout.
+  \item \textbf{Causal language}: all causal language is provisional. This paper uses ``consistent with,'' ``associated with,'' and ``provides ablation evidence for'' throughout.
   \item \textbf{Preprint citations}: some cited works are preprints and may change after peer review.
 \end{itemize}
 
@@ -467,9 +467,9 @@ These connections are \emph{suggestive, not demonstrated}. The experiments in th
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented OEA as a testable, three-layer intervention hypothesis for improving reliability in recursive generative systems, with explicit non-claims: no AGI, no formal symbolic ontology, no autonomous agency, no causal proof, no general intelligence improvement.
+This paper presented OEA as a testable, three-layer intervention hypothesis for improving reliability in recursive generative systems, with explicit non-claims: no AGI, no formal symbolic ontology, no autonomous agency, no causal proof, no general intelligence improvement.
 
-Our experiments support the primary thesis across four complementary conditions. The full OEA protocol achieves TRR\,=\,0.836, FRR\,=\,0.081 ($d=4.56$, $p<0.001$) and improves mean log-probability by $+0.62$--$+1.63$ nats across four models and three architecture families (82M--1.5B parameters). The anti-calibrated control provides strong ablation evidence for calibration direction as the operative variable. Metric dissociation supports the conclusion that log-probability and ROUGE-L capture orthogonal quality dimensions.
+The experiments support the primary thesis across four complementary conditions. The full OEA protocol achieves TRR\,=\,0.836, FRR\,=\,0.081 ($d=4.56$, $p<0.001$) and improves mean log-probability by $+0.62$--$+1.63$ nats across four models and three architecture families (82M--1.5B parameters). The anti-calibrated control provides strong ablation evidence for calibration direction as the operative variable. Metric dissociation supports the conclusion that log-probability and ROUGE-L capture orthogonal quality dimensions.
 
 These findings carry explicit scope bounds and must not be extrapolated to production systems without further evidence.
 
