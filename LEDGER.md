@@ -1,5 +1,12 @@
 # LEDGER
 
+## 2026-05-15 - IJAIA journal submission
+- Submitted to International Journal of Artificial Intelligence & Applications (IJAIA)
+- Emailed: ijaiajournal@airccse.org, ijaiajournal@yahoo.com, ijaia@aircconline.com
+- Same publisher (AIRCC) as AMLA 2026 conference
+- Manuscript: oea-submission.docx (solo-author voice, all we/our removed)
+- AMLA 2026 conference submission also pending (emailed May 14 due to 500 error on web form)
+
 ## 2026-05-14 - Paper 1 published on Academia.edu (v1.0.0)
 - Published: https://www.academia.edu/167119567/OEA_Structured_Recursive_Calibration_for_Generative_Stability
 - Author: Tristen Pierson, BitConcepts Research
