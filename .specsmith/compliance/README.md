@@ -14,13 +14,13 @@ Each file overrides the built-in regulation status for this project:
 
 ## Usage
 
-  # Check compliance for all regulations
+## Check compliance for all regulations
   specsmith compliance check
 
-  # Generate compliance report
+## Generate compliance report
   specsmith compliance report --format html --output compliance-report.html
 
-  # Store results to ESDB audit trail
+## Store results to ESDB audit trail
   specsmith compliance audit
 
 See: https://specsmith.readthedocs.io/en/stable/compliance/

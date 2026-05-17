@@ -99,8 +99,8 @@
 - `894801d fix: README MD036 lint - remove bold emphasis as heading`
 
 **Contributors:**
-- 46	Tristen Pierson
-- 5	dependabot[bot]
+- 46    Tristen Pierson
+- 5    dependabot[bot]
 
 ## AI System Inventory (REG-010)
 
