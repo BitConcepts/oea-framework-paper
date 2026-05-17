@@ -16,7 +16,7 @@ This project follows the 7-phase Applied Epistemic Engineering (AEE) development
 
 ## Phase Flow
 
-```	ext
+```  ext
 inception → architecture → requirements → test_spec → implementation → verification → release
                                                                                         ↓
                                                                                   (next cycle)
