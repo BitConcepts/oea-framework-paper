@@ -17,57 +17,42 @@ The OEA (Ontology, Epistemic, Agentic) framework is a three-layer generation-tim
 
 ## Quick Start
 
-### Prerequisites
+Prerequisites: Python 3.11+ and pip.
 
-- Python 3.11+
-- pip
+```bash
+pip install -r requirements-lock.txt
+```
 
-### 1. Install dependencies
+Run all bigram experiments (about 2 minutes, no GPU needed):
 
-`ash
-# Linux/macOS
-bash scripts/setup.sh --experiments
-
-# Windows
-scripts\setup.cmd --experiments
-`
-
-### 2. Run all bigram experiments (~2 min, no GPU)
-
-`ash
+```bash
 bash scripts/run_all_experiments.sh
-`
+```
 
-This runs: pilot stability test, credibility suite (7,776 runs), memory drift benchmark, baseline competition, and generates figures.
+Run real LLM experiments (GPU recommended, 10-30 min per model):
 
-### 3. Run real LLM experiments (GPU recommended)
-
-`ash
+```bash
 python experiments/real_lm_experiment.py --model distilgpt2
 python experiments/real_lm_experiment.py --model gpt2
 python experiments/real_lm_experiment.py --model EleutherAI/gpt-neo-125M
 python experiments/real_lm_experiment.py --model Qwen/Qwen2.5-1.5B
-`
+```
 
-Each model takes ~10-30 min on GPU. CPU is supported with reduced config: add --n-seeds 3 --n-iterations 5 --gen-tokens 40.
+CPU is supported with reduced config: add `--n-seeds 3 --n-iterations 5 --gen-tokens 40`.
 
-### 4. Verify results
+Verify result integrity:
 
-`ash
+```bash
 python experiments/verify_manifest.py
-`
+```
 
-Checks SHA-256 hashes of all result artifacts against xperiments/manifest.json.
+Build the manuscript PDF (requires MiKTeX or TeX Live):
 
-### 5. Build the manuscript PDF (requires LaTeX)
+```bash
+scripts/build_pdf.cmd
+```
 
-`ash
-# Windows
-scripts\build_pdf.cmd
-
-# Linux/macOS
-cd arxiv && pdflatex main.tex && bibtex main && pdflatex main.tex && pdflatex main.tex
-`
+See [REPRODUCE.md](REPRODUCE.md) for the full step-by-step guide.
 
 ## GPU Support
 
@@ -75,17 +60,17 @@ The experiment harness auto-detects the best available device:
 
 | Hardware | Install command |
 |---|---|
-| NVIDIA (CUDA 12.1) | pip install torch --index-url https://download.pytorch.org/whl/cu121 |
-| Apple Silicon (MPS) | pip install torch |
-| CPU only | pip install torch --index-url https://download.pytorch.org/whl/cpu |
+| NVIDIA (CUDA 12.1) | `pip install torch --index-url https://download.pytorch.org/whl/cu121` |
+| Apple Silicon (MPS) | `pip install torch` |
+| CPU only | `pip install torch --index-url https://download.pytorch.org/whl/cpu` |
 
-## What's in This Repo
+## Repository Structure
 
-`
+```text
 arxiv/
   main.tex              LaTeX manuscript (14 pages)
   references.bib        13 verified citations
-  figures/              3 publication figures (pipeline, calibration, dissociation)
+  figures/              3 publication figures
 
 experiments/
   credibility_suite.py       Bigram-proxy ablation harness (12 variants)
@@ -95,14 +80,14 @@ experiments/
   generate_figures.py        Generates all publication figures
   verify_manifest.py         SHA-256 artifact integrity checker
   manifest.json              Hashes for all committed results
-  data/                      Public-domain corpora (literary + scientific)
+  data/                      Public-domain corpora
 
 results/                     Committed experiment artifacts
 scripts/                     Setup, build, and run scripts
 tests/                       12 unit tests (pytest)
 REPRODUCE.md                 Step-by-step reproduction guide
 Dockerfile                   Containerized reproducible environment
-`
+```
 
 ## Experiments
 
@@ -115,30 +100,28 @@ Dockerfile                   Containerized reproducible environment
 
 ## Metrics
 
-Per-iteration measurements across all models:
-
 - **Log-probability** — mean per-token log-prob under frozen reference model (primary metric)
-- **ROUGE-L recall** — seed-corpus content preservation (independent of log-prob; addresses metric circularity)
+- **ROUGE-L recall** — seed-corpus content preservation (independent of log-prob)
 - **JSD** — Jensen-Shannon divergence from seed distribution
 - **TRR / FRR** — true/false rejection rates for out-of-vocabulary token detection
 
 ## Docker
 
-`ash
+```bash
 docker build -t oea-framework .
-docker run --rm -v C:\Users\trist\Development\BitConcepts\oea-framework-paper/results:/app/results oea-framework
-`
+docker run --rm -v $(pwd)/results:/app/results oea-framework
+```
 
 ## Citation
 
-`ibtex
+```bibtex
 @misc{pierson2026oea,
   title={OEA: Structured Recursive Calibration for Generative Stability},
   author={Pierson, Tristen},
   year={2026},
-  howpublished={\url{https://github.com/BitConcepts/oea-framework-paper}}
+  howpublished={https://github.com/BitConcepts/oea-framework-paper}
 }
-`
+```
 
 ## License
 
