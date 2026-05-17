@@ -1,6 +1,6 @@
 # Compliance Report — oea-framework-paper
 
-**Generated:** 2026-05-13
+**Generated:** 2026-05-17
 
 ## Project Summary
 
@@ -8,7 +8,7 @@
 - **Type**: AEE research project
 - **Language**: python
 - **VCS Platform**: github
-- **Spec Version**: 0.10.1
+- **Spec Version**: 0.11.3
 
 ## Verification Tools
 
@@ -49,7 +49,7 @@
 
 ## Audit Summary
 
-- **Passed**: 28
+- **Passed**: 29
 - **Failed**: 1
 - **Fixable**: 0
 - **Status**: Issues found
@@ -66,10 +66,11 @@
 - ✓ Recommended file docs/REQUIREMENTS.md exists
 - ✓ Recommended file docs/TESTS.md exists
 - ✓ Recommended file docs/ARCHITECTURE.md exists
+- ✓ Recommended file docs/SPECSMITH.yml exists
 - ✓ Recommended file CONTRIBUTING.md exists
 - ✓ Recommended file LICENSE exists
 - ✓ All 22 accepted REQ(s) have test coverage
-- ✓ LEDGER.md has 126 lines (within threshold)
+- ✓ LEDGER.md has 244 lines (within threshold)
 - ✓ 0 open, 0 closed TODOs
 - ✓ AGENTS.md: 49 lines
 - ✓ docs/governance/RULES.md: 76 lines
@@ -86,24 +87,65 @@
 
 ## Recent Activity
 
-- `713b3ee feat: v0.5.0 - GPU experiments, ROUGE-L metric, 5 vulnerability fixes`
-- `e69fa86 feat: GPU device detection and multi-platform torch install support`
-- `adba965 chore: v0.4.0 submission-prep - citation audit cycle 3, Gate C verified`
-- `8dc6e68 feat: v0.4.0 - multi-domain corpus, two-model LLM validation, 5 new citations`
-- `27a6075 fix: reproducibility + artifact commit + REQ-OEA-012 finding (2026-05-13)`
-- `937b57f feat: v0.3.2 - real LLM results, manuscript lock closed, SEAL-0008`
-- `6c1d34a fix: resolve LaTeX \citet error; add -bibtex flag to CI latexmk`
-- `36cac31 feat: v0.3.2-pre - manuscript complete, 12 tests passing, distribution strategy fixed`
-- `89800f1 feat: v0.3.1 - real RAG (BM25Retriever), oea_rag_only variant, REQ-OEA-010/011/012`
-- `f8fd878 feat!: v0.3.0 - real LLM experiment, calibration-quality formula, semver/CHANGELOG`
+- `5341d17 docs: document IJAIA journal submission in LEDGER`
+- `a2c1e29 Merge branch 'main' of https://github.com/BitConcepts/oea-framework-paper`
+- `3bfd3c3 chore: replace we/our with solo-author voice throughout, rename oea-submission.docx`
+- `23c719e Add academia ReportLab report; pin reportlab==4.5.1`
+- `53b657d Add compiled paper PDF, regenerated insights report, fix .gitignore`
+- `774a46d Remove specsmith references from paper, docs, and requirements; regenerate figures`
+- `eba968b docs: document Academia.edu publication, add link to README`
+- `28356b7 chore: fix stale references, gitignore submission zip, clean live docs`
+- `dd4f55b chore: author name (Tristen Pierson), rebuild PDF and submission zip`
+- `894801d fix: README MD036 lint - remove bold emphasis as heading`
 
 **Contributors:**
-- 25 Tristen Pierson
+- 46	Tristen Pierson
+- 5	dependabot[bot]
+
+## AI System Inventory (REG-010)
+
+### Agent Capabilities
+- **run_shell**: Execute a shell command. Safety-checked; destructive commands are blocked.
+  *Epistemic claims:* EXEC-001: no python -c for non-trivial code
+- **read_file**: Read a text file from the repository.
+  *Epistemic claims:* read-only: does not modify files
+- **write_file**: Write content to a file (creates or overwrites).
+  *Epistemic claims:* modifies filesystem: logged in audit chain
+- **patch_file**: Apply a unified diff patch to a file.
+  *Epistemic claims:* modifies filesystem: logged in audit chain
+- **list_files**: List files matching a glob pattern in a directory.
+  *Epistemic claims:* read-only: does not modify files
+- **grep**: Search for a pattern in files.
+  *Epistemic claims:* read-only: does not modify files
+- **git_diff**: Show the git diff for the working tree.
+  *Epistemic claims:* read-only: does not modify files
+- **git_status**: Show git status for the working tree.
+  *Epistemic claims:* read-only: does not modify files
+- **run_tests**: Run the project test suite.
+  *Epistemic claims:* may modify test artifacts but not source
+- **open_url**: Fetch text content from a URL.
+  *Epistemic claims:* network: reads external resources
+- **search_docs**: Search documentation files in the repo.
+  *Epistemic claims:* read-only: does not modify files
+- **remember_project_fact**: Store a named fact in the local project index (.repo-index/facts.json).
+  *Epistemic claims:* modifies .repo-index/facts.json only
+
+### Risk Classification
+- **EU AI Act tier**: GPAI (general-purpose; systemic risk assessment required if >10^25 FLOP)
+- **NIST AI RMF**: GOVERN + MAP + MEASURE + MANAGE controls applied
+- **Use-case scope**: software development governance; not Annex III high-risk
+
+### Human Oversight Controls
+- Preflight gate: all governed actions require human-language approval
+- Kill-switch: `specsmith kill-session` halts all active agent sessions
+- Escalation: `specsmith preflight --escalate-threshold <float>` gates low-confidence actions
+- Retry budget: `agents_max_iterations` in docs/SPECSMITH.yml bounds self-improvement loops
 
 ## Governance File Inventory
 
 - ✓ `AGENTS.md`
 - ✓ `LEDGER.md`
+- ✗ `docs/SPECSMITH.yml`
 - ✓ `scaffold.yml`
 - ✓ `docs/REQUIREMENTS.md`
 - ✓ `docs/TESTS.md`

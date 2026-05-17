@@ -11,6 +11,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Simulation harness using bigram proxy models; results are scope-bounded to this regime
+- **Platform**: all
 - **Description**: The OEA-constrained pipeline must achieve a stability score ≥40% higher than
   the control baseline across n=10 recursive iterations, measured by Jensen-Shannon divergence.
 - **Evidence**: `results/summary_metrics.json` — effect_delta_stability = 0.1206 (12.1% absolute,
@@ -22,6 +23,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Synthetic falsehood injection using `not_<token>` proxy; calibration proxy only
+- **Platform**: all
 - **Description**: The OEA epistemic layer must improve true-rejection rate of synthetic falsehoods
   by ≥20 percentage points vs control, without increasing false-rejection rate beyond +5 pp.
 - **Evidence**: `results/summary_metrics.json` — true_reject delta +0.232, false_reject delta −0.112
@@ -32,6 +34,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: medium
 - **Boundary**: Protocol applies to simulation harness; production LLM integration is future work
+- **Platform**: all
 - **Description**: The experiment harness must implement all three OEA layers in correct order:
   Ontological Anchoring → Epistemic Filtering → Recursive Feedback, as specified in
   `docs/methodology.md` and `docs/research-agent-spec.md`.
@@ -43,6 +46,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Ablation study covers combinations {O, E, A, OE, OA, EA, oea_full} only
+- **Platform**: all
 - **Description**: The credibility suite must run full ablation coverage over all 7 OEA variant
   combinations and emit machine-readable CSV + JSON artifacts with 95% confidence intervals
   and Cohen’s d effect sizes for all headline metrics.
@@ -54,6 +58,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Permutation test n_perm=2000; parametric CIs assume approximate normality
+- **Platform**: all
 - **Description**: All reported effect sizes must include: (a) mean ± 95% CI, (b) Cohen’s d,
   (c) permutation p-value, and (d) documented failure-case analysis (false-accept vs false-reject).
   No claim enters the manuscript without a backing artifact.
@@ -65,6 +70,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: medium
 - **Boundary**: Gate applies to external submission only; internal review drafts may circulate
+- **Platform**: all
 - **Description**: No external submission (arXiv, PhilSci-Archive, OpenReview) may proceed until
   all four locks are satisfied: citation lock, evidence lock, manuscript lock, and distribution lock,
   as defined in `docs/research-agent-spec.md` Section VI.
@@ -76,6 +82,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Applies to `arxiv/main.tex`; does not constrain supplementary materials
+- **Platform**: all
 - **Description**: The manuscript must contain a Conclusion section that (a) restates the OEA
   hypothesis, (b) summarises the pilot evidence with explicit scope bounds, (c) honestly
   states limitations, and (d) identifies next steps for production-harness validation.
@@ -87,6 +94,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Ablation table covers the 7 variants run by `credibility_suite.py`; no external benchmarks
+- **Platform**: all
 - **Description**: The manuscript must include a full ablation results table showing all 7 OEA
   variant combinations with stability mean ± CI95, true-reject mean ± CI95, Cohen’s d vs
   `oea_full`, and permutation p-value. Table must be sourced from `results/credibility/`.
@@ -98,6 +106,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: medium
 - **Boundary**: Audit covers `arxiv/references.bib` only; gray literature outside scope
+- **Platform**: all
 - **Description**: All 8 citations in `references.bib` must be verified: correct DOI/URL resolves,
   author list and year match the actual publication, no placeholder or hallucinated entries.
   Any unresolvable reference must be flagged and either corrected or removed before citation lock.
@@ -110,6 +119,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Covers `real_lm_experiment.py` only; bigram suite uses calibration-quality formula
+- **Platform**: all
 - **Description**: The real LLM experiment RAG component must use actual corpus-grounded
   token-overlap retrieval (`BM25Retriever`), not log-probability as a retrieval proxy.
   Retrieval must index the seed corpus into passage-level units and prepend the highest-scoring
@@ -122,6 +132,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: medium
 - **Boundary**: Results section pending run completion; methodology pre-registered
+- **Platform**: all
 - **Description**: A "Real LLM Validation" section must appear in `arxiv/main.tex` covering:
   (a) experimental design with BM25 RAG and 4-variant ablation, (b) frozen-weights scope as
   explicit necessary-condition framing, (c) actual results from `results/real_lm/` once run,
@@ -134,6 +145,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: medium
 - **Boundary**: Applies to `_CALIBRATION_QUALITY` dict in `credibility_suite.py`
+- **Platform**: all
 - **Description**: `_CALIBRATION_QUALITY["oea_full"]` (and optionally `oea_rag_only`) must be
   updated from the measured `true_reject_rate` output of `real_lm_experiment.py` before
   submission. The `cq_measurement` block in `real_lm_summary.json` provides the formula.
@@ -146,6 +158,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Applies to `arxiv/main.tex` methodology section
+- **Platform**: all
 - **Description**: The manuscript must contain an "Operational Definition of OEA Layers" table
   mapping each layer to: computational meaning, implementation mechanism, and observable effect.
   The section must explicitly state that "Ontology" refers to structured distributional anchoring
@@ -159,6 +172,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Applies to `arxiv/main.tex` introduction or dedicated scope section
+- **Platform**: all
 - **Description**: The manuscript must contain a "Scope and Non-Claims" subsection explicitly
   stating: no claim of AGI, no claim of formal symbolic ontology, no claim of true agency, no
   claim of causal proof, no claim of general intelligence improvement.
@@ -170,6 +184,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Applies to `arxiv/main.tex` notation section
+- **Platform**: all
 - **Description**: The manuscript must include a formal notation section with: (a) symbols table,
   (b) recursive generation equation $x_{t+1} \sim P_\theta(x \mid \mathcal{A}(x_t), \mathcal{E}(x_t))$,
   (c) anchoring operator definition, (d) epistemic filter as argmax, (e) TRR/FRR formulas,
@@ -182,6 +197,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Bigram proxy harness only; real LLM baselines are future work
+- **Platform**: all
 - **Description**: `experiments/baseline_competition.py` must compare OEA against at least five
   non-OEA controls: temperature reduction, top-k restriction, entropy-style filtering,
   repetition penalty, and RAG-only reranking. Must emit machine-readable CSV/JSON to
@@ -194,6 +210,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Bigram proxy recursive summarization; full neural agentic tasks are future work
+- **Platform**: all
 - **Description**: `experiments/recursive_memory_drift.py` must implement a 30-step recursive
   summarization benchmark measuring: (a) entity retention (token-set overlap with initial),
   (b) semantic drift (JSD from initial distribution), (c) hallucination proxy (novel token rate),
@@ -207,6 +224,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Appendix in `arxiv/main.tex`
+- **Platform**: all
 - **Description**: The manuscript appendix must include: (a) exact permutation test methodology
   (two-sided, n_perm=2000), (b) bootstrap CI method, (c) seed policy (torch.manual_seed +
   numpy.random.default_rng), (d) Cohen's d formula, (e) sample-size rationale, and
@@ -219,6 +237,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Figures generated from committed result artifacts; no live model inference required
+- **Platform**: all
 - **Description**: `experiments/generate_figures.py` must produce three publication figures:
   (1) OEA pipeline diagram, (2) calibration trajectory plot (log-prob over 10 iterations for 4
   variants, mean ± CI across 10 seeds), (3) metric dissociation plot (log-prob vs ROUGE-L
@@ -231,6 +250,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Covers the full experiment pipeline; GPU availability required for real LLM runs
+- **Platform**: all
 - **Description**: The repository must contain: (a) `Dockerfile` reproducing the Python environment,
   (b) `requirements-lock.txt` with pinned versions, (c) `experiments/manifest.json` with SHA-256
   hashes of all result artifacts, (d) `REPRODUCE.md` documenting exact commands and expected
@@ -243,6 +263,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Applies to `arxiv/main.tex`
+- **Platform**: all
 - **Description**: The manuscript must contain: (a) a "Core Hypotheses" section listing H1 (correct
   calibration direction improves recursive distributional fidelity), H2 (miscalibration reverses
   discrimination), H3 (RAG without epistemic filtering degrades fidelity), and H4 (OEA-controlled
@@ -257,6 +278,7 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Status**: Accepted
 - **Confidence**: high
 - **Boundary**: Appendix in `arxiv/main.tex`
+- **Platform**: all
 - **Description**: The manuscript must include a glossary defining: stability, fidelity,
   anchoring, calibration, recursive exposure, synthetic contamination, epistemic filtering,
   recursive drift, calibration quality (CQ), and true/false reject rate (TRR/FRR).
