@@ -28,14 +28,9 @@ venv/
 *.synctex.gz
 *.toc
 *.pk
-# arxiv/main.pdf and figures are committed as release artifacts
-!arxiv/main.pdf
-!arxiv/figures/
+arxiv/main.pdf
 
-# Research outputs — exclude generated run artifacts but keep committed experiment results
-# The primary results (pilot CSVs + summary_metrics.json) are committed directly.
-# Credibility suite and real-LLM artifacts are tracked via force-add and must be
-# recommitted after any run that changes the numbers.
+# Results (committed via force-add)
 results/
 !results/credibility/
 !results/real_lm/
@@ -45,11 +40,12 @@ results/
 !results/summary_metrics.json
 !results/recursive_stability_runs.csv
 !results/epistemic_friction_runs.csv
-artifacts/
 
-# Submission artifacts (local only)
+# Local-only artifacts
 oea-arxiv-submission.zip
+oea-submission.docx
 _audit.py
+artifacts/
 
 # Local env
 .env
