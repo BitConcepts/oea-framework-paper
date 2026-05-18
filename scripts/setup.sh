@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VENV_DIR="$PROJECT_ROOT/.venv"
 
 echo "oea-framework-paper setup (Linux/macOS)"
-command -v python3 &>/dev/null || { echo "ERROR: Python 3 not found." >&2; exit 1; }
-
-[ -d "$VENV_DIR" ] || { echo "Creating virtual environment..."; python3 -m venv "$VENV_DIR"; }
-source "$VENV_DIR/bin/activate"
-pip install -e "$PROJECT_ROOT"
+# Non-Python project. Add project-specific setup steps here.
+echo "NOTE: Edit scripts/setup.sh to add setup steps for aee-research."
 echo "Setup complete."

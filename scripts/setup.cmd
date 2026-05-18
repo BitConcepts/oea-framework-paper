@@ -3,21 +3,8 @@ REM oea-framework-paper — Windows Setup
 setlocal
 
 set "PROJECT_ROOT=%~dp0.."
-set "VENV_DIR=%PROJECT_ROOT%\.venv"
 
 echo oea-framework-paper setup (Windows)
-
-where python >nul 2>nul
-if %ERRORLEVEL% neq 0 (
-    echo ERROR: Python not found. Install Python 3.10+.
-    exit /b 1
-)
-
-if not exist "%VENV_DIR%" (
-    echo Creating virtual environment...
-    python -m venv "%VENV_DIR%"
-)
-
-call "%VENV_DIR%\Scripts\activate.bat"
-pip install -e "%PROJECT_ROOT%"
+REM Non-Python project. Add project-specific setup steps here.
+echo NOTE: Edit scripts\setup.cmd to add setup steps for aee-research.
 echo Setup complete.
