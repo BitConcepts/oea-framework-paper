@@ -1,2 +1,2 @@
 # Reproducibility package
-numpy==2.4.4
+numpy==2.4.5
