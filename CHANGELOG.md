@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/REQUIREMENTS.md`: REQ-OEA-023 (hardware abstraction / multi-backend device support)
 - `docs/TESTS.md`: TEST-OEA-023 covering REQ-OEA-023 (code inspection + Docker image check)
 
+### Fixed
+- `scaffold.yml`: type changed `aee-research` → `research-python` to match scanner detection
+  (AEE epistemic governance preserved via `enable_epistemic: true`); resolves specsmith
+  audit type-mismatch warning — audit now passes 30/30 checks with no issues
+
 ### Changed
 - `Dockerfile`: updated to current pinned versions (`numpy==2.4.5`, etc.)
 - `README.md`: Docker table expanded with ROCm/XPU images and MPS native-only note

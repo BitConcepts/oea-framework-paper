@@ -2,14 +2,14 @@
 
 **Project**: OEA: Structured Recursive Calibration for Generative Stability
 **Phase**: See `scaffold.yml` — advance with `specsmith phase next`
-**Spec**: specsmith 0.10.1 / aee-research
+**Spec**: specsmith 0.11.3.dev427 / research-python
 
 ## Mission
 Empirically validate the OEA (Ontology, Epistemic, Agentic) Framework as a measurable
 guardrail against recursive model collapse. Produce a peer-reviewed publication artifact.
 
 ## Project Summary
-- **Type**: aee-research (Applied Epistemic Engineering research paper)
+- **Type**: research-python with AEE epistemic governance (`enable_epistemic: true`)
 - **Language**: Python 3.x
 - **Test framework**: pytest
 - **Experiment harness**: `experiments/credibility_suite.py`, `experiments/run_experiments.py`
