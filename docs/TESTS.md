@@ -191,14 +191,26 @@ corresponding REQ-OEA-\* requirement. Coverage must remain ≥80% to advance pha
 
 ## TEST-OEA-020
 - Covers: REQ-OEA-020
-- **File**: `Dockerfile`, `requirements-lock.txt`, `experiments/manifest.json`, `REPRODUCE.md`
-- **Method**: Confirm all four files exist and are non-empty; verify manifest hashes match
-  committed artifact files
+- **File**: `Dockerfile`, `Dockerfile.cuda`, `requirements-lock.txt`, `experiments/manifest.json`, `REPRODUCE.md`
+- **Method**: Confirm all files exist and are non-empty; verify manifest hashes match committed artifacts
 - **Status**: Implemented
-- **Assertion**: All four reproducibility artifacts exist. `REPRODUCE.md` documents complete
-  reproduction commands. `experiments/manifest.json` contains SHA-256 hashes for all files
-  in `results/`.
-- **Evidence**: `REPRODUCE.md`, `experiments/manifest.json`
+- **Assertion**: All reproducibility artifacts exist. `REPRODUCE.md` documents complete reproduction
+  commands for all backends. `experiments/manifest.json` contains SHA-256 hashes for all files in `results/`.
+  `Dockerfile.cuda` builds successfully with `docker build -f Dockerfile.cuda .`.
+- **Evidence**: `REPRODUCE.md`, `experiments/manifest.json`, `Dockerfile.cuda`
+
+## TEST-OEA-023
+- Covers: REQ-OEA-023
+- **File**: `experiments/real_lm_experiment.py`
+- **Method**: Code inspection of `--device` argument parser and device selection block
+- **Status**: Implemented
+- **Assertion**: `--device` flag accepts `cuda`, `rocm`, `xpu`, `mps`, `cpu`. Auto-detection
+  chain `cuda > rocm (HIP) > xpu > mps > cpu` is present. ROCm is detected via
+  `torch.version.hip`. XPU is detected via `torch.xpu.is_available()`. Community-tested backends
+  emit the hardware issue template URL in device output. `Dockerfile.rocm` and `Dockerfile.xpu`
+  install the correct torch wheel index URL for each backend.
+- **Evidence**: `experiments/real_lm_experiment.py` device selection block (lines 365–402);
+  `Dockerfile.rocm`, `Dockerfile.xpu`
 
 ## TEST-OEA-021
 - Covers: REQ-OEA-021

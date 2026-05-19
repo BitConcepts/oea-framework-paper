@@ -75,13 +75,19 @@ Use `--device <backend>` to override.
 
 ### Docker
 
-| Image | GPU | Build command |
-|---|---|---|
-| `Dockerfile` | CPU only | `docker build -t oea-framework .` |
-| `Dockerfile.cuda` | NVIDIA CUDA 12.1 | `docker build -f Dockerfile.cuda -t oea-framework-cuda .` |
+| Image | GPU | Status | Build command |
+|---|---|---|---|
+| `Dockerfile` | CPU only | ✅ Verified | `docker build -t oea-framework .` |
+| `Dockerfile.cuda` | NVIDIA CUDA 12.1 | ✅ Verified | `docker build -f Dockerfile.cuda -t oea-framework-cuda .` |
+| `Dockerfile.rocm` | AMD ROCm 6.x | ⚠️ Community-tested | `docker build -f Dockerfile.rocm -t oea-framework-rocm .` |
+| `Dockerfile.xpu` | Intel Arc / Xe XPU | ⚠️ Community-tested | `docker build -f Dockerfile.xpu -t oea-framework-xpu .` |
+| Apple MPS | ❌ Not Docker-compatible | N/A — use native install | — |
 
-For AMD ROCm or Intel XPU Docker, see `requirements-lock.txt` for install commands
-and open a [Hardware Compatibility issue](https://github.com/BitConcepts/oea-framework-paper/issues/new?template=hardware_compat.md) with your result.
+ROCm requires `--device /dev/kfd --device /dev/dri --group-add render --group-add video` at runtime (Linux only).
+XPU requires `--device /dev/dri` at runtime (Linux only).
+For Apple Silicon, install natively — MPS is not accessible from inside Docker containers.
+
+Report ROCm/XPU/MPS results via the [Hardware Compatibility template](https://github.com/BitConcepts/oea-framework-paper/issues/new?template=hardware_compat.md).
 
 ## Repository Structure
 
@@ -106,7 +112,9 @@ scripts/                     Setup, build, and run scripts
 tests/                       12 unit tests (pytest)
 REPRODUCE.md                 Step-by-step reproduction guide
 Dockerfile                   CPU reproducibility container
-Dockerfile.cuda              NVIDIA CUDA GPU container
+Dockerfile.cuda              NVIDIA CUDA 12.1 GPU container (verified)
+Dockerfile.rocm              AMD ROCm 6.x GPU container (community-tested)
+Dockerfile.xpu               Intel Arc / Xe XPU container (community-tested)
 ```
 
 ## Experiments

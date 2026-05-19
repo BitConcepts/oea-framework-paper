@@ -1,0 +1,85 @@
+# OEA Framework Paper — AMD ROCm GPU Container (REQ-OEA-020)
+#
+# COMMUNITY-TESTED ONLY — not verified by maintainer.
+# Please report your result (pass or fail) at:
+#   https://github.com/BitConcepts/oea-framework-paper/issues/new?template=hardware_compat.md
+#
+# Requirements:
+#   - AMD GPU with ROCm 6.x support (RX 6000/7000 series, Instinct MI series)
+#   - ROCm-capable Linux host (Ubuntu 22.04/24.04 recommended)
+#   - Linux only — ROCm does not support Windows or macOS containers
+#   - Note: /dev/kfd and /dev/dri group permissions may need host-side setup:
+#       sudo usermod -aG render,video $USER
+#
+# Build:
+#   docker build -f Dockerfile.rocm -t oea-framework-rocm .
+#
+# Run real LLM experiment (AMD GPU):
+#   docker run --rm \
+#     --device /dev/kfd \
+#     --device /dev/dri \
+#     --group-add render \
+#     --group-add video \
+#     -v $(pwd)/results:/app/results \
+#     oea-framework-rocm \
+#     python experiments/real_lm_experiment.py --model distilgpt2 --device rocm
+#
+# Run bigram experiments (CPU, no GPU needed):
+#   docker run --rm -v $(pwd)/results:/app/results oea-framework-rocm
+#
+# Troubleshooting:
+#   If torch.cuda.is_available() returns False inside the container, verify:
+#   1. /dev/kfd exists on the host: ls -la /dev/kfd
+#   2. Your GPU is in the ROCm supported list:
+#      https://rocm.docs.amd.com/en/latest/compatibility/compatibility-matrix.html
+#   3. The render/video groups are added to your user (see above)
+
+FROM rocm/dev-ubuntu-22.04:6.3
+
+# Avoid interactive prompts during apt installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# System dependencies + Python 3.11
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 \
+    python3.11-venv \
+    python3-pip \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Make python3.11 the default python/pip
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 \
+    && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+
+WORKDIR /app
+
+# Copy project files
+COPY . .
+
+# Core experiment dependencies (no GPU required)
+RUN pip install --no-cache-dir \
+    "numpy==2.4.5" \
+    "matplotlib==3.10.9" \
+    "scipy==1.17.1" \
+    "pytest==9.0.3" \
+    "reportlab==4.5.1"
+
+# Neural LLM dependencies — ROCm 6.3 torch wheel
+# Note: torch.cuda.is_available() returns True for ROCm builds (ROCm exposes CUDA API)
+#       Use --device rocm flag or the harness will auto-detect via torch.version.hip
+RUN pip install --no-cache-dir \
+    "torch" \
+    "transformers==4.41.0" \
+    "rouge-score==0.1.2" \
+    --index-url https://download.pytorch.org/whl/rocm6.3
+
+# Verify installation (GPU visibility requires /dev/kfd at runtime, not build time)
+RUN python -c "import numpy, matplotlib, torch, transformers; \
+    print('Environment OK'); \
+    print(f'PyTorch {torch.__version__}'); \
+    is_rocm = hasattr(torch.version, 'hip') and torch.version.hip; \
+    print(f'ROCm build: {is_rocm}')"
+
+# Default: run all CPU bigram experiments (AMD GPU available for real LLM experiments)
+CMD ["bash", "scripts/run_all_experiments.sh"]

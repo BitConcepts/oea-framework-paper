@@ -42,31 +42,34 @@ python experiments/generate_figures.py
 
 ## Step 4 — Install neural LLM dependencies
 
+Install torch for your hardware. See `requirements-lock.txt` for the full list with test-status notes.
+
 ```bash
-# Windows (GPU with CUDA 12.1):
-scripts\setup.cmd --experiments --cuda
+# NVIDIA CUDA 12.1 [verified]:
+pip install torch==2.3.1+cu121 transformers==4.41.0 rouge-score==0.1.2 --index-url https://download.pytorch.org/whl/cu121
 
-# Windows (CPU only):
-scripts\setup.cmd --experiments
+# NVIDIA CUDA 12.4+ [verified]:
+pip install torch transformers==4.41.0 rouge-score==0.1.2 --index-url https://download.pytorch.org/whl/cu124
 
-# Linux/macOS (GPU with CUDA 12.1):
-bash scripts/setup.sh --experiments --cuda
+# AMD ROCm 6.x [community-tested]:
+pip install torch transformers==4.41.0 rouge-score==0.1.2 --index-url https://download.pytorch.org/whl/rocm6.3
 
-# Linux/macOS (Apple Metal):
-bash scripts/setup.sh --experiments --mps
+# Intel Arc / Xe XPU [community-tested]:
+pip install torch transformers==4.41.0 rouge-score==0.1.2 --index-url https://download.pytorch.org/whl/xpu
 
-# Linux/macOS (CPU only):
-bash scripts/setup.sh --experiments
+# Apple Silicon MPS [community-tested]:
+pip install torch transformers==4.41.0 rouge-score==0.1.2
+
+# CPU only (all platforms):
+pip install torch transformers==4.41.0 rouge-score==0.1.2 --index-url https://download.pytorch.org/whl/cpu
 ```
 
-> **numpy compatibility note**: torch 2.3.1 requires numpy<2. The setup scripts
-> install `numpy==1.26.4` automatically. If you manage dependencies manually:
-> `pip install "numpy==1.26.4"`
+> **numpy**: numpy 2.x is compatible with current torch versions. No pinning required.
 
 ## Step 5 — Run real LLM experiments
 
 ```bash
-# GPU (full config, ~20-30 min per model):
+# GPU — auto-detected (full config, ~20-30 min per model):
 python experiments/real_lm_experiment.py --model distilgpt2
 python experiments/real_lm_experiment.py --model gpt2
 python experiments/real_lm_experiment.py --model EleutherAI/gpt-neo-125M
@@ -77,6 +80,11 @@ python experiments/real_lm_experiment.py --model distilgpt2 --n-seeds 3 --n-iter
 python experiments/real_lm_experiment.py --model gpt2 --n-seeds 3 --n-iterations 5 --gen-tokens 40
 python experiments/real_lm_experiment.py --model EleutherAI/gpt-neo-125M --n-seeds 3 --n-iterations 5 --gen-tokens 40
 python experiments/real_lm_experiment.py --model Qwen/Qwen2.5-1.5B --n-seeds 3 --n-iterations 5 --gen-tokens 40
+
+# Force a specific backend (if auto-detection picks the wrong one):
+python experiments/real_lm_experiment.py --model distilgpt2 --device rocm
+python experiments/real_lm_experiment.py --model distilgpt2 --device xpu
+python experiments/real_lm_experiment.py --model distilgpt2 --device mps
 ```
 
 > CPU results (reduced config) are valid for mechanism verification but have
@@ -100,8 +108,29 @@ pytest tests/
 ## Docker (fully reproducible environment)
 
 ```bash
+# CPU (all platforms):
 docker build -t oea-framework .
 docker run --rm -v $(pwd)/results:/app/results oea-framework
+
+# NVIDIA GPU [verified]:
+docker build -f Dockerfile.cuda -t oea-framework-cuda .
+docker run --rm --gpus all -v $(pwd)/results:/app/results oea-framework-cuda \
+  python experiments/real_lm_experiment.py --model distilgpt2
+
+# AMD ROCm [community-tested, Linux only]:
+docker build -f Dockerfile.rocm -t oea-framework-rocm .
+docker run --rm --device /dev/kfd --device /dev/dri \
+  --group-add render --group-add video \
+  -v $(pwd)/results:/app/results oea-framework-rocm \
+  python experiments/real_lm_experiment.py --model distilgpt2 --device rocm
+
+# Intel XPU [community-tested, Linux only]:
+docker build -f Dockerfile.xpu -t oea-framework-xpu .
+docker run --rm --device /dev/dri \
+  -v $(pwd)/results:/app/results oea-framework-xpu \
+  python experiments/real_lm_experiment.py --model distilgpt2 --device xpu
+
+# Apple MPS: Docker is not compatible with Apple Metal — use native install.
 ```
 
 ## Expected outputs
