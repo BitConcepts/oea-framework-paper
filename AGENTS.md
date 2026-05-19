@@ -48,7 +48,6 @@ Before executing any task, state:
 - `docs/methodology.md` — OEA tri-layer process and experimental design
 - `docs/research-agent-spec.md` — canonical research agent specification
 
-
 ---
 ## Governance commands (specsmith_run / /specsmith)
 
@@ -57,7 +56,7 @@ All specsmith governance operations should be invoked through the
 
 **In the Nexus REPL:**
 
-```
+```text
 /specsmith save               # backup + commit + push governance state
 /specsmith load               # pull + restore governance state
 /specsmith audit --strict     # strict governance audit
