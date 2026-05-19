@@ -5,7 +5,7 @@
 # NOTE: numpy==2.4.5 is required for torch 2.3.1 ABI compatibility (numpy 2.x breaks torch).
 numpy==2.4.5
 matplotlib==3.10.9
-scipy==1.14.1
+scipy==1.17.1
 pytest==8.3.5
 reportlab==4.5.1
 
