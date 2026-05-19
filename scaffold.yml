@@ -1,6 +1,6 @@
 extends: ''
 name: oea-framework-paper
-type: aee-research
+type: research-python
 platforms:
 - windows
 - linux

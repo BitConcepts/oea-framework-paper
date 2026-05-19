@@ -46,7 +46,7 @@ and feeds empirical outcomes back into subsequent hypothesis design.
 | Raw results | `results/` | CSV/JSON experiment artifacts (reproducible, fixed seeds) |
 | Figures | `arxiv/figures/` | PDF figures generated from committed result artifacts |
 | LaTeX manuscript | `arxiv/main.tex` | Publication scaffold |
-| Reproducibility package | `Dockerfile`, `requirements-lock.txt`, `experiments/manifest.json`, `REPRODUCE.md` | Exact reproduction in <10 minutes |
+| Reproducibility package | `Dockerfile` (CPU), `Dockerfile.cuda` (NVIDIA), `Dockerfile.rocm` (AMD), `Dockerfile.xpu` (Intel), `requirements-lock.txt`, `experiments/manifest.json`, `REPRODUCE.md` | Exact reproduction in <10 minutes |
 
 ## Data Flow
 
@@ -95,8 +95,13 @@ arXiv / PhilSci-Archive submission
 - **Statistics**: Cohen's d + permutation p-value for treatment-control deltas
 - **Reproducibility**: Fixed random seeds; all artifacts machine-readable; pre-registered design
 
+## Key Architectural Decisions (continued)
+- **Hardware abstraction** (DEC-005): `real_lm_experiment.py` uses a `--device` flag with
+  auto-detection chain `cuda > rocm (HIP) > xpu > mps > cpu`. Community-tested backends
+  (ROCm, XPU, MPS) emit an issue-link in device output. Verified backends: CPU, NVIDIA CUDA 12.1.
+
 ## Primary Language & Tooling
 - **Language**: Python 3.x
 - **Test framework**: pytest
-- **Dependencies**: numpy (see `requirements.txt`)
+- **Dependencies**: numpy, scipy, matplotlib (see `requirements.txt` and `requirements-lock.txt`)
 - **VCS**: GitHub (`main` branch, gitflow strategy)

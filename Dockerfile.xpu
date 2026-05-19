@@ -1,0 +1,84 @@
+# OEA Framework Paper — Intel Arc / Xe XPU Container (REQ-OEA-020)
+#
+# COMMUNITY-TESTED ONLY — not verified by maintainer.
+# Please report your result (pass or fail) at:
+#   https://github.com/BitConcepts/oea-framework-paper/issues/new?template=hardware_compat.md
+#
+# Requirements:
+#   - Intel Arc / Xe / Iris Xe GPU (A-series, B-series, or later)
+#   - Intel GPU drivers installed on the Linux host
+#   - Linux only (Ubuntu 22.04/24.04 recommended)
+#   - Intel oneAPI Base Toolkit (optional but recommended for best performance)
+#   - Intel GPU device passthrough requires /dev/dri on the host
+#
+# Build:
+#   docker build -f Dockerfile.xpu -t oea-framework-xpu .
+#
+# Run real LLM experiment (Intel GPU):
+#   docker run --rm \
+#     --device /dev/dri \
+#     -v $(pwd)/results:/app/results \
+#     oea-framework-xpu \
+#     python experiments/real_lm_experiment.py --model distilgpt2 --device xpu
+#
+# Run bigram experiments (CPU, no GPU needed):
+#   docker run --rm -v $(pwd)/results:/app/results oea-framework-xpu
+#
+# Troubleshooting:
+#   If torch.xpu.is_available() returns False:
+#   1. Verify /dev/dri is accessible: ls -la /dev/dri
+#   2. Check Intel GPU driver: intel_gpu_top
+#   3. Verify torch XPU support: python -c "import torch; print(torch.xpu.is_available())"
+#   4. See Intel Extension for PyTorch docs:
+#      https://intel.github.io/intel-extension-for-pytorch/
+
+FROM ubuntu:22.04
+
+# Avoid interactive prompts during apt installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# System dependencies + Python 3.11
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 \
+    python3.11-venv \
+    python3-pip \
+    git \
+    curl \
+    gpg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Make python3.11 the default python/pip
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 \
+    && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+
+WORKDIR /app
+
+# Copy project files
+COPY . .
+
+# Core experiment dependencies (no GPU required)
+RUN pip install --no-cache-dir \
+    "numpy==2.4.5" \
+    "matplotlib==3.10.9" \
+    "scipy==1.17.1" \
+    "pytest==9.0.3" \
+    "reportlab==4.5.1"
+
+# Neural LLM dependencies — PyTorch with XPU support
+# PyTorch 2.7+ includes native XPU backend (Intel Arc/Xe via SYCL)
+# intel-extension-for-pytorch provides additional optimizations (optional)
+RUN pip install --no-cache-dir \
+    "torch" \
+    "transformers==4.41.0" \
+    "rouge-score==0.1.2" \
+    --index-url https://download.pytorch.org/whl/xpu
+
+# Verify installation (XPU visibility requires /dev/dri passthrough at runtime)
+RUN python -c "import numpy, matplotlib, torch, transformers; \
+    print('Environment OK'); \
+    print(f'PyTorch {torch.__version__}'); \
+    xpu_present = hasattr(torch, 'xpu'); \
+    print(f'XPU module present: {xpu_present}')"
+
+# Default: run all CPU bigram experiments (Intel GPU available for real LLM experiments)
+CMD ["bash", "scripts/run_all_experiments.sh"]

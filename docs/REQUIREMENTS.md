@@ -251,11 +251,27 @@ claims or engineering constraints. Each must have a matching TEST-OEA-\* entry i
 - **Confidence**: high
 - **Boundary**: Covers the full experiment pipeline; GPU availability required for real LLM runs
 - **Platform**: all
-- **Description**: The repository must contain: (a) `Dockerfile` reproducing the Python environment,
-  (b) `requirements-lock.txt` with pinned versions, (c) `experiments/manifest.json` with SHA-256
-  hashes of all result artifacts, (d) `REPRODUCE.md` documenting exact commands and expected
-  runtime to reproduce all results from scratch.
-- **Evidence**: `Dockerfile`, `requirements-lock.txt`, `experiments/manifest.json`, `REPRODUCE.md`
+- **Description**: The repository must contain: (a) `Dockerfile` (CPU) and `Dockerfile.cuda` (NVIDIA)
+  reproducing the Python environment, (b) `requirements-lock.txt` with pinned versions and per-backend
+  install instructions, (c) `experiments/manifest.json` with SHA-256 hashes of all result artifacts,
+  (d) `REPRODUCE.md` documenting exact commands and expected runtime to reproduce all results from scratch.
+- **Evidence**: `Dockerfile`, `Dockerfile.cuda`, `requirements-lock.txt`, `experiments/manifest.json`, `REPRODUCE.md`
+
+### REQ-OEA-023
+- **Component**: hardware-abstraction
+- **Priority**: P2
+- **Status**: Accepted
+- **Confidence**: high
+- **Boundary**: Covers `real_lm_experiment.py` device selection; does not affect bigram experiments
+- **Platform**: all
+- **Description**: The real LLM experiment harness must support multiple compute backends via a
+  `--device` flag (`cuda`, `rocm`, `xpu`, `mps`, `cpu`) with auto-detection chain
+  `cuda > rocm > xpu > mps > cpu`. NVIDIA CUDA and CPU are verified by the maintainer.
+  AMD ROCm, Intel XPU, and Apple MPS are documented as community-tested with a link to the
+  hardware compatibility issue template. Corresponding Docker images must exist for all
+  GPU-capable backends (`Dockerfile.cuda`, `Dockerfile.rocm`, `Dockerfile.xpu`).
+- **Evidence**: `experiments/real_lm_experiment.py` `--device` flag and device detection block;
+  `Dockerfile.cuda`, `Dockerfile.rocm`, `Dockerfile.xpu`
 
 ### REQ-OEA-021
 - **Component**: manuscript-hypotheses

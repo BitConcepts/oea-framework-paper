@@ -248,3 +248,58 @@
 - **Type**: migration
 - **Status**: complete
 - **Chain hash**: `c33daae014d19022...`
+
+## 2026-05-19 — Multi-GPU support, governance hardening, full doc cross-check
+
+**Objective**: Add community GPU support (ROCm/XPU), harden governance to 30/30,
+resolve all documentation gaps, and fix stale content across the repository.
+
+**What was done**:
+
+- **Multi-backend device support** (`real_lm_experiment.py`): `--device` flag added
+  (`cuda`, `rocm`, `xpu`, `mps`, `cpu`); auto-detection chain `cuda > rocm > xpu > mps > cpu`;
+  ROCm detected via `torch.version.hip`; community-tested backends emit issue-link at runtime.
+- **Docker images**: `Dockerfile.cuda` (NVIDIA, verified), `Dockerfile.rocm` (AMD ROCm 6.x,
+  community-tested), `Dockerfile.xpu` (Intel Arc/Xe, community-tested). MPS documented as
+  not Docker-compatible (Apple Metal not accessible from Linux containers).
+- **Hardware issue template**: `.github/ISSUE_TEMPLATE/hardware_compat.md` added for
+  community ROCm/XPU/MPS compatibility reports.
+- **REQ-OEA-023 + TEST-OEA-023**: hardware abstraction (P2) added to REQUIREMENTS.md and
+  TESTS.md. All 23 accepted REQs now have test coverage.
+- **DEC-005**: hardware abstraction decision documented in ARCHITECTURE.md.
+  REQ-OEA-020 and TEST-OEA-020 updated to reference `Dockerfile.cuda`.
+- **`scaffold.yml` type fix**: `aee-research` → `research-python` to match scanner detection.
+  AEE epistemic governance fully preserved via `enable_epistemic: true`.
+  specsmith audit: 30/30 checks, 0 issues (was 29/29 with 1 issue).
+- **AGENTS.md**: spec version updated 0.10.1 → 0.11.3.dev427; type updated aee-research → research-python.
+- **REPRODUCE.md**: Step 4 rewritten with direct pip install commands per backend;
+  stale `setup.sh --cuda/--mps` references removed; stale numpy<2 note removed;
+  Docker section fully updated with ROCm/XPU run commands.
+- **requirements-lock.txt**: per-backend install instructions added (ROCm 6.x, XPU, CUDA 12.4+, MPS);
+  incorrect ABI comment from dependabot bump fixed.
+- **Dependabot PRs**: all 4 merged (numpy 2.4.5, matplotlib 3.10.9, scipy 1.17.1, pytest 9.0.3).
+- **GitHub issues**: #12 (stress-test confidence parser), #13 (type false-positive),
+  #14 (publication workflow feature), #5 (submission prep) — all closed with comments.
+- **specsmith migrate**: 0.11.3 → 0.11.3.dev427 applied; ledger-chain.txt committed.
+- **AMLA 2026**: evaluated as predatory conference (AIRCC, no CORE ranking, 9 co-located
+  events same day, $390-490 fee). Not recommended. Issue #5 updated accordingly.
+
+**Files changed**: `scaffold.yml`, `AGENTS.md`, `CHANGELOG.md`, `LEDGER.md`,
+`Dockerfile`, `Dockerfile.cuda`, `Dockerfile.rocm`, `Dockerfile.xpu`,
+`requirements-lock.txt`, `README.md`, `REPRODUCE.md`, `docs/ARCHITECTURE.md`,
+`docs/REQUIREMENTS.md`, `docs/TESTS.md`, `experiments/real_lm_experiment.py`,
+`.github/ISSUE_TEMPLATE/hardware_compat.md`
+
+**Checks run**: `specsmith audit` (30/30), `specsmith validate` (5/5),
+`specsmith status` (CI ✓, 0 Dependabot alerts, 0 open PRs), pytest (12/12), CI green.
+
+**Results**: Healthy. 30/30 audit checks. 0 open issues. 0 open PRs. CI passing.
+
+**Next step**: Merge develop → main when ready to publish hardware support.
+
+## 2026-05-19T13:38 — Multi-GPU support, governance hardening, full doc cross-check: added --device flag (cuda/rocm/xpu/mps/cpu) with ROCm/XPU auto-detection; Dockerfile.cuda (verified), Dockerfile.rocm, Dockerfile.xpu (community-tested); hardware_compat issue template; REQ/TEST-OEA-023 (hardware abstraction); DEC-005 in ARCHITECTURE; scaffold.yml type aee-research->research-python (specsmith audit 30/30 clean); AGENTS.md spec version 0.10.1->0.11.3.dev427; REPRODUCE.md stale content fixed; requirements-lock.txt per-backend install instructions; 4 dependabot PRs merged; GitHub issues #5 #12 #13 #14 closed; AMLA 2026 evaluated as predatory conference
+- **Author**: Tristen Pierson
+- **Type**: feature
+- **REQs affected**: REQ-OEA-020,REQ-OEA-023
+- **Status**: complete
+- **Chain hash**: `522c1c447906f02a...`

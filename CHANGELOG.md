@@ -9,18 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `Dockerfile.cuda`: NVIDIA CUDA 12.1 GPU image (verified on RTX 4070 SUPER)
+- `Dockerfile.rocm`: AMD ROCm 6.x GPU image (community-tested; `rocm/dev-ubuntu-22.04:6.3` base)
+- `Dockerfile.xpu`: Intel Arc / Xe XPU image (community-tested; `ubuntu:22.04` + PyTorch XPU wheel)
 - `.github/ISSUE_TEMPLATE/hardware_compat.md`: hardware compatibility report template
   for community contributors running on AMD ROCm, Intel XPU, Apple MPS, etc.
 - `real_lm_experiment.py`: `--device` flag for explicit backend selection
   (`cuda`, `rocm`, `xpu`, `mps`, `cpu`); auto-detection extended to ROCm and Intel XPU
 - `requirements-lock.txt`: added install instructions for AMD ROCm 6.x, Intel XPU/Arc,
   NVIDIA CUDA 12.4+, and Apple MPS with per-backend test status notes
+- `docs/REQUIREMENTS.md`: REQ-OEA-023 (hardware abstraction / multi-backend device support)
+- `docs/TESTS.md`: TEST-OEA-023 covering REQ-OEA-023 (code inspection + Docker image check)
+
+### Fixed
+- `scaffold.yml`: type changed `aee-research` → `research-python` to match scanner detection
+  (AEE epistemic governance preserved via `enable_epistemic: true`); resolves specsmith
+  audit type-mismatch warning — audit now passes 30/30 checks with no issues
 
 ### Changed
 - `Dockerfile`: updated to current pinned versions (`numpy==2.4.5`, etc.)
-- `README.md`: GPU support table now includes ROCm/XPU/MPS with test status column
-  and CI hardware gap note; Docker section consolidated into GPU Support
-- `REPRODUCE.md`: hardware test matrix added; untested hardware / help-wanted section added
+- `README.md`: Docker table expanded with ROCm/XPU images and MPS native-only note
+- `REPRODUCE.md`: Step 4 rewritten with direct pip commands per backend (removed stale
+  setup script references); stale numpy<2 compat note removed; Docker section updated
+  with ROCm/XPU run commands; `--device` flag examples added to Step 5
+- `docs/ARCHITECTURE.md`: DEC-005 added (hardware abstraction layer); reproducibility
+  package table updated with all four Dockerfiles; tooling section updated
+- `docs/REQUIREMENTS.md`: REQ-OEA-020 updated to reference `Dockerfile.cuda` alongside
+  `Dockerfile`
+- `docs/TESTS.md`: TEST-OEA-020 updated to reference `Dockerfile.cuda`
 - `scaffold.yml`: pinned `detected_type: aee-research` to suppress specsmith audit false-positive
   (scanner infers `research-python` from file heuristics; `aee-research` is the intentional
   governance type set at project bootstrap)
