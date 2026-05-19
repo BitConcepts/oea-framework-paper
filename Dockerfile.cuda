@@ -1,0 +1,80 @@
+# OEA Framework Paper — NVIDIA CUDA Reproducibility Container (REQ-OEA-020)
+# Requires: NVIDIA GPU + nvidia-container-toolkit installed on the host.
+# Verified on: RTX 4070 SUPER, CUDA 12.1, Windows 11 / Ubuntu 22.04
+#
+# Hardware test status:
+#   This image (NVIDIA CUDA 12.1): verified by maintainer
+#   AMD ROCm / Intel XPU:          community-tested only — no Dockerfile provided
+#   Report hardware issues:        https://github.com/BitConcepts/oea-framework-paper/issues
+#
+# Build:
+#   docker build -f Dockerfile.cuda -t oea-framework-cuda .
+#
+# Run real LLM experiment (GPU, full config, ~20-30 min per model):
+#   docker run --rm --gpus all \
+#     -v $(pwd)/results:/app/results \
+#     oea-framework-cuda \
+#     python experiments/real_lm_experiment.py --model distilgpt2
+#
+# Run all 4 validated models:
+#   for model in distilgpt2 gpt2 EleutherAI/gpt-neo-125M Qwen/Qwen2.5-1.5B; do
+#     docker run --rm --gpus all -v $(pwd)/results:/app/results \
+#       oea-framework-cuda \
+#       python experiments/real_lm_experiment.py --model $model
+#   done
+#
+# Run bigram experiments (CPU, no GPU needed):
+#   docker run --rm -v $(pwd)/results:/app/results oea-framework-cuda
+#
+# Requirements:
+#   nvidia-container-toolkit must be installed on the host:
+#   https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html
+#
+# For AMD ROCm or Intel XPU Docker, see requirements-lock.txt for install commands.
+
+FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
+
+# Avoid interactive prompts during apt installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# System dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 \
+    python3.11-venv \
+    python3-pip \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Make python3.11 the default python/pip
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 \
+    && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+
+WORKDIR /app
+
+# Copy project files
+COPY . .
+
+# Core experiment dependencies (no GPU required)
+RUN pip install --no-cache-dir \
+    "numpy==2.4.5" \
+    "matplotlib==3.10.9" \
+    "scipy==1.17.1" \
+    "pytest==9.0.3" \
+    "reportlab==4.5.1"
+
+# Neural LLM dependencies — CUDA 12.1 torch wheel
+RUN pip install --no-cache-dir \
+    "torch==2.3.1+cu121" \
+    "transformers==4.41.0" \
+    "rouge-score==0.1.2" \
+    --index-url https://download.pytorch.org/whl/cu121
+
+# Verify installation and GPU visibility
+RUN python -c "import numpy, matplotlib, torch, transformers; \
+    print('Environment OK'); \
+    print(f'PyTorch {torch.__version__}'); \
+    print(f'CUDA available: {torch.cuda.is_available()}')"
+
+# Default: run all CPU bigram experiments (GPU available for real LLM experiments)
+CMD ["bash", "scripts/run_all_experiments.sh"]

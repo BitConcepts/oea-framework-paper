@@ -56,13 +56,32 @@ See [REPRODUCE.md](REPRODUCE.md) for the full step-by-step guide.
 
 ## GPU Support
 
-The experiment harness auto-detects the best available device:
+The experiment harness auto-detects the best available device (`cuda > rocm > xpu > mps > cpu`).
+Use `--device <backend>` to override.
 
-| Hardware | Install command |
-|---|---|
-| NVIDIA (CUDA 12.1) | `pip install torch --index-url https://download.pytorch.org/whl/cu121` |
-| Apple Silicon (MPS) | `pip install torch` |
-| CPU only | `pip install torch --index-url https://download.pytorch.org/whl/cpu` |
+| Hardware | Install command | Test status |
+|---|---|---|
+| NVIDIA CUDA 12.1 | `pip install torch==2.3.1+cu121 --index-url https://download.pytorch.org/whl/cu121` | ✅ Verified (RTX 4070 SUPER, Win 11) |
+| NVIDIA CUDA 12.4+ | `pip install torch --index-url https://download.pytorch.org/whl/cu124` | ✅ Verified |
+| CPU only | `pip install torch --index-url https://download.pytorch.org/whl/cpu` | ✅ Verified |
+| AMD ROCm 6.x | `pip install torch --index-url https://download.pytorch.org/whl/rocm6.3` | ⚠️ Community-tested |
+| Intel Arc / Xe XPU | `pip install torch --index-url https://download.pytorch.org/whl/xpu` | ⚠️ Community-tested |
+| Apple Silicon (MPS) | `pip install torch` (macOS 13+, auto-detected) | ⚠️ Community-tested |
+
+> **CI note:** GPU paths are not tested in CI — GitHub-hosted runners have no GPU hardware.
+> Only CPU-based unit tests and the LaTeX compile run automatically.
+> If you run on ROCm, XPU, or MPS, please report your result (pass or fail) using
+> the [Hardware Compatibility template](https://github.com/BitConcepts/oea-framework-paper/issues/new?template=hardware_compat.md).
+
+### Docker
+
+| Image | GPU | Build command |
+|---|---|---|
+| `Dockerfile` | CPU only | `docker build -t oea-framework .` |
+| `Dockerfile.cuda` | NVIDIA CUDA 12.1 | `docker build -f Dockerfile.cuda -t oea-framework-cuda .` |
+
+For AMD ROCm or Intel XPU Docker, see `requirements-lock.txt` for install commands
+and open a [Hardware Compatibility issue](https://github.com/BitConcepts/oea-framework-paper/issues/new?template=hardware_compat.md) with your result.
 
 ## Repository Structure
 
@@ -86,7 +105,8 @@ results/                     Committed experiment artifacts
 scripts/                     Setup, build, and run scripts
 tests/                       12 unit tests (pytest)
 REPRODUCE.md                 Step-by-step reproduction guide
-Dockerfile                   Containerized reproducible environment
+Dockerfile                   CPU reproducibility container
+Dockerfile.cuda              NVIDIA CUDA GPU container
 ```
 
 ## Experiments
@@ -104,13 +124,6 @@ Dockerfile                   Containerized reproducible environment
 - **ROUGE-L recall** — seed-corpus content preservation (independent of log-prob)
 - **JSD** — Jensen-Shannon divergence from seed distribution
 - **TRR / FRR** — true/false rejection rates for out-of-vocabulary token detection
-
-## Docker
-
-```bash
-docker build -t oea-framework .
-docker run --rm -v $(pwd)/results:/app/results oea-framework
-```
 
 ## Citation
 
