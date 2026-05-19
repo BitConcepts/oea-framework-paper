@@ -45,7 +45,7 @@ python experiments/real_lm_experiment.py --model distilgpt2 --device rocm
 
 ## Error output (if failed)
 
-```
+```text
 # Paste traceback or error output here
 ```
 
