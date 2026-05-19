@@ -50,3 +50,12 @@ artifacts/
 # Local env
 .env
 .env.*
+
+# specsmith migration backups — regeneratable, never commit
+*.bak
+.specsmith/*.bak
+docs/governance/*.bak
+docs/*.bak
+
+# ChronoMemory ESDB runtime files — regenerated automatically
+.chronomemory/

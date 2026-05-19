@@ -242,3 +242,9 @@
 - Added reproducibility package (`requirements.txt`, config-driven runner, machine-readable outputs).
 - Added automated tests for core experiment utilities.
 - Planned outputs: raw runs, aggregate metrics, taxonomy report, statistical summary, and session artifact.
+
+## 2026-05-19T11:58 — specsmith migration: 0.11.3 → 0.11.3.dev427
+- **Author**: specsmith
+- **Type**: migration
+- **Status**: complete
+- **Chain hash**: `c33daae014d19022...`

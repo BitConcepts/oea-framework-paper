@@ -32,7 +32,7 @@ Run all drift/health checks from drift-metrics.md. Report pass/fail per signal w
 
 Before any non-trivial work, produce a proposal using exactly this structure:
 
-```markdown
+```text
 ## Proposal
 
 Objective:      <what this task accomplishes>
