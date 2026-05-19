@@ -133,8 +133,26 @@ CPU validation (reduced config: `--n-seeds 3 --n-iterations 5 --gen-tokens 40`) 
 and produces valid directional results. Use CPU results only for mechanism verification;
 report full GPU results in the manuscript for statistical power.
 
-**numpy compatibility**: torch 2.3.1 requires `numpy==1.26.4` (not numpy 2.x).
-The `--experiments` setup flag handles this automatically.
+### Hardware test matrix
+
+| Hardware | Status | Notes |
+|---|---|---|
+| CPU (x86-64, AMD or Intel) | ✅ Verified | All platforms |
+| NVIDIA CUDA 12.1 | ✅ Verified | RTX 4070 SUPER, Windows 11 |
+| NVIDIA CUDA 12.4+ | ✅ Verified | Newer drivers / GPUs |
+| AMD ROCm 6.x | ⚠️ Community-tested | Use `--device rocm` |
+| Intel Arc / Xe XPU | ⚠️ Community-tested | Use `--device xpu` |
+| Apple Silicon MPS | ⚠️ Community-tested | Auto-detected on macOS 13+ |
+
+> **CI:** GPU paths are not CI-tested. GitHub-hosted runners have no GPU hardware.
+> Only CPU-based unit tests run automatically on every push.
+
+### Untested hardware — help wanted
+
+If you run the real LLM experiments on AMD ROCm, Intel XPU, or Apple MPS,
+please report your result (success or failure) using the
+[Hardware Compatibility issue template](https://github.com/BitConcepts/oea-framework-paper/issues/new?template=hardware_compat.md).
+Include your GPU model, driver/ROCm/CUDA version, OS, and PyTorch version.
 
 ## Compute budget
 

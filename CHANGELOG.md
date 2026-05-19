@@ -7,7 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `Dockerfile.cuda`: NVIDIA CUDA 12.1 GPU image (verified on RTX 4070 SUPER)
+- `.github/ISSUE_TEMPLATE/hardware_compat.md`: hardware compatibility report template
+  for community contributors running on AMD ROCm, Intel XPU, Apple MPS, etc.
+- `real_lm_experiment.py`: `--device` flag for explicit backend selection
+  (`cuda`, `rocm`, `xpu`, `mps`, `cpu`); auto-detection extended to ROCm and Intel XPU
+- `requirements-lock.txt`: added install instructions for AMD ROCm 6.x, Intel XPU/Arc,
+  NVIDIA CUDA 12.4+, and Apple MPS with per-backend test status notes
+
 ### Changed
+- `Dockerfile`: updated to current pinned versions (`numpy==2.4.5`, etc.)
+- `README.md`: GPU support table now includes ROCm/XPU/MPS with test status column
+  and CI hardware gap note; Docker section consolidated into GPU Support
+- `REPRODUCE.md`: hardware test matrix added; untested hardware / help-wanted section added
 - `scaffold.yml`: pinned `detected_type: aee-research` to suppress specsmith audit false-positive
   (scanner infers `research-python` from file heuristics; `aee-research` is the intentional
   governance type set at project bootstrap)

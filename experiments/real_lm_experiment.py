@@ -19,10 +19,23 @@ Non-GPT2 family (validated):
 
 Install dependencies:
   pip install torch transformers rouge-score  (CPU)
-  pip install torch==2.3.1+cu121 --index-url https://download.pytorch.org/whl/cu121  (CUDA)
+  pip install torch==2.3.1+cu121 --index-url https://download.pytorch.org/whl/cu121  (CUDA/NVIDIA)
+  pip install torch --index-url https://download.pytorch.org/whl/rocm6.3  (ROCm/AMD — community-tested)
+  pip install torch --index-url https://download.pytorch.org/whl/xpu  (Intel XPU/Arc — community-tested)
+  pip install torch transformers rouge-score  (MPS/Apple Silicon — community-tested)
   pip install transformers==4.41.0 rouge-score==0.1.2  (then from PyPI)
   NOTE: requires numpy<2 for torch 2.3.1 ABI compatibility:
     pip install "numpy==1.26.4"
+
+Hardware test status:
+  Verified by maintainer:   CPU (x86-64), NVIDIA CUDA 12.1 (RTX 4070 SUPER, Windows 11)
+  Community-tested only:    AMD ROCm, Intel XPU/Arc, Apple MPS
+  Report hardware issues:   https://github.com/BitConcepts/oea-framework-paper/issues
+  Use hardware template:    .github/ISSUE_TEMPLATE/hardware_compat.md
+
+Device selection:
+  Auto-detect (default): cuda > rocm > xpu > mps > cpu
+  Force device:  --device cuda | rocm | xpu | mps | cpu
 
 CPU vs GPU usage:
   GPU (full config, ~30 min per model):
@@ -30,6 +43,10 @@ CPU vs GPU usage:
   CPU (reduced config, ~20 min):
     python experiments/real_lm_experiment.py --model EleutherAI/gpt-neo-125M \
       --n-seeds 3 --n-iterations 5 --gen-tokens 40
+  Force ROCm:
+    python experiments/real_lm_experiment.py --model distilgpt2 --device rocm
+  Force Intel XPU:
+    python experiments/real_lm_experiment.py --model distilgpt2 --device xpu
 
 OEA Layer Implementation
 ------------------------
@@ -139,6 +156,17 @@ _parser.add_argument(
     type=int,
     default=60,
     help="New tokens generated per step (default: 60 for GPU; use 40 on CPU).",
+)
+_parser.add_argument(
+    "--device",
+    default=None,
+    choices=["cuda", "rocm", "xpu", "mps", "cpu"],
+    help=(
+        "Force compute device. Default: auto-detect (cuda > rocm > xpu > mps > cpu). "
+        "Use 'rocm' for AMD GPUs (ROCm build of PyTorch). "
+        "Use 'xpu' for Intel Arc/Xe GPUs (Intel Extension for PyTorch). "
+        "ROCm and XPU are community-tested only — report issues via the hardware template."
+    ),
 )
 _args, _unknown = _parser.parse_known_args()
 
@@ -334,19 +362,43 @@ def run_real_lm_experiment() -> list[dict]:
     model = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
     model.eval()
 
-    # ── Device selection (CUDA → MPS → CPU) ───────────────────────────────────
-    if torch.cuda.is_available():
+    # ── Device selection (cuda > rocm > xpu > mps > cpu, or --device override) ─
+    _COMMUNITY_NOTE = (
+        " [community-tested — report issues: "
+        "https://github.com/BitConcepts/oea-framework-paper/issues]"
+    )
+    _forced = getattr(_args, "device", None)
+    if _forced:
+        if _forced == "rocm":
+            device = torch.device("cuda")  # ROCm uses the cuda device string
+            sys.stderr.write(f"Device: cuda/ROCm (forced){_COMMUNITY_NOTE}\n")
+        elif _forced == "xpu":
+            device = torch.device("xpu")
+            sys.stderr.write(f"Device: xpu/Intel (forced){_COMMUNITY_NOTE}\n")
+        else:
+            device = torch.device(_forced)
+            sys.stderr.write(f"Device: {_forced} (forced via --device)\n")
+    elif torch.cuda.is_available():
         device = torch.device("cuda")
-        gpu_name = torch.cuda.get_device_name(0)
-        sys.stderr.write(f"Device: cuda ({gpu_name})\n")
+        _gpu_name = torch.cuda.get_device_name(0)
+        # Detect ROCm build (HIP runtime) vs standard CUDA
+        if hasattr(torch.version, "hip") and torch.version.hip:
+            sys.stderr.write(
+                f"Device: cuda/ROCm ({_gpu_name}){_COMMUNITY_NOTE}\n"
+            )
+        else:
+            sys.stderr.write(f"Device: cuda ({_gpu_name})\n")
+    elif hasattr(torch, "xpu") and torch.xpu.is_available():
+        device = torch.device("xpu")
+        sys.stderr.write(f"Device: xpu/Intel{_COMMUNITY_NOTE}\n")
     elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
         device = torch.device("mps")
-        sys.stderr.write("Device: mps (Apple Metal)\n")
+        sys.stderr.write(f"Device: mps (Apple Metal){_COMMUNITY_NOTE}\n")
     else:
         device = torch.device("cpu")
         sys.stderr.write(
-            "Device: cpu  [NOTE: no GPU detected — CUDA/ROCm/MPS would give significant "
-            "acceleration; see requirements-experiments.txt for install instructions]\n"
+            "Device: cpu  [no GPU detected — CUDA/ROCm/XPU/MPS would be faster; "
+            "see requirements-lock.txt for install commands]\n"
         )
     model = model.to(device)
 
