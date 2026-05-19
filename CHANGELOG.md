@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `scaffold.yml`: pinned `detected_type: aee-research` to suppress specsmith audit false-positive
+  (scanner infers `research-python` from file heuristics; `aee-research` is the intentional
+  governance type set at project bootstrap)
+
 ## [1.0.0] - 2026-05-14
 
 ### Added
