@@ -47,6 +47,10 @@ oea-submission.docx
 _audit.py
 artifacts/
 
+# Zenodo upload artifacts (derived from main.pdf + arxiv/; not source)
+arxiv/OEA_Structured_Recursive_Calibration_for_Generative_Stability.pdf
+arxiv/OEA_LaTeX_source.zip
+
 # Local env
 .env
 .env.*
