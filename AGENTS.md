@@ -84,7 +84,6 @@ All specsmith governance operations should be invoked through the
 These are all equivalent: ``specsmith_run("save")``,
 ``specsmith_run("/specsmith save")``, ``specsmith_run("specsmith save")``.
 
-
 ---
 ## Session Governance Protocol
 
@@ -120,7 +119,7 @@ specsmith checkpoint --project-dir .
 
 Output the GOVERNANCE ANCHOR block verbatim in your response, tagged:
 
-```
+```text
 ⎠ GOVERNANCE ANCHOR:
 <paste checkpoint output here>
 ```
