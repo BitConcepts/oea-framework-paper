@@ -1,11 +1,13 @@
 # OEA: Structured Recursive Calibration for Generative Stability
 
 [![CI](https://github.com/BitConcepts/oea-framework-paper/actions/workflows/ci.yml/badge.svg)](https://github.com/BitConcepts/oea-framework-paper/actions/workflows/ci.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20412150.svg)](https://doi.org/10.5281/zenodo.20412150)
 [![Paper](https://img.shields.io/badge/paper-Academia.edu-blue)](https://www.academia.edu/167119567/OEA_Structured_Recursive_Calibration_for_Generative_Stability)
 [![License: MIT](https://img.shields.io/badge/code-MIT-green)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-orange)](https://github.com/BitConcepts/oea-framework-paper/releases/tag/v1.0.0)
+[![Version](https://img.shields.io/badge/version-1.1.0-orange)](https://github.com/BitConcepts/oea-framework-paper/releases/tag/v1.1.0)
 
-**Author:** Tristen Pierson, BitConcepts Research
+**Author:** Tristen Pierson, BitConcepts Research  
+**ORCID:** [0009-0003-7269-956X](https://orcid.org/0009-0003-7269-956X)
 
 ## What This Is
 
@@ -13,7 +15,7 @@ An empirical study of whether recursive generative stability depends more on **d
 
 The OEA (Ontology, Epistemic, Agentic) framework is a three-layer generation-time protocol tested across **4 language models** (82M to 1.5B parameters) and **3 architecture families** (GPT-2, GPT-Neo, Qwen). Key result: inverting the calibration signal degrades log-probability by -0.55 to -1.37 nats, while correct calibration improves it by +0.62 to +1.63 nats.
 
-[Read the paper on Academia.edu](https://www.academia.edu/167119567/OEA_Structured_Recursive_Calibration_for_Generative_Stability)
+[Read the paper on Academia.edu](https://www.academia.edu/167119567/OEA_Structured_Recursive_Calibration_for_Generative_Stability) · [Zenodo archived record](https://doi.org/10.5281/zenodo.20412150)
 
 ## Quick Start
 
@@ -137,10 +139,13 @@ Dockerfile.xpu               Intel Arc / Xe XPU container (community-tested)
 
 ```bibtex
 @misc{pierson2026oea,
-  title={OEA: Structured Recursive Calibration for Generative Stability},
-  author={Pierson, Tristen},
-  year={2026},
-  howpublished={https://github.com/BitConcepts/oea-framework-paper}
+  title        = {OEA: Structured Recursive Calibration for Generative Stability},
+  author       = {Pierson, Tristen},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.20412150},
+  url          = {https://doi.org/10.5281/zenodo.20412150},
+  orcid        = {0009-0003-7269-956X}
 }
 ```
 

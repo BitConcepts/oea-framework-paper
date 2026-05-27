@@ -1,5 +1,16 @@
 # LEDGER
 
+## 2026-05-27 - Publication plan: Zenodo DOI + dissemination
+- **ORCID**: 0009-0003-7269-956X (Tristen Pierson) — added to `arxiv/main.tex` author block.
+- **Zenodo DOI confirmed**: `10.5281/zenodo.20412150` → https://doi.org/10.5281/zenodo.20412150
+- **Manuscript updated**: DOI added to author block and §Pre-registration section in `arxiv/main.tex`.
+- **Publication plan** (✓ = done, → = pending owner action):
+  1. ✓ Zenodo DOI reserved: 10.5281/zenodo.20412150
+  2. ✓ `arxiv/main.tex` updated with Zenodo DOI and ORCID.
+  3. → Complete Zenodo upload/publish with files.
+  4. → Post on ResearchGate linking doi:10.5281/zenodo.20412150.
+  5. → Update Academia.edu post (https://www.academia.edu/167119567/...) with DOI metadata.
+
 ## 2026-05-15 - IJAIA journal submission
 - Submitted to International Journal of Artificial Intelligence & Applications (IJAIA)
 - Emailed: ijaiajournal@airccse.org, ijaiajournal@yahoo.com, ijaia@aircconline.com
@@ -303,3 +314,59 @@ resolve all documentation gaps, and fix stale content across the repository.
 - **REQs affected**: REQ-OEA-020,REQ-OEA-023
 - **Status**: complete
 - **Chain hash**: `522c1c447906f02a...`
+
+## 2026-05-24T11:08 — specsmith migration: 0.11.3.dev427 → 0.11.7
+- **Author**: specsmith
+- **Type**: migration
+- **Status**: complete
+- **Chain hash**: `4cbea2ae543db529...`
+
+## 2026-05-27T08:43 — KILL SWITCH ACTIVATED: emergency stop
+- **Author**: specsmith-operator
+- **Type**: kill-switch
+- **REQs affected**: REG-005
+- **Status**: complete
+- **Epistemic status**: high
+- **Chain hash**: `222525d0924fd5c1...`
+
+## 2026-05-27T08:46 — specsmith preflight accepted utterance "Record publication plan (Zenodo→DOI→ResearchGate+Academia) and ORCID in LEDGER.md and manuscript author block" (work_item_id=WI-42028D7F, confidence_target=0.7).
+- **Author**: specsmith
+- **Type**: preflight
+- **REQs affected**: REQ-085
+- **Status**: complete
+- **Chain hash**: `a32ccce10231c00e...`
+
+## 2026-05-27T08:46 — work_proposal WI-42028D7F: Record publication plan (Zenodo→DOI→ResearchGate+Academia) and ORCID in LEDGER.md and manuscript author block
+- **Author**: specsmith
+- **Type**: work_proposal
+- **REQs affected**: REQ-044,REQ-085
+- **Status**: complete
+- **Chain hash**: `33f946fb2f722ce1...`
+
+## 2026-05-27T08:49 — specsmith preflight accepted utterance "The manuscript author block and pre-registration section shall display doi:10.5281/zenodo.20412150 as a hyperlink so any reader can resolve the canonical archived record" (work_item_id=WI-2A87351D, confidence_target=0.7).
+- **Author**: specsmith
+- **Type**: preflight
+- **REQs affected**: REQ-085
+- **Status**: complete
+- **Chain hash**: `e3cb1534110bf3ea...`
+
+## 2026-05-27T08:49 — work_proposal WI-2A87351D: The manuscript author block and pre-registration section shall display doi:10.5281/zenodo.20412150 as a hyperlink so any reader can resolve the canonical archived record
+- **Author**: specsmith
+- **Type**: work_proposal
+- **REQs affected**: REQ-044,REQ-085
+- **Status**: complete
+- **Chain hash**: `4581f41a04d877aa...`
+
+## 2026-05-27T08:52 — specsmith preflight accepted utterance "README.md shall display the Zenodo DOI badge, ORCID, and installation instructions so that any visitor to the public GitHub repo can immediately find the paper and reproduce the experiments" (work_item_id=WI-1894B34F, confidence_target=0.7).
+- **Author**: specsmith
+- **Type**: preflight
+- **REQs affected**: REQ-085
+- **Status**: complete
+- **Chain hash**: `75912bcd7c1485a5...`
+
+## 2026-05-27T08:52 — work_proposal WI-1894B34F: README.md shall display the Zenodo DOI badge, ORCID, and installation instructions so that any visitor to the public GitHub repo can immediately find the paper and reproduce the experiments
+- **Author**: specsmith
+- **Type**: work_proposal
+- **REQs affected**: REQ-044,REQ-085
+- **Status**: complete
+- **Chain hash**: `ccf2a7aa0bc1b8ac...`

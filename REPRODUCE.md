@@ -98,6 +98,14 @@ python experiments/verify_manifest.py
 # Compares SHA-256 hashes against experiments/manifest.json
 ```
 
+> **Note on hash mismatches**: The committed hashes in `manifest.json` were recorded with
+> numpy 2.4.5. Re-running experiments on a different numpy version (e.g. 2.4.6) may produce
+> cosmetically different JSON formatting (float precision) that changes the SHA-256 hash
+> without changing the numerical results. If `verify_manifest` reports failures for
+> bigram summary JSON files but the CSV raw runs pass, the results are directionally
+> reproducible. Real LLM results (CSV + summary) should match exactly if you use the
+> same model weights and seed policy.
+
 ## Step 7 — Run tests
 
 ```bash

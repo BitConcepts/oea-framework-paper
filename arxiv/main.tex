@@ -13,7 +13,10 @@
 \geometry{margin=1in}
 
 \title{OEA: Structured Recursive Calibration\\for Generative Stability}
-\author{Tristen Pierson\\BitConcepts Research}
+\author{Tristen Pierson\\
+  BitConcepts Research\\
+  \small ORCID: \href{https://orcid.org/0009-0003-7269-956X}{0009-0003-7269-956X}\\
+  \small \href{https://doi.org/10.5281/zenodo.20412150}{doi:10.5281/zenodo.20412150}}
 \date{\today}
 
 \begin{document}
@@ -24,7 +27,7 @@ This paper presents an empirical study of the OEA (Ontology, Epistemic, Agentic)
 The central thesis is: \emph{recursive generative stability depends more strongly on calibration direction and epistemic filtering than on unconstrained retrieval augmentation.}
 ``Ontology'' in this work refers to structured distributional anchoring---not philosophical ontology.
 ``Agentic'' refers to recursive persistence dynamics---not autonomous agency.
-The study reports four experiments: (1) a bigram-proxy ablation study across 12 variants with calibration-quality parameterization, (2) a four-model real LLM validation on \texttt{distilgpt2} (82M), \texttt{gpt2} (124M), \texttt{EleutherAI/gpt-neo-125M} (125M), and \texttt{Qwen/Qwen2.5-1.5B} (1.5B, modern 2024 architecture) with BM25 corpus-grounded retrieval, (3) a 30-step recursive memory drift benchmark measuring entity retention and semantic drift, and (4) a baseline competition comparing OEA against temperature reduction, top-$k$, entropy filtering, and repetition penalty.
+The study reports four experiments: (1) a bigram-proxy ablation study across 12 variants with calibration-quality parameterization, (2) a four-model real LLM validation on \texttt{distilgpt2} (82M), \texttt{gpt2} (124M), \texttt{EleutherAI/gpt-neo-125M} (125M), and \texttt{Qwen/Qwen2.5-1.5B} (1.5B, modern 2024 architecture) with corpus-grounded token-overlap retrieval, (3) a 30-step recursive memory drift benchmark measuring entity retention and semantic drift, and (4) a baseline competition comparing OEA against temperature reduction, top-$k$, entropy filtering, and repetition penalty.
 The full OEA protocol achieves the highest true-rejection rate (TRR\,=\,0.836) and lowest false-rejection rate (FRR\,=\,0.081) across 648 robustness-sweep runs per variant ($d=4.56$, $p<0.001$).
 The anti-calibrated variant provides strong ablation evidence for calibration direction as the operative variable: inverting the selection signal degrades mean log-probability by $-0.55$--$-1.37$ nats, while full OEA improves it by $+0.62$--$+1.63$ nats across all four models and three architecture families.
 Results are fully reproducible (\texttt{torch.manual\_seed}, CUDA 12.1) and artifacts are committed to this repository.
@@ -97,7 +100,7 @@ $\mathrm{TRR}$ & True rejection rate (higher = better discrimination) \\
 $\mathrm{FRR}$ & False rejection rate (lower = better specificity) \\
 $\mathrm{JSD}(p, q)$ & Jensen-Shannon divergence \\
 $\mathcal{V}_{\mathrm{ref}}$ & Reference vocabulary (token IDs from seed corpus) \\
-$R_t$ & Retrieval context at step $t$ (BM25 passage) \\
+$R_t$ & Retrieval context at step $t$ (retrieved corpus passage) \\
 $S_t$ & Recursive stability: $1 - \mathrm{JSD}(p_{x_t}, p_{x_0})$ \\
 $\tau$ & Dynamic log-prob threshold ($= \mu_{\mathrm{in-vocab}} - 1.5\,\sigma_{\mathrm{in-vocab}}$) \\
 \bottomrule
@@ -108,7 +111,7 @@ $\tau$ & Dynamic log-prob threshold ($= \mu_{\mathrm{in-vocab}} - 1.5\,\sigma_{\
 \begin{equation}
 x_{t+1} \sim P_\theta\!\left(x \mid \mathcal{A}(x_t),\; \mathcal{E}(x_t),\; R_t\right)
 \end{equation}
-where $R_t$ is the retrieval context at step $t$ (BM25 passage prepended to prompt).
+where $R_t$ is the retrieval context at step $t$ (retrieved corpus passage prepended to prompt).
 
 \noindent\textbf{Recursive stability:}
 \begin{equation}
@@ -164,13 +167,13 @@ Unlike RAG-only methods, OEA studies the interaction between retrieval, directio
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{p{1.6cm}p{3.5cm}p{3.5cm}p{3.5cm}}
+\begin{tabular}{p{2.2cm}p{3.3cm}p{3.3cm}p{3.3cm}}
 \toprule
 Layer & Computational Meaning & Mechanism & Observable Effect \\
 \midrule
 Ontological Anchoring
   & Vocabulary domain constraint (\emph{not} formal symbolic ontology)
-  & BM25 retrieval + token-set projection to $\mathcal{V}_{\mathrm{ref}}$
+  & Token-overlap retrieval + token-set projection to $\mathcal{V}_{\mathrm{ref}}$
   & Higher in-distribution log-prob; higher JSD from seed (expected) \\[4pt]
 Epistemic Filtering
   & Candidate quality discrimination
@@ -207,9 +210,9 @@ Recursive Drift
 \noindent\textbf{Recursive loop model.} Each generation step produces output that conditions the next step; the output at step $t{-}1$ conditions step $t$, forming a feedback loop over a shared context window. The recursive loop directly models this pattern. Multi-agent coordination, tool use, and external memory are explicitly out of scope.
 
 \begin{enumerate}[leftmargin=1.5em]
-  \item \textbf{Ontological Anchoring}: domain constraints and invalid-output criteria. BM25 retrieval + vocabulary projection.
+  \item \textbf{Ontological Anchoring}: domain constraints and invalid-output criteria. Token-overlap retrieval + vocabulary projection.
   \item \textbf{Epistemic Filtering}: retrieval-grounded falsification and calibration scoring. $K{=}3$ candidate scoring under the frozen reference model.
-  \item \textbf{Recursive Feedback}: output of step $ conditions step {+}1$ via context accumulation.
+  \item \textbf{Recursive Feedback}: output of step $t$ conditions step $t{+}1$ via context accumulation.
 \end{enumerate}
 
 \subsection{Pilot Experiment Design}
@@ -247,7 +250,7 @@ Effect deltas are consistent with H1 and H2: stability score $+0.1206$, TRR $+0.
 \textbf{Miscalibration reversal}: the CQ formula parameterizes the suite such that CQ$<$0.5 flips rejection direction: FRR rises to 0.651, TRR falls to 0.257---consistent with H2.
 \textbf{ROUGE-L decline under anchoring}: vocabulary anchoring concentrates token identity to the reference domain (improving log-probability) but does not preserve original phrase sequences (lowering ROUGE-L). These metrics are orthogonal.
 \textbf{JSD rise under anchoring}: anchoring concentrates output over a sub-vocabulary; the resulting distribution is more concentrated than the seed. This is expected behavior, not a failure mode.
-\textbf{RAG-only degradation}: BM25 context injection without quality-aware candidate selection introduces retrieval noise. Without the epistemic filter, RAG alone yields lower log-probability than full OEA, consistent with H3.
+\textbf{RAG-only degradation}: Retrieval context injection without quality-aware candidate selection introduces retrieval noise. Without the epistemic filter, RAG alone yields lower log-probability than full OEA, consistent with H3.
 
 \begin{table}[h]
 \centering
@@ -282,7 +285,7 @@ ablation\_miscalibrated & 0.943 [0.942,\,0.944] & 0.257 [0.255,\,0.259] & 0.651 
 
 Four models spanning three architecture families: \texttt{distilgpt2} (82M) and \texttt{gpt2} (124M) from the GPT-2 family, \texttt{EleutherAI/gpt-neo-125M} (125M) from the GPT-Neo family (local attention), and \texttt{Qwen/Qwen2.5-1.5B} (1.5B) from the Qwen family (RoPE, GQA, SwiGLU; released September 2024). The Qwen model is 10$\times$ larger than the other models and uses a modern architecture with grouped-query attention and rotary position embeddings, directly addressing the reviewer concern that results may be small-model or legacy-architecture artifacts. The harness uses \texttt{AutoModelForCausalLM}/\texttt{AutoTokenizer} for model-agnostic loading.
 
-\textbf{BM25 Retrieval (Layer 1).} $\text{score}(q, p) = |q \cap p| / \sqrt{|q| \cdot |p|}$. Retrieved passage prepended.
+\textbf{Token-Overlap Retrieval (Layer 1).} $\text{score}(q, p) = |q \cap p| / \sqrt{|q| \cdot |p|}$ (cosine-style token set similarity). Retrieved passage prepended.
 
 \textbf{Epistemic filtering (Layer 2).} $K{=}3$ candidates scored by $\log G_0(y|x)$ \cite{fu2025selfverification}.
 
@@ -443,7 +446,7 @@ These connections are \emph{suggestive, not demonstrated}. The experiments in th
   \item \textbf{Frozen-weights scope}: not a substitute for fine-tuning experiments.
   \item \textbf{Over-anchoring harms diversity}: vocabulary anchoring improves log-probability but reduces ROUGE-L recall and can impoverish creative or cross-domain generation.
   \item \textbf{Hallucination proxy limitation}: the bigram harness hallucination proxy (OOV rate) is always zero; neural model validation required.
-  \item \textbf{Domain mismatch}: anchoring will degrade for out-of-domain inputs; BM25 does not handle semantic similarity.
+  \item \textbf{Domain mismatch}: anchoring will degrade for out-of-domain inputs; token-overlap retrieval does not handle semantic similarity.
   \item \textbf{Calibration-quality mismatch (UNK-001)}: the dynamic-threshold TRR metric does not directly validate bigram-suite CQ (measured CQ\,=\,0.446 vs design estimate 0.83). Direct ECE validation is future work.
   \item \textbf{Scale limitations}: results validated on models from 82M to 1.5B parameters across three architecture families; extrapolation to frontier-scale models ($>$10B) is not warranted.
   \item \textbf{Baseline comparison power}: $N{=}20$ seeds insufficient for statistically significant pairwise comparisons in baseline competition.
@@ -455,7 +458,7 @@ These connections are \emph{suggestive, not demonstrated}. The experiments in th
 \section{Pre-registration, Reproducibility, and Data Availability}
 \label{sec:reproducibility}
 
-\textbf{Pre-registration.} Experimental design, variant definitions, metric schema, and result artifact structure were committed to the public repository prior to data collection. Commit history and pre-registered design documents are available at \url{https://github.com/BitConcepts/oea-framework-paper}.
+\textbf{Pre-registration.} Experimental design, variant definitions, metric schema, and result artifact structure were committed to the public repository prior to data collection. Commit history and pre-registered design documents are available at \url{https://github.com/BitConcepts/oea-framework-paper}. The canonical archived record is available at \href{https://doi.org/10.5281/zenodo.20412150}{doi:10.5281/zenodo.20412150}.
 
 \textbf{Reproducibility.} All bigram experiments reproduce in $<$10 minutes (no GPU). See \texttt{REPRODUCE.md}. Artifact integrity verified by \texttt{experiments/manifest.json} (SHA-256 hashes). \texttt{Dockerfile} provides a containerized environment. All four real LLM models (distilgpt2, gpt2, gpt-neo-125M, Qwen2.5-1.5B) are validated and artifacts committed.
 
