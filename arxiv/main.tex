@@ -319,7 +319,7 @@ oea\_miscalib.     & [$-1.14$] & .356 & .054 & [$-.55$] & .384 & .055 & [$-1.37$
 \texttt{oea\_miscalibrated} degrades log-probability below the no-RAG control ($-1.14$, $-0.55$, $-1.37$, and $-0.62$ nats across the four models), providing ablation evidence consistent with H2 \cite{fu2025selfverification,abbasiyadkori2024believe}.
 
 \paragraph{ROUGE-L dissociation.}
-\texttt{oea\_anchored} achieves lower ROUGE-L than control; \texttt{oea\_miscalibrated} achieves higher ROUGE-L. The systematic dissociation is consistent with log-probability selection and ROUGE-L evaluation being orthogonal quality dimensions, addressing the metric-circularity concern. See Figure~\ref{fig:dissociation}.
+\texttt{oea\_anchored} achieves lower ROUGE-L than control;\linebreak[0] \texttt{oea\_miscalibrated} achieves higher ROUGE-L. The systematic dissociation is consistent with log-probability selection and ROUGE-L evaluation being orthogonal quality dimensions, addressing the metric-circularity concern. See Figure~\ref{fig:dissociation}.
 
 \paragraph{H3 (RAG without Filter, supported).}
 \texttt{oea\_rag\_only} degrades log-probability ($-0.54$, $-0.08$, $-0.43$, $-0.07$ nats), consistent with H3: the epistemic filter, not retrieval per se, is the operative component.
@@ -458,7 +458,7 @@ These connections are \emph{suggestive, not demonstrated}. The experiments in th
 \section{Pre-registration, Reproducibility, and Data Availability}
 \label{sec:reproducibility}
 
-\textbf{Pre-registration.} Experimental design, variant definitions, metric schema, and result artifact structure were committed to the public repository prior to data collection. Commit history and pre-registered design documents are available at \url{https://github.com/BitConcepts/oea-framework-paper}. The canonical archived record is available at \href{https://doi.org/10.5281/zenodo.20412150}{doi:10.5281/zenodo.20412150}.
+\textbf{Pre-registration.} Experimental design, variant definitions, metric schema, and result artifact structure were committed to the public repository prior to data collection. Commit history and pre-registered design documents are available at \url{https://github.com/BitConcepts/oea-framework-paper} and archived at \href{https://doi.org/10.5281/zenodo.20412150}{doi:10.5281/zenodo.20412150}.
 
 \textbf{Reproducibility.} All bigram experiments reproduce in $<$10 minutes (no GPU). See \texttt{REPRODUCE.md}. Artifact integrity verified by \texttt{experiments/manifest.json} (SHA-256 hashes). \texttt{Dockerfile} provides a containerized environment. All four real LLM models (distilgpt2, gpt2, gpt-neo-125M, Qwen2.5-1.5B) are validated and artifacts committed.
 
@@ -492,7 +492,7 @@ Future work: (1) frontier-scale model validation ($>$10B parameters); (2) recurs
 Bigram suite: \texttt{numpy.random.default\_rng(seed)} per variant/seed combination.
 Real LLM: \texttt{torch.manual\_seed(gen\_seed)}, $\texttt{gen\_seed} = \texttt{seed\_idx} \times 1000 + \texttt{iteration} \times 10$.
 Memory drift: \texttt{random.Random(seed\_idx * 1000 + 42)}.
-Baseline competition: \texttt{numpy.random.default\_rng(seed\_idx * 17 + 3)}.
+Baseline competition: \texttt{numpy.random.default\_rng(}\linebreak[0]\texttt{seed\_idx * 17 + 3)}.
 
 \paragraph{Effect size.} Cohen's $d = (\bar{x}_A - \bar{x}_B) / s_{\mathrm{pooled}}$, $s_{\mathrm{pooled}} = \sqrt{(s_A^2 + s_B^2)/2}$.
 

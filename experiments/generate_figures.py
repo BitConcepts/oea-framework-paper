@@ -127,14 +127,14 @@ def _mean_ci(values: list[float]) -> tuple[float, float]:
 
 def fig_pipeline() -> Path:
     fig, ax = plt.subplots(figsize=(7.0, 2.4))
-    ax.set_xlim(0, 10)
+    ax.set_xlim(-0.2, 10.2)
     ax.set_ylim(0, 2.5)
     ax.axis("off")
 
     # Boxes: x_center, label, fill color, layer annotation
     boxes = [
         (0.6,  "Input\nContext",       "#e3f2fd", None),
-        (2.2,  "Retrieval\n(BM25)",    "#e8f5e9", "Layer 1\nOntological"),
+        (2.2,  "Token-Overlap\nRetrieval",  "#e8f5e9", "Layer 1\nOntological"),
         (4.0,  "Epistemic\nFilter",    "#fff8e1", "Layer 2\nEpistemic"),
         (5.8,  "Anchoring\nOperator",  "#e8f5e9", "Layer 1\nOntological"),
         (7.6,  "Candidate\nSelection", "#fff8e1", "Layer 2\nEpistemic"),
