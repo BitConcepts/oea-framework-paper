@@ -7,7 +7,8 @@
 - **Publication plan** (✓ = done, → = pending owner action):
   1. ✓ Zenodo DOI reserved: 10.5281/zenodo.20412150
   2. ✓ `arxiv/main.tex` updated with Zenodo DOI and ORCID.
-  3. → Complete Zenodo upload/publish with files.
+  3. ✓ Zenodo record published: https://zenodo.org/records/20412150
+     Files: OEA_Structured_Recursive_Calibration_for_Generative_Stability.pdf + OEA_LaTeX_source.zip
   4. → Post on ResearchGate linking doi:10.5281/zenodo.20412150.
   5. → Update Academia.edu post (https://www.academia.edu/167119567/...) with DOI metadata.
 
@@ -370,3 +371,17 @@ resolve all documentation gaps, and fix stale content across the repository.
 - **REQs affected**: REQ-044,REQ-085
 - **Status**: complete
 - **Chain hash**: `ccf2a7aa0bc1b8ac...`
+
+## 2026-05-27T10:33 — specsmith preflight accepted utterance "Record Zenodo publication live at https://zenodo.org/records/20412150 in LEDGER" (work_item_id=WI-1713BA84, confidence_target=0.7).
+- **Author**: specsmith
+- **Type**: preflight
+- **REQs affected**: REQ-085
+- **Status**: complete
+- **Chain hash**: `fa36fe5e10a52809...`
+
+## 2026-05-27T10:33 — work_proposal WI-1713BA84: Record Zenodo publication live at https://zenodo.org/records/20412150 in LEDGER
+- **Author**: specsmith
+- **Type**: work_proposal
+- **REQs affected**: REQ-044,REQ-085
+- **Status**: complete
+- **Chain hash**: `80713964b910c27c...`
