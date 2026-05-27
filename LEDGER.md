@@ -9,8 +9,8 @@
   2. ✓ `arxiv/main.tex` updated with Zenodo DOI and ORCID.
   3. ✓ Zenodo record published: https://zenodo.org/records/20412150
      Files: OEA_Structured_Recursive_Calibration_for_Generative_Stability.pdf + OEA_LaTeX_source.zip
-  4. → Post on ResearchGate linking doi:10.5281/zenodo.20412150.
-  5. → Update Academia.edu post (https://www.academia.edu/167119567/...) with DOI metadata.
+  4. ✓ ResearchGate: https://www.researchgate.net/publication/405331995_OEA_Structured_Recursive_Calibration_for_Generative_Stability
+  5. ✓ Academia.edu updated with DOI + new PDF: https://www.academia.edu/167119567/OEA_Structured_Recursive_Calibration_for_Generative_Stability
 
 ## 2026-05-15 - IJAIA journal submission
 - Submitted to International Journal of Artificial Intelligence & Applications (IJAIA)
