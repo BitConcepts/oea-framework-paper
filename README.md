@@ -1,7 +1,7 @@
 # OEA: Structured Recursive Calibration for Generative Stability
 
 [![CI](https://github.com/BitConcepts/oea-framework-paper/actions/workflows/ci.yml/badge.svg)](https://github.com/BitConcepts/oea-framework-paper/actions/workflows/ci.yml)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20412150.svg)](https://doi.org/10.5281/zenodo.20412150)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20412150-blue)](https://doi.org/10.5281/zenodo.20412150)
 [![Paper](https://img.shields.io/badge/paper-Academia.edu-blue)](https://www.academia.edu/167119567/OEA_Structured_Recursive_Calibration_for_Generative_Stability)
 [![License: MIT](https://img.shields.io/badge/code-MIT-green)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.1.0-orange)](https://github.com/BitConcepts/oea-framework-paper/releases/tag/v1.1.0)
