@@ -126,23 +126,23 @@ def _mean_ci(values: list[float]) -> tuple[float, float]:
 # ── Figure 1: OEA Pipeline Diagram ───────────────────────────────────────────
 
 def fig_pipeline() -> Path:
-    fig, ax = plt.subplots(figsize=(7.0, 2.4))
+    fig, ax = plt.subplots(figsize=(8.0, 2.0))
     ax.set_xlim(-0.2, 10.2)
-    ax.set_ylim(0, 2.5)
+    ax.set_ylim(0.2, 2.5)  # raised floor — no feedback arrow below boxes
     ax.axis("off")
 
     # Boxes: x_center, label, fill color, layer annotation
     boxes = [
-        (0.6,  "Input\nContext",       "#e3f2fd", None),
+        (0.6,  "Input\nContext",            "#e3f2fd", None),
         (2.2,  "Token-Overlap\nRetrieval",  "#e8f5e9", "Layer 1\nOntological"),
-        (4.0,  "Epistemic\nFilter",    "#fff8e1", "Layer 2\nEpistemic"),
-        (5.8,  "Anchoring\nOperator",  "#e8f5e9", "Layer 1\nOntological"),
-        (7.6,  "Candidate\nSelection", "#fff8e1", "Layer 2\nEpistemic"),
-        (9.3,  "Output\n(Accepted)",   "#e3f2fd", None),
+        (4.0,  "Epistemic\nFilter",         "#fff8e1", "Layer 2\nEpistemic"),
+        (5.8,  "Anchoring\nOperator",       "#e8f5e9", "Layer 1\nOntological"),
+        (7.6,  "Candidate\nSelection",      "#fff8e1", "Layer 2\nEpistemic"),
+        (9.3,  "Output\n(Accepted)",        "#e3f2fd", None),
     ]
 
     box_w, box_h = 1.1, 0.9
-    cy = 1.3
+    cy = 1.55  # moved up to give room below for layer labels
     for bx, label, color, layer_ann in boxes:
         rect = mpatches.FancyBboxPatch(
             (bx - box_w / 2, cy - box_h / 2), box_w, box_h,
@@ -152,22 +152,21 @@ def fig_pipeline() -> Path:
         ax.text(bx, cy, label, ha="center", va="center", fontsize=7.5,
                 multialignment="center", color="#1a237e")
         if layer_ann:
-            ax.text(bx, cy - box_h / 2 - 0.22, layer_ann,
+            # Layer annotations below each annotated box — clear vertical gap
+            ax.text(bx, cy - box_h / 2 - 0.14, layer_ann,
                     ha="center", va="top", fontsize=6, color="#546e7a",
                     multialignment="center", style="italic")
 
-    # Arrows
+    # Forward arrows between boxes
     arrow_xs = [(b[0] + box_w / 2, boxes[i + 1][0] - box_w / 2)
                 for i, b in enumerate(boxes[:-1])]
     for x0, x1 in arrow_xs:
         ax.annotate("", xy=(x1, cy), xytext=(x0, cy),
                     arrowprops=dict(arrowstyle="-|>", color="#37474f", lw=0.9))
 
-    # Recursive feedback arrow
-    ax.annotate("", xy=(0.6, cy - box_h / 2 - 0.08), xytext=(9.3, cy - box_h / 2 - 0.08),
-                arrowprops=dict(arrowstyle="-|>", color="#78909c", lw=0.7,
-                                connectionstyle="arc3,rad=0.0"))
-    ax.text(4.95, cy - box_h / 2 - 0.42, "Recursive Feedback Loop (Layer 3): output conditions next iteration",
+    # Layer 3 note as a subtitle — no confusing bottom arrow
+    ax.text(4.95, cy - box_h / 2 - 0.52,
+            "Layer 3 — Recursive Feedback: output of each step conditions the next iteration",
             ha="center", va="top", fontsize=6.5, color="#546e7a", style="italic")
 
     ax.set_title("OEA Three-Layer Generation Pipeline", pad=6, fontsize=10)
@@ -217,14 +216,15 @@ def fig_calibration() -> Path:
         ax.axhline(0, color="#bdbdbd", linewidth=0.6, linestyle=":")
         ax.grid(axis="y", alpha=0.25, linewidth=0.5)
 
-    # Shared legend below
+    # Shared legend below — extra bottom margin so it clears x-axis labels
     handles = [mpatches.Patch(color=COLORS[v], label=LABELS[v]) for v in VARIANTS]
     fig.legend(handles=handles, loc="lower center", ncol=4, fontsize=8,
-               bbox_to_anchor=(0.5, -0.02), frameon=True, framealpha=0.9)
+               bbox_to_anchor=(0.5, 0.0), frameon=True, framealpha=0.9)
     fig.suptitle("Calibration Trajectory: Log-Probability over Recursive Iterations",
-                 fontsize=10, y=1.01)
+                 fontsize=10, y=1.02)
     out = FIGURES_DIR / "fig_calibration.pdf"
     fig.tight_layout()
+    fig.subplots_adjust(bottom=0.28)   # explicit room for legend below x-axis labels
     fig.savefig(out, bbox_inches="tight")
     plt.close(fig)
     return out
@@ -260,13 +260,8 @@ def fig_metric_dissociation() -> Path:
                         fmt=MARKERS[variant], color=COLORS[variant],
                         markersize=7, capsize=3, linewidth=1.0,
                         label=LABELS[variant])
-            # Annotate with variant name
-            ax.annotate(LABELS[variant],
-                        (lp_m, rl_m),
-                        textcoords="offset points",
-                        xytext=(5, 4),
-                        fontsize=6,
-                        color=COLORS[variant])
+        # Per-subplot legend — avoids all point-label overlap
+        ax.legend(loc="best", fontsize=6, framealpha=0.88, handlelength=1.2)
 
         ax.set_xlabel("Mean Log-Probability (nats)\n← worse    better →", fontsize=8)
         ax.set_ylabel("ROUGE-L Recall\n← worse    better →", fontsize=8)
@@ -279,7 +274,7 @@ def fig_metric_dissociation() -> Path:
     fig.suptitle(
         "Metric Dissociation: Log-Probability vs ROUGE-L Recall\n"
         "Orthogonal quality dimensions under OEA anchoring",
-        fontsize=10, y=1.01
+        fontsize=10, y=1.02
     )
     out = FIGURES_DIR / "fig_metric_dissociation.pdf"
     fig.tight_layout()
