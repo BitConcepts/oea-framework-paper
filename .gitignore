@@ -55,11 +55,14 @@ arxiv/OEA_LaTeX_source.zip
 .env
 .env.*
 
-# specsmith migration backups — regeneratable, never commit
+# specsmith — installed globally via pipx, not a project dependency.
+# All specsmith runtime/governance files stay local only.
+.specsmith/
+scaffold.yml
+AGENTS.md
+docs/governance/
+docs/COMPLIANCE.md
 *.bak
-.specsmith/*.bak
-docs/governance/*.bak
-docs/*.bak
 
 # ChronoMemory ESDB runtime files — regenerated automatically
 .chronomemory/

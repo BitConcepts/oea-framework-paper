@@ -4,7 +4,7 @@
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.20412150-blue)](https://doi.org/10.5281/zenodo.20412150)
 [![Paper](https://img.shields.io/badge/paper-Academia.edu-blue)](https://www.academia.edu/167119567/OEA_Structured_Recursive_Calibration_for_Generative_Stability)
 [![License: MIT](https://img.shields.io/badge/code-MIT-green)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.1.0-orange)](https://github.com/BitConcepts/oea-framework-paper/releases/tag/v1.1.0)
+[![Version](https://img.shields.io/badge/version-1.2.0-orange)](https://github.com/BitConcepts/oea-framework-paper/releases/tag/v1.2.0)
 
 **Author:** Tristen Pierson, BitConcepts Research  
 **ORCID:** [0009-0003-7269-956X](https://orcid.org/0009-0003-7269-956X)
